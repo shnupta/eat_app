@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 
+
+/// NormalTextInput is my custom class for a text input within the app.
+/// It is basically a custom styles TextField. As you can see most of the code
+/// is implemented using the composition by aggregation methodology.
 class NormalTextInput extends StatefulWidget {
+  // These are the properties for my widget. These are all immutable and so cannot change unless
+  // the widget is rebuilt.
   final String title;
   final String hintText;
   final TextEditingController textEditingController;
+  final bool obscureText;
 
-  NormalTextInput({@required this.title, this.hintText, @required this.textEditingController});
+  NormalTextInput(
+      {@required this.title,
+      this.hintText = '',
+      @required this.textEditingController,
+      this.obscureText = false
+      });
 
   @override
   State<StatefulWidget> createState() {
@@ -14,13 +26,6 @@ class NormalTextInput extends StatefulWidget {
 }
 
 class _NormalTextInputState extends State<NormalTextInput> {
-
-
-  @override
-    void dispose() {
-      widget.textEditingController.dispose();
-      super.dispose();
-    }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +68,7 @@ class _NormalTextInputState extends State<NormalTextInput> {
               Expanded(
                 child: TextField(
                   controller: widget.textEditingController,
-                  obscureText: false,
+                  obscureText: widget.obscureText,
                   textAlign: TextAlign.left,
                   decoration: InputDecoration(
                     border: InputBorder.none,

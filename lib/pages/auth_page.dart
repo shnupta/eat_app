@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:eat_app/widgets/normal_text_input.dart';
+import 'package:eat_app/widgets/standard_filled_button.dart';
+import 'package:eat_app/widgets/standard_outlined_button.dart';
+import 'package:eat_app/widgets/flat_text_button.dart';
 
 /// The AuthPage class is a page that will display three screens. A
 /// auth page landing, a login page and a signup page. It is a
@@ -23,7 +26,15 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     viewportFraction: 1.0,
   );
 
-  TextEditingController _loginTextEditingController = TextEditingController();
+  // Login page text editing controllers
+  TextEditingController _loginEmailTextEditingController = TextEditingController();
+  TextEditingController _loginPasswordTextEditingController = TextEditingController();
+
+  // Signup page text editing controllers
+  TextEditingController _signupNameTextEditingController = TextEditingController();
+  TextEditingController _signupEmailTextEditingController = TextEditingController();
+  TextEditingController _signupPasswordTextEditingController = TextEditingController();
+  TextEditingController _signupRepeatPasswordTextEditingController = TextEditingController();
 
   // The build method is required for any widget. This is what tells
   // Flutter, how it should render the content of my page.
@@ -72,58 +83,16 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           NormalTextInput(
             title: 'EMAIL',
             hintText: 'Enter your email...',
-            textEditingController: _loginTextEditingController,
+            textEditingController: _loginEmailTextEditingController,
           ),
           Divider(
             height: 24.0,
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 40.0),
-                  child: Text(
-                    "PASSWORD",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.redAccent,
-                      fontSize: 15.0,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                    color: Colors.redAccent,
-                    width: 0.5,
-                    style: BorderStyle.solid),
-              ),
-            ),
-            padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    obscureText: true,
-                    textAlign: TextAlign.left,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Enter your password...',
-                      hintStyle: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          NormalTextInput(
+            title: 'PASSWORD',
+            hintText: 'Enter your password...',
+            obscureText: true,
+            textEditingController: _loginPasswordTextEditingController,
           ),
           Divider(
             height: 24.0,
@@ -131,61 +100,17 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: FlatButton(
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.redAccent,
-                      fontSize: 15.0,
-                    ),
-                    textAlign: TextAlign.end,
-                  ),
-                  onPressed: () => {},
-                ),
+              FlatTextButton(
+                text: 'Forgot your password?',
+                onPressed: () => null,
+                padding: EdgeInsets.only(right: 20.0),
               ),
             ],
           ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
-            alignment: Alignment.center,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    color: Colors.redAccent,
-                    splashColor: Colors.white,
-                    onPressed: () => Navigator.of(context).pushNamed('/home'),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 20.0,
-                        horizontal: 20.0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              "LOG IN",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          StandardFilledButton(
+            onPressed: () => Navigator.of(context).pushNamed('/home'),
+            text: 'LOG IN',
+            margin: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
           ),
         ],
       ),
@@ -231,85 +156,15 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
             child: Container(
               child: Column(
                 children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: const EdgeInsets.only(
-                        left: 30.0, right: 30.0, top: 80.0),
-                    alignment: Alignment.center,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: OutlineButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            splashColor: Colors.redAccent,
-                            highlightedBorderColor: Colors.grey,
-                            onPressed: () => _gotoLoginPage(),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 20.0,
-                                horizontal: 20.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Text(
-                                      "LOG IN",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  StandardOutlinedButton(
+                    text: 'LOG IN',
+                    onPressed: _gotoLoginPage,
+                    margin: EdgeInsets.only(left: 30.0, right: 30.0, top: 80.0),
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: const EdgeInsets.only(
-                        left: 30.0, right: 30.0, top: 30.0),
-                    alignment: Alignment.center,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: FlatButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            color: Colors.redAccent,
-                            splashColor: Colors.white,
-                            onPressed: () => _gotoSignupPage(),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 20.0,
-                                horizontal: 20.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Text(
-                                      "SIGN UP",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  StandardFilledButton(
+                    margin: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
+                    text: 'SIGN UP',
+                    onPressed: _gotoSignupPage,
                   ),
                 ],
               ),
@@ -337,268 +192,44 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 40.0),
-                  child: Text(
-                    "FULL NAME",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.redAccent,
-                      fontSize: 15.0,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                    color: Colors.redAccent,
-                    width: 0.5,
-                    style: BorderStyle.solid),
-              ),
-            ),
-            padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    obscureText: false,
-                    textAlign: TextAlign.left,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Enter your full name...',
-                      hintStyle: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          NormalTextInput(
+            title: 'FULL NAME',
+            textEditingController: _signupNameTextEditingController,
+            hintText: 'Enter your full name...',
           ),
           Divider(
             height: 24.0,
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 40.0),
-                  child: Text(
-                    "EMAIL",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.redAccent,
-                      fontSize: 15.0,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                    color: Colors.redAccent,
-                    width: 0.5,
-                    style: BorderStyle.solid),
-              ),
-            ),
-            padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    obscureText: false,
-                    textAlign: TextAlign.left,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Enter your email...',
-                      hintStyle: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          NormalTextInput(
+            title: 'EMAIL',
+            textEditingController: _signupEmailTextEditingController,
+            hintText: 'Enter your email...',
           ),
           Divider(
             height: 24.0,
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 40.0),
-                  child: Text(
-                    "PASSWORD",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.redAccent,
-                      fontSize: 15.0,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                    color: Colors.redAccent,
-                    width: 0.5,
-                    style: BorderStyle.solid),
-              ),
-            ),
-            padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    obscureText: true,
-                    textAlign: TextAlign.left,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Enter your password...',
-                      hintStyle: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          NormalTextInput(
+            title: 'PASSWORD',
+            obscureText: true,
+            textEditingController: _signupPasswordTextEditingController,
+            hintText: 'Enter your password...',
           ),
           Divider(
             height: 24.0,
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 40.0),
-                  child: Text(
-                    "REPEAT PASSWORD",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.redAccent,
-                      fontSize: 15.0,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                    color: Colors.redAccent,
-                    width: 0.5,
-                    style: BorderStyle.solid),
-              ),
-            ),
-            padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    obscureText: true,
-                    textAlign: TextAlign.left,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Repeat your password...',
-                      hintStyle: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          NormalTextInput(
+            title: 'REPEAT PASSWORD',
+            hintText: 'Repeat your password...',
+            obscureText: true,
+            textEditingController: _signupRepeatPasswordTextEditingController,
           ),
           Divider(
             height: 24.0,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: FlatButton(
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.redAccent,
-                      fontSize: 15.0,
-                    ),
-                    textAlign: TextAlign.end,
-                  ),
-                  onPressed: () => {},
-                ),
-              ),
-            ],
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
-            alignment: Alignment.center,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    color: Colors.redAccent,
-                    splashColor: Colors.white,
-                    onPressed: () => Navigator.of(context).pushNamed('/home'),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 20.0,
-                        horizontal: 20.0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              "SIGN UP",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          StandardFilledButton(
+            text: 'SIGN UP',
+            onPressed: () => Navigator.of(context).pushNamed('/home'),
+            margin: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
           ),
         ],
       ),
