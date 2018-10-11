@@ -5,9 +5,7 @@ import 'package:eat_app/widgets/standard_filled_button.dart';
 import 'package:eat_app/widgets/standard_outlined_button.dart';
 import 'package:eat_app/widgets/flat_text_button.dart';
 
-import 'package:eat_app/blocs/login_bloc.dart';
-
-import 'package:eat_app/pages/home_page.dart';
+import 'package:eat_app/blocs/authentication_bloc.dart';
 
 import 'package:bloc/bloc.dart';
 
@@ -48,7 +46,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   TextEditingController _signupRepeatPasswordTextEditingController =
       TextEditingController();
 
-  final LoginBloc loginBloc = LoginBloc();
+  final AuthenticationBloc authBloc = AuthenticationBloc();
 
   // The build method is required for any widget. This is what tells
   // Flutter, how it should render the content of my page.
@@ -69,7 +67,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
             _buildSignupPage(),
           ],
           onPageChanged: (int page) {
-            if (page == 1) FocusScope.of(context).requestFocus(FocusNode());
+            if (page == 1)
+              FocusScope.of(context)
+                  .requestFocus(FocusNode()); // hides the keyboard
           },
           scrollDirection: Axis.horizontal,
         ),
@@ -78,20 +78,19 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   Widget _buildLoginPage() {
-    return BlocBuilder<LoginState>(
-      bloc: loginBloc,
-      builder: (BuildContext context, LoginState loginState) {
-        if (loginState.token.isNotEmpty) {
-          return Navigator(
-            onGenerateRoute: (RouteSettings routeSettings) {
-              return MaterialPageRoute(
-                builder: (BuildContext context) => HomePage(),
-              );
-            },
-          );
+    return BlocBuilder<AuthenticationState>(
+      bloc: authBloc,
+      builder: (BuildContext context, AuthenticationState authState) {
+        if (authState.isAuthenticated) {
+          // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
+          // gets angry.
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pushNamed('/home');
+          });
         }
 
-        if (loginState.isLoading) {
+        // show a loading indicator if the state has updated to indicate it is processing a login
+        if (authState.isLoading) {
           return Center(
             child: CircularProgressIndicator(),
           );
@@ -141,7 +140,11 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                 ],
               ),
               StandardFilledButton(
-                onPressed: _onLoginButtonPressed,
+                // only allow the button to trigger the button press function is the state says it should
+                // be enabled
+                onPressed: authState.isAuthenticateButtonEnabled
+                    ? _onLoginButtonPressed
+                    : null,
                 text: 'LOG IN',
                 margin: EdgeInsets.only(
                     left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
@@ -154,7 +157,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   _onLoginButtonPressed() {
-    loginBloc.onLoginButtonPressed(
+    authBloc.onLoginButtonPressed(
         email: _loginEmailTextEditingController.text,
         password: _loginPasswordTextEditingController.text);
   }
@@ -199,15 +202,15 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
               child: Column(
                 children: <Widget>[
                   StandardOutlinedButton(
-                    text: 'LOG IN',
-                    onPressed: _gotoLoginPage,
+                    text: 'SIGN UP',
+                    onPressed: _gotoSignupPage,
                     margin: EdgeInsets.only(left: 30.0, right: 30.0, top: 80.0),
                   ),
                   StandardFilledButton(
                     margin: EdgeInsets.only(
                         left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
-                    text: 'SIGN UP',
-                    onPressed: _gotoSignupPage,
+                    text: 'LOG IN',
+                    onPressed: _gotoLoginPage,
                   ),
                 ],
               ),
@@ -219,65 +222,78 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   Widget _buildSignupPage() {
-    return Container(
-      color: Colors.white,
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: ListView(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 120.0, vertical: 40.0),
-            child: Center(
-              child: Icon(
-                Icons.open_in_browser,
-                color: Colors.redAccent,
-                size: 50.0,
-              ),
+    return BlocBuilder(
+        bloc: authBloc,
+        builder: (BuildContext context, AuthenticationState authState) {
+          // show a loading indicator if the state has updated to indicate it is processing a login
+          if (authState.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return Container(
+            color: Colors.white,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: ListView(
+              children: <Widget>[
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 120.0, vertical: 40.0),
+                  child: Center(
+                    child: Icon(
+                      Icons.open_in_browser,
+                      color: Colors.redAccent,
+                      size: 50.0,
+                    ),
+                  ),
+                ),
+                NormalTextInput(
+                  title: 'FULL NAME',
+                  textEditingController: _signupNameTextEditingController,
+                  hintText: 'Enter your full name...',
+                ),
+                Divider(
+                  height: 24.0,
+                ),
+                NormalTextInput(
+                  title: 'EMAIL',
+                  textEditingController: _signupEmailTextEditingController,
+                  hintText: 'Enter your email...',
+                ),
+                Divider(
+                  height: 24.0,
+                ),
+                NormalTextInput(
+                  title: 'PASSWORD',
+                  obscureText: true,
+                  textEditingController: _signupPasswordTextEditingController,
+                  hintText: 'Enter your password...',
+                ),
+                Divider(
+                  height: 24.0,
+                ),
+                NormalTextInput(
+                  title: 'REPEAT PASSWORD',
+                  hintText: 'Repeat your password...',
+                  obscureText: true,
+                  textEditingController:
+                      _signupRepeatPasswordTextEditingController,
+                ),
+                Divider(
+                  height: 24.0,
+                ),
+                StandardFilledButton(
+                  text: 'SIGN UP',
+                  onPressed: () => Navigator.of(context).pushNamed('/home'),
+                  margin: EdgeInsets.only(
+                      left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
+                ),
+              ],
             ),
-          ),
-          NormalTextInput(
-            title: 'FULL NAME',
-            textEditingController: _signupNameTextEditingController,
-            hintText: 'Enter your full name...',
-          ),
-          Divider(
-            height: 24.0,
-          ),
-          NormalTextInput(
-            title: 'EMAIL',
-            textEditingController: _signupEmailTextEditingController,
-            hintText: 'Enter your email...',
-          ),
-          Divider(
-            height: 24.0,
-          ),
-          NormalTextInput(
-            title: 'PASSWORD',
-            obscureText: true,
-            textEditingController: _signupPasswordTextEditingController,
-            hintText: 'Enter your password...',
-          ),
-          Divider(
-            height: 24.0,
-          ),
-          NormalTextInput(
-            title: 'REPEAT PASSWORD',
-            hintText: 'Repeat your password...',
-            obscureText: true,
-            textEditingController: _signupRepeatPasswordTextEditingController,
-          ),
-          Divider(
-            height: 24.0,
-          ),
-          StandardFilledButton(
-            text: 'SIGN UP',
-            onPressed: () => Navigator.of(context).pushNamed('/home'),
-            margin: EdgeInsets.only(
-                left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
-          ),
-        ],
-      ),
-    );
+          );
+        });
   }
 
   void _gotoLoginPage() {
