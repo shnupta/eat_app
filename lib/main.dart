@@ -18,9 +18,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: _createTheme(),
       title: 'eat_app',
-      home: AuthPage(),
+      initialRoute: '/',
       routes: {
-        //'/': (BuildContext context) => AuthPage(),
+        '/': (BuildContext context) => AuthPage(),
         '/home': (BuildContext context) => HomePage(),
       },
     );

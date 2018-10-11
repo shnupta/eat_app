@@ -5,6 +5,12 @@ import 'package:eat_app/widgets/standard_filled_button.dart';
 import 'package:eat_app/widgets/standard_outlined_button.dart';
 import 'package:eat_app/widgets/flat_text_button.dart';
 
+import 'package:eat_app/blocs/login_bloc.dart';
+
+import 'package:eat_app/pages/home_page.dart';
+
+import 'package:bloc/bloc.dart';
+
 /// The AuthPage class is a page that will display three screens. A
 /// auth page landing, a login page and a signup page. It is a
 /// stateful widget so contains data about itself.
@@ -27,14 +33,22 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   );
 
   // Login page text editing controllers
-  TextEditingController _loginEmailTextEditingController = TextEditingController();
-  TextEditingController _loginPasswordTextEditingController = TextEditingController();
+  TextEditingController _loginEmailTextEditingController =
+      TextEditingController();
+  TextEditingController _loginPasswordTextEditingController =
+      TextEditingController();
 
   // Signup page text editing controllers
-  TextEditingController _signupNameTextEditingController = TextEditingController();
-  TextEditingController _signupEmailTextEditingController = TextEditingController();
-  TextEditingController _signupPasswordTextEditingController = TextEditingController();
-  TextEditingController _signupRepeatPasswordTextEditingController = TextEditingController();
+  TextEditingController _signupNameTextEditingController =
+      TextEditingController();
+  TextEditingController _signupEmailTextEditingController =
+      TextEditingController();
+  TextEditingController _signupPasswordTextEditingController =
+      TextEditingController();
+  TextEditingController _signupRepeatPasswordTextEditingController =
+      TextEditingController();
+
+  final LoginBloc loginBloc = LoginBloc();
 
   // The build method is required for any widget. This is what tells
   // Flutter, how it should render the content of my page.
@@ -55,7 +69,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
             _buildSignupPage(),
           ],
           onPageChanged: (int page) {
-            if(page == 1) FocusScope.of(context).requestFocus(FocusNode());
+            if (page == 1) FocusScope.of(context).requestFocus(FocusNode());
           },
           scrollDirection: Axis.horizontal,
         ),
@@ -64,57 +78,85 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   Widget _buildLoginPage() {
-    return Container(
-      color: Colors.white,
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: ListView(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.all(120.0),
-            child: Center(
-              child: Icon(
-                Icons.fastfood,
-                color: Colors.redAccent,
-                size: 50.0,
-              ),
-            ),
-          ),
-          NormalTextInput(
-            title: 'EMAIL',
-            hintText: 'Enter your email...',
-            textEditingController: _loginEmailTextEditingController,
-          ),
-          Divider(
-            height: 24.0,
-          ),
-          NormalTextInput(
-            title: 'PASSWORD',
-            hintText: 'Enter your password...',
-            obscureText: true,
-            textEditingController: _loginPasswordTextEditingController,
-          ),
-          Divider(
-            height: 24.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+    return BlocBuilder<LoginState>(
+      bloc: loginBloc,
+      builder: (BuildContext context, LoginState loginState) {
+        if (loginState.token.isNotEmpty) {
+          return Navigator(
+            onGenerateRoute: (RouteSettings routeSettings) {
+              return MaterialPageRoute(
+                builder: (BuildContext context) => HomePage(),
+              );
+            },
+          );
+        }
+
+        if (loginState.isLoading) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        return Container(
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: ListView(
             children: <Widget>[
-              FlatTextButton(
-                text: 'Forgot your password?',
-                onPressed: () => null,
-                padding: EdgeInsets.only(right: 20.0),
+              Container(
+                padding: EdgeInsets.all(120.0),
+                child: Center(
+                  child: Icon(
+                    Icons.fastfood,
+                    color: Colors.redAccent,
+                    size: 50.0,
+                  ),
+                ),
+              ),
+              NormalTextInput(
+                title: 'EMAIL',
+                hintText: 'Enter your email...',
+                textEditingController: _loginEmailTextEditingController,
+              ),
+              Divider(
+                height: 24.0,
+              ),
+              NormalTextInput(
+                title: 'PASSWORD',
+                hintText: 'Enter your password...',
+                obscureText: true,
+                textEditingController: _loginPasswordTextEditingController,
+              ),
+              Divider(
+                height: 24.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  FlatTextButton(
+                    text: 'Forgot your password?',
+                    onPressed: () => null,
+                    padding: EdgeInsets.only(right: 20.0),
+                  ),
+                ],
+              ),
+              StandardFilledButton(
+                onPressed: _onLoginButtonPressed,
+                text: 'LOG IN',
+                margin: EdgeInsets.only(
+                    left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
               ),
             ],
           ),
-          StandardFilledButton(
-            onPressed: () => Navigator.of(context).pushNamed('/home'),
-            text: 'LOG IN',
-            margin: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
-          ),
-        ],
-      ),
+        );
+      },
     );
+  }
+
+  _onLoginButtonPressed() {
+    loginBloc.onLoginButtonPressed(
+        email: _loginEmailTextEditingController.text,
+        password: _loginPasswordTextEditingController.text);
   }
 
   Widget _buildAuthHomePage() {
@@ -162,7 +204,8 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                     margin: EdgeInsets.only(left: 30.0, right: 30.0, top: 80.0),
                   ),
                   StandardFilledButton(
-                    margin: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
+                    margin: EdgeInsets.only(
+                        left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
                     text: 'SIGN UP',
                     onPressed: _gotoSignupPage,
                   ),
@@ -229,7 +272,8 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           StandardFilledButton(
             text: 'SIGN UP',
             onPressed: () => Navigator.of(context).pushNamed('/home'),
-            margin: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
+            margin: EdgeInsets.only(
+                left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
           ),
         ],
       ),
@@ -250,10 +294,5 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
       duration: Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 }
