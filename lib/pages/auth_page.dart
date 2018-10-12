@@ -221,10 +221,23 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     );
   }
 
+  _onSignupButtonPressed() {
+    authBloc.onSignupButtonPressed(
+        fullName: _signupNameTextEditingController.text,
+        email: _signupEmailTextEditingController.text,
+        password: _signupPasswordTextEditingController.text);
+  }
+
   Widget _buildSignupPage() {
     return BlocBuilder(
         bloc: authBloc,
         builder: (BuildContext context, AuthenticationState authState) {
+          if (authState.isAuthenticated) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pushNamed('/home');
+            });
+          }
+
           // show a loading indicator if the state has updated to indicate it is processing a login
           if (authState.isLoading) {
             return Center(
@@ -286,7 +299,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                 ),
                 StandardFilledButton(
                   text: 'SIGN UP',
-                  onPressed: () => Navigator.of(context).pushNamed('/home'),
+                  onPressed: _onSignupButtonPressed,
                   margin: EdgeInsets.only(
                       left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
                 ),

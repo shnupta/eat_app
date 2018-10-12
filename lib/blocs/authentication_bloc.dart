@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:bloc/bloc.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 // A bloc is a state management method for separating business logic and presentation components within an app.
 // This utilizes streams, which reflect the asynchronous nature of mobile apps. 
@@ -117,7 +120,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield AuthenticationState.loading();
 
       try {
-        final login = await _login(event.email, event.password);
+        final FirebaseUser _user = await _login(event.email, event.password);
         yield AuthenticationState.success();
       } catch (error) {
         yield AuthenticationState.failure(error);
@@ -126,6 +129,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield AuthenticationState.loading();
 
       try {
+        final FirebaseUser _user = await _signup(event.fullName, event.email, event.password);
         yield AuthenticationState.success();
       } catch(error) {
         yield AuthenticationState.failure(error);
@@ -145,8 +149,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     );
   }
 
-  Future<bool> _login(String email, String password) {
-    return Future.delayed(Duration(seconds: 1), () => true);
+  Future<FirebaseUser> _login(String email, String password) {
+    return _auth.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  Future<FirebaseUser> _signup(String fullName, String email, String password) {
+    return _auth.createUserWithEmailAndPassword(email: email, password: password);
   }
 }
 
