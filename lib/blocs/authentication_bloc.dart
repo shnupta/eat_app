@@ -122,12 +122,26 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       } catch (error) {
         yield AuthenticationState.failure(error);
       }
+    } else if (event is SignupButtonPressed) {
+      yield AuthenticationState.loading();
+
+      try {
+        yield AuthenticationState.success();
+      } catch(error) {
+        yield AuthenticationState.failure(error);
+      }
     }
   }
 
   void onLoginButtonPressed({@required String email, @required String password}) {
     dispatch(
       LoginButtonPressed(email: email, password: password )
+    );
+  }
+
+  void onSignupButtonPressed({@required String fullName, @required String email, @required String password}) {
+    dispatch(
+      SignupButtonPressed(fullName: fullName, email: email, password: password)
     );
   }
 

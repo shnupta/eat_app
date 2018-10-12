@@ -1,4 +1,4 @@
-package com.example.eatapp;
+package io.brewguru.eatapp;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
