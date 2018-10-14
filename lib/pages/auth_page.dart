@@ -48,6 +48,18 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
 
   final AuthenticationBloc authBloc = AuthenticationBloc();
 
+  SnackBar missingRequiredSnackBar = SnackBar(
+    content: Text('You are missing required information.'),
+  );
+
+  SnackBar passwordShortSnackBar = SnackBar(
+    content: Text('Password must be 8 characters or longer.'),
+  );
+
+  SnackBar passwordsNotMatchingSnackBar = SnackBar(
+    content: Text('Passwords do not match.')
+  );
+
   // The build method is required for any widget. This is what tells
   // Flutter, how it should render the content of my page.
   @override
@@ -157,71 +169,111 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   _onLoginButtonPressed() {
+    // if (_loginEmailTextEditingController.text == '' ||
+    //     _loginPasswordTextEditingController.text == '') {
+    //   Scaffold.of(context).showSnackBar(missingRequiredSnackBar);
+    //   return;
+    // }
+
     authBloc.onLoginButtonPressed(
         email: _loginEmailTextEditingController.text,
         password: _loginPasswordTextEditingController.text);
   }
 
   Widget _buildAuthHomePage() {
-    return Container(
-      color: Colors.white,
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 60.0),
-                  Container(
-                    child: Text(
-                      'EAT',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 80.0,
-                      ),
+    return BlocBuilder(
+        bloc: authBloc,
+        builder: (BuildContext context, AuthenticationState authState) {
+          if (authState.isAuthenticated) {
+            // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
+            // gets angry.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pushNamed('/home');
+            });
+          }
+
+          // show a loading indicator if the state has updated to indicate it is processing a login
+          if (authState.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return Container(
+            color: Colors.white,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(height: 60.0),
+                        Container(
+                          child: Text(
+                            'EAT',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 80.0,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          child: Text(
+                            'app',
+                            style: TextStyle(
+                              fontSize: 50.0,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Container(
-                    child: Text(
-                      'app',
-                      style: TextStyle(
-                        fontSize: 50.0,
-                      ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: Column(
+                      children: <Widget>[
+                        StandardOutlinedButton(
+                          text: 'SIGN UP',
+                          onPressed: _gotoSignupPage,
+                          margin: EdgeInsets.only(
+                              left: 30.0, right: 30.0, top: 80.0),
+                        ),
+                        StandardFilledButton(
+                          margin: EdgeInsets.only(
+                              left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
+                          text: 'LOG IN',
+                          onPressed: _gotoLoginPage,
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-          Expanded(
-            child: Container(
-              child: Column(
-                children: <Widget>[
-                  StandardOutlinedButton(
-                    text: 'SIGN UP',
-                    onPressed: _gotoSignupPage,
-                    margin: EdgeInsets.only(left: 30.0, right: 30.0, top: 80.0),
-                  ),
-                  StandardFilledButton(
-                    margin: EdgeInsets.only(
-                        left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
-                    text: 'LOG IN',
-                    onPressed: _gotoLoginPage,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+          );
+        });
   }
 
   _onSignupButtonPressed() {
+    // if (_signupEmailTextEditingController.text == '' ||
+    //     _signupPasswordTextEditingController.text == '' ||
+    //     _signupNameTextEditingController.text == '' ||
+    //     _signupRepeatPasswordTextEditingController.text == '') {
+    //   Scaffold.of(context).showSnackBar(missingRequiredSnackBar);
+    //   return;
+    // } else if(_signupPasswordTextEditingController.text.length < 8) {
+    //   Scaffold.of(context).showSnackBar(passwordShortSnackBar);
+    //   return;
+    // } else if(_signupPasswordTextEditingController.text != _signupRepeatPasswordTextEditingController.text) {
+    //   Scaffold.of(context).showSnackBar(passwordsNotMatchingSnackBar);
+    //   return;
+    // }
+
     authBloc.onSignupButtonPressed(
         fullName: _signupNameTextEditingController.text,
         email: _signupEmailTextEditingController.text,
@@ -299,7 +351,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                 ),
                 StandardFilledButton(
                   text: 'SIGN UP',
-                  onPressed: _onSignupButtonPressed,
+                  onPressed: authState.isAuthenticateButtonEnabled ? _onSignupButtonPressed : null,
                   margin: EdgeInsets.only(
                       left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
                 ),

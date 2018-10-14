@@ -112,10 +112,10 @@ class SignupButtonPressed extends AuthenticationEvent {
 /// (at the moment, before Firebase) and in mapEventToState, the event is processed and the state is updated which
 /// is then reflected in the UI by moving to the home page, for example.
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  AuthenticationState get initialState => AuthenticationState.initial();
+  AuthenticationState get initialState => AuthenticationState.initial(); // TODO change this so that auto logs in
 
   @override
-  Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
+  Stream<AuthenticationState> mapEventToState(AuthenticationState authState, AuthenticationEvent event) async* {
     if(event is LoginButtonPressed) {
       yield AuthenticationState.loading();
 
@@ -150,6 +150,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Future<FirebaseUser> _login(String email, String password) {
+    // Use this code later when doing automatic login
+    // if(_auth.currentUser() != null) {
+    //   return _auth.currentUser();
+    // }
     return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
