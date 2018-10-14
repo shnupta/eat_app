@@ -22,7 +22,7 @@ class AuthPage extends StatefulWidget {
 /// This is the state (data) class for the auth page. This contains
 /// all the variables, functions etc. that will be needed inside the
 /// auth page.
-class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
+class _AuthPageState extends State<AuthPage> {
   // This page controller allows me to control a PageView so I can
   // set things such as the default page and how the PageView moves.
   PageController _pageController = PageController(
@@ -73,9 +73,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           controller: _pageController,
           physics: BouncingScrollPhysics(),
           children: <Widget>[
-            _buildLoginPage(context),
+            _buildLoginPage(),
             _buildAuthHomePage(), // Landing splash screen, app title and logo, login and signup buttons
-            _buildSignupPage(context),
+            _buildSignupPage(),
           ],
           onPageChanged: (int page) {
             if (page == 1)
@@ -88,7 +88,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildLoginPage(BuildContext context) {
+  Widget _buildLoginPage() {
     return BlocBuilder<AuthenticationState>(
       bloc: authBloc,
       builder: (BuildContext context, AuthenticationState authState) {
@@ -154,7 +154,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                 // only allow the button to trigger the button press function is the state says it should
                 // be enabled
                 onPressed: authState.isAuthenticateButtonEnabled
-                    ? () => _onLoginButtonPressed(context)
+                    ? _onLoginButtonPressed
                     : null,
                 text: 'LOG IN',
                 margin: EdgeInsets.only(
@@ -167,12 +167,13 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     );
   }
 
-  _onLoginButtonPressed(BuildContext context) {
-    if (_loginEmailTextEditingController.text == '' ||
-        _loginPasswordTextEditingController.text == '') {
-      Scaffold.of(context).showSnackBar(missingRequiredSnackBar);
-      return;
-    }
+  _onLoginButtonPressed() {
+    // Rather than do this, handle the errors based on the error state after the mapEventToState, same for signup
+    // if (_loginEmailTextEditingController.text == '' ||
+    //     _loginPasswordTextEditingController.text == '') {
+    //   Scaffold.of(context).showSnackBar(missingRequiredSnackBar);
+    //   return;
+    // }
 
     authBloc.onLoginButtonPressed(
         email: _loginEmailTextEditingController.text,
@@ -258,21 +259,21 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         });
   }
 
-  _onSignupButtonPressed(BuildContext context) {
-    if (_signupEmailTextEditingController.text == '' ||
-        _signupPasswordTextEditingController.text == '' ||
-        _signupNameTextEditingController.text == '' ||
-        _signupRepeatPasswordTextEditingController.text == '') {
-      Scaffold.of(context).showSnackBar(missingRequiredSnackBar);
-      return;
-    } else if (_signupPasswordTextEditingController.text.length < 8) {
-      Scaffold.of(context).showSnackBar(passwordShortSnackBar);
-      return;
-    } else if (_signupPasswordTextEditingController.text !=
-        _signupRepeatPasswordTextEditingController.text) {
-      Scaffold.of(context).showSnackBar(passwordsNotMatchingSnackBar);
-      return;
-    }
+  _onSignupButtonPressed() {
+    // if (_signupEmailTextEditingController.text == '' ||
+    //     _signupPasswordTextEditingController.text == '' ||
+    //     _signupNameTextEditingController.text == '' ||
+    //     _signupRepeatPasswordTextEditingController.text == '') {
+    //   Scaffold.of(context).showSnackBar(missingRequiredSnackBar);
+    //   return;
+    // } else if (_signupPasswordTextEditingController.text.length < 8) {
+    //   Scaffold.of(context).showSnackBar(passwordShortSnackBar);
+    //   return;
+    // } else if (_signupPasswordTextEditingController.text !=
+    //     _signupRepeatPasswordTextEditingController.text) {
+    //   Scaffold.of(context).showSnackBar(passwordsNotMatchingSnackBar);
+    //   return;
+    // }
 
     authBloc.onSignupButtonPressed(
         fullName: _signupNameTextEditingController.text,
@@ -280,7 +281,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         password: _signupPasswordTextEditingController.text);
   }
 
-  Widget _buildSignupPage(BuildContext context) {
+  Widget _buildSignupPage() {
     return BlocBuilder(
         bloc: authBloc,
         builder: (BuildContext context, AuthenticationState authState) {
@@ -352,7 +353,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                 StandardFilledButton(
                   text: 'SIGN UP',
                   onPressed: authState.isAuthenticateButtonEnabled
-                      ? () => _onSignupButtonPressed(context)
+                      ? _onSignupButtonPressed
                       : null,
                   margin: EdgeInsets.only(
                       left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
