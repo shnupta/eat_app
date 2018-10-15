@@ -14,20 +14,43 @@ class AuthHomePage extends StatefulWidget {
   AuthHomePage({@required this.gotoLoginPage, @required this.gotoSignupPage});
 
   @override
-    State<StatefulWidget> createState() {
-      return _AuthHomePageState();
-    }
+  State<StatefulWidget> createState() {
+    return _AuthHomePageState();
+  }
 }
 
 class _AuthHomePageState extends State<AuthHomePage> {
-
   AuthenticationBloc authBloc = AuthenticationBloc();
-  
+
+  bool triedAutoLogin = false;
+
   @override
-    Widget build(BuildContext context) {
-      return BlocBuilder(
+  Widget build(BuildContext context) {
+    return BlocBuilder(
         bloc: authBloc,
-        builder: (BuildContext context, AuthenticationState authState) {          
+        builder: (BuildContext context, AuthenticationState authState) {
+          // if (!authState.isAuthenticated && !triedAutoLogin) {
+          //   authBloc.autoLogin();
+
+          //   setState(() {
+          //     triedAutoLogin = true;
+          //   });
+          // }
+
+          // if (authState.isAuthenticated) {
+          //   // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
+          //   // gets angry.
+          //   WidgetsBinding.instance.addPostFrameCallback((_) {
+          //     Navigator.of(context).pushNamed('/home');
+          //   });
+          // }
+
+          // // show a loading indicator if the state has updated to indicate it is processing a login
+          // if (authState.isLoading) {
+          //   return Center(
+          //     child: CircularProgressIndicator(),
+          //   );
+          // }
 
           return Container(
             color: Colors.white,
@@ -87,7 +110,5 @@ class _AuthHomePageState extends State<AuthHomePage> {
             ),
           );
         });
-    }
-
-    
+  }
 }

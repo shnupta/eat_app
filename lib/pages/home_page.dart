@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:eat_app/blocs/authentication_bloc.dart';
+
+import 'package:bloc/bloc.dart';
+
+import 'package:eat_app/widgets/standard_outlined_button.dart';
+
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -8,10 +14,33 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  AuthenticationBloc authBloc = AuthenticationBloc();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.redAccent,
+      body: BlocBuilder<AuthenticationState>(
+        bloc: authBloc,
+        builder: (BuildContext context, AuthenticationState authState) {
+          // if(!authState.isAuthenticated) {
+          //   WidgetsBinding.instance.addPostFrameCallback((_) {
+          //     Navigator.of(context).pushNamed('/false');
+          //   });
+          // }
+          return Container(
+            width: MediaQuery.of(context).size.width,
+            child: StandardOutlinedButton(
+              text: 'LOGOUT',
+              onPressed: _onLogoutButtonPressed,
+            ),
+          );
+        },
+      ),
     );
+  }
+
+  _onLogoutButtonPressed() {
+    authBloc.logout();
   }
 }

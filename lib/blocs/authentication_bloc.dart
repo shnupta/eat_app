@@ -64,7 +64,7 @@ class AuthenticationState {
   }
 
   // Returns a authentication state that indicates a successful login.
-  factory AuthenticationState.success() {
+  factory AuthenticationState.loggedIn() {
     return AuthenticationState(
       isLoading: false,
       isAuthenticated: true,
@@ -91,12 +91,15 @@ class SignupButtonPressed extends AuthenticationEvent {
   final String fullName;
   final String email;
   final String password;
+  final String passwordRepeated;
 
   SignupButtonPressed(
-      {@required this.fullName, @required this.email, @required this.password});
+      {@required this.fullName, @required this.email, @required this.password, @required this.passwordRepeated});
 }
 
 class AutoLogin extends AuthenticationEvent {}
+
+class LogoutButtonPressed extends AuthenticationEvent {}
 
 /// The AuthenticationBloc is the final piece in the bloc method for the login function.
 /// The AuthenticationBloc contains the authentication state and implements the onLoginButtonPressed method.
@@ -115,7 +118,7 @@ class AuthenticationBloc
 
       try {
         final FirebaseUser _user = await _login(event.email, event.password);
-        yield AuthenticationState.success();
+        yield AuthenticationState.loggedIn();
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
@@ -124,8 +127,8 @@ class AuthenticationBloc
 
       try {
         final FirebaseUser _user =
-            await _signup(event.fullName, event.email, event.password);
-        yield AuthenticationState.success();
+            await _signup(event.fullName, event.email, event.password, event.passwordRepeated);
+        yield AuthenticationState.loggedIn(); // change for signup event
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
@@ -134,8 +137,17 @@ class AuthenticationBloc
 
       try {
         final FirebaseUser _user = await _login('', '', true);
-        yield AuthenticationState.success();
+        yield AuthenticationState.loggedIn();
       } catch (error) {
+        yield AuthenticationState.failure(error.message);
+      }
+    } else if(event is LogoutButtonPressed) {
+      yield AuthenticationState.loading();
+
+      try {
+        await _logout();
+        yield AuthenticationState.initial();
+      } catch(error) {
         yield AuthenticationState.failure(error.message);
       }
     }
@@ -149,9 +161,14 @@ class AuthenticationBloc
   void onSignupButtonPressed(
       {@required String fullName,
       @required String email,
-      @required String password}) {
+      @required String password,
+      @required String passwordRepeated}) {
     dispatch(SignupButtonPressed(
-        fullName: fullName, email: email, password: password));
+        fullName: fullName, email: email, password: password, passwordRepeated: passwordRepeated));
+  }
+
+  void logout() {
+    dispatch(LogoutButtonPressed());
   }
 
   void autoLogin() {
@@ -159,9 +176,9 @@ class AuthenticationBloc
   }
 
   Future<FirebaseUser> _login(String email, String password,
-      [bool autoLogin = false]) {
+      [bool autoLogin = false]) async {
     if (autoLogin) {
-      if (_auth.currentUser() != null) return _auth.currentUser();
+      if (await _auth.currentUser() != null) return _auth.currentUser();
     } else if (email == '')
       throw Exception('Email is empty');
     else if (password == '') throw Exception('Password is empty');
@@ -169,14 +186,20 @@ class AuthenticationBloc
     return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
-  Future<FirebaseUser> _signup(String fullName, String email, String password) {
+  Future<FirebaseUser> _signup(String fullName, String email, String password, String passwordRepeated) {
     if (fullName == '')
       throw Exception('Full name is empty');
     else if (email == '')
       throw Exception('Email is empty');
     else if (password == '') throw Exception('Password is empty');
+    else if(passwordRepeated == '') throw Exception('Repeated password is empty');
+    else if(password != passwordRepeated) throw Exception('Passwords do not match');
 
     return _auth.createUserWithEmailAndPassword(
         email: email, password: password);
+  }
+
+  Future<void> _logout() {
+    return _auth.signOut();
   }
 }

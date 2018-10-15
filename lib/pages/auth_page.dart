@@ -11,6 +11,10 @@ import 'package:bloc/bloc.dart';
 /// auth page landing, a login page and a signup page. It is a
 /// stateful widget so contains data about itself.
 class AuthPage extends StatefulWidget {
+  final autoLogin;
+
+  AuthPage({this.autoLogin = false});
+
   @override
   State<StatefulWidget> createState() {
     return _AuthPageState();
@@ -30,8 +34,6 @@ class _AuthPageState extends State<AuthPage> {
 
   AuthenticationBloc authBloc = AuthenticationBloc();
 
-  bool triedAutoLogin = false;
-
   // The build method is required for any widget. This is what tells
   // Flutter, how it should render the content of my page.
   @override
@@ -45,13 +47,9 @@ class _AuthPageState extends State<AuthPage> {
         child: BlocBuilder<AuthenticationState>(
             bloc: authBloc,
             builder: (BuildContext context, AuthenticationState authState) {
-              if (!authState.isAuthenticated && !triedAutoLogin) {
-                authBloc.autoLogin();
-
-                setState(() {
-                  triedAutoLogin = true;
-                });
-              }
+              // if (widget.autoLogin) {
+              //   authBloc.autoLogin();
+              // }
 
               if (authState.isAuthenticated) {
                 // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
@@ -67,13 +65,17 @@ class _AuthPageState extends State<AuthPage> {
                   child: CircularProgressIndicator(),
                 );
               }
+
               return PageView(
                 controller: _pageController,
                 physics: BouncingScrollPhysics(),
                 children: <Widget>[
                   // change these to their own widgets
                   LoginPage(),
-                  AuthHomePage(gotoLoginPage: _gotoLoginPage, gotoSignupPage: _gotoSignupPage,), // Landing splash screen, app title and logo, login and signup buttons
+                  AuthHomePage(
+                    gotoLoginPage: _gotoLoginPage,
+                    gotoSignupPage: _gotoSignupPage,
+                  ), // Landing splash screen, app title and logo, login and signup buttons
                   SignupPage(),
                 ],
                 onPageChanged: (int page) {
