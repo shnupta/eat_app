@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/widgets/normal_text_input.dart';
-import 'package:eat_app/widgets/standard_filled_button.dart';
-import 'package:eat_app/widgets/standard_outlined_button.dart';
-import 'package:eat_app/widgets/flat_text_button.dart';
+import 'package:eat_app/pages/login_page.dart';
+import 'package:eat_app/pages/signup_page.dart';
+import 'package:eat_app/pages/auth_home_page.dart';
 
 import 'package:eat_app/blocs/authentication_bloc.dart';
-
 import 'package:bloc/bloc.dart';
 
 /// The AuthPage class is a page that will display three screens. A
@@ -30,34 +28,9 @@ class _AuthPageState extends State<AuthPage> {
     viewportFraction: 1.0,
   );
 
-  // Login page text editing controllers
-  TextEditingController _loginEmailTextEditingController =
-      TextEditingController();
-  TextEditingController _loginPasswordTextEditingController =
-      TextEditingController();
+  AuthenticationBloc authBloc = AuthenticationBloc();
 
-  // Signup page text editing controllers
-  TextEditingController _signupNameTextEditingController =
-      TextEditingController();
-  TextEditingController _signupEmailTextEditingController =
-      TextEditingController();
-  TextEditingController _signupPasswordTextEditingController =
-      TextEditingController();
-  TextEditingController _signupRepeatPasswordTextEditingController =
-      TextEditingController();
-
-  final AuthenticationBloc authBloc = AuthenticationBloc();
-
-  SnackBar missingRequiredSnackBar = SnackBar(
-    content: Text('You are missing required information.'),
-  );
-
-  SnackBar passwordShortSnackBar = SnackBar(
-    content: Text('Password must be 8 characters or longer.'),
-  );
-
-  SnackBar passwordsNotMatchingSnackBar =
-      SnackBar(content: Text('Passwords do not match.'));
+  bool triedAutoLogin = false;
 
   // The build method is required for any widget. This is what tells
   // Flutter, how it should render the content of my page.
@@ -69,299 +42,50 @@ class _AuthPageState extends State<AuthPage> {
         height: MediaQuery.of(context)
             .size
             .height, // This queries the device to find out its screen information
-        child: PageView(
-          controller: _pageController,
-          physics: BouncingScrollPhysics(),
-          children: <Widget>[
-            _buildLoginPage(),
-            _buildAuthHomePage(), // Landing splash screen, app title and logo, login and signup buttons
-            _buildSignupPage(),
-          ],
-          onPageChanged: (int page) {
-            if (page == 1)
-              FocusScope.of(context)
-                  .requestFocus(FocusNode()); // hides the keyboard
-          },
-          scrollDirection: Axis.horizontal,
-        ),
+        child: BlocBuilder<AuthenticationState>(
+            bloc: authBloc,
+            builder: (BuildContext context, AuthenticationState authState) {
+              if (!authState.isAuthenticated && !triedAutoLogin) {
+                authBloc.autoLogin();
+
+                setState(() {
+                  triedAutoLogin = true;
+                });
+              }
+
+              if (authState.isAuthenticated) {
+                // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
+                // gets angry.
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Navigator.of(context).pushNamed('/home');
+                });
+              }
+
+              // show a loading indicator if the state has updated to indicate it is processing a login
+              if (authState.isLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return PageView(
+                controller: _pageController,
+                physics: BouncingScrollPhysics(),
+                children: <Widget>[
+                  // change these to their own widgets
+                  LoginPage(),
+                  AuthHomePage(gotoLoginPage: _gotoLoginPage, gotoSignupPage: _gotoSignupPage,), // Landing splash screen, app title and logo, login and signup buttons
+                  SignupPage(),
+                ],
+                onPageChanged: (int page) {
+                  if (page == 1)
+                    FocusScope.of(context)
+                        .requestFocus(FocusNode()); // hides the keyboard
+                },
+                scrollDirection: Axis.horizontal,
+              );
+            }),
       ),
     );
-  }
-
-  Widget _buildLoginPage() {
-    return BlocBuilder<AuthenticationState>(
-      bloc: authBloc,
-      builder: (BuildContext context, AuthenticationState authState) {
-        if (authState.isAuthenticated) {
-          // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
-          // gets angry.
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).pushNamed('/home');
-          });
-        }
-
-        // show a loading indicator if the state has updated to indicate it is processing a login
-        if (authState.isLoading) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        return Container(
-          color: Colors.white,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: ListView(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(120.0),
-                child: Center(
-                  child: Icon(
-                    Icons.fastfood,
-                    color: Colors.redAccent,
-                    size: 50.0,
-                  ),
-                ),
-              ),
-              NormalTextInput(
-                title: 'EMAIL',
-                hintText: 'Enter your email...',
-                textEditingController: _loginEmailTextEditingController,
-              ),
-              Divider(
-                height: 24.0,
-              ),
-              NormalTextInput(
-                title: 'PASSWORD',
-                hintText: 'Enter your password...',
-                obscureText: true,
-                textEditingController: _loginPasswordTextEditingController,
-              ),
-              Divider(
-                height: 24.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  FlatTextButton(
-                    text: 'Forgot your password?',
-                    onPressed: () => null,
-                    padding: EdgeInsets.only(right: 20.0),
-                  ),
-                ],
-              ),
-              StandardFilledButton(
-                // only allow the button to trigger the button press function is the state says it should
-                // be enabled
-                onPressed: authState.isAuthenticateButtonEnabled
-                    ? _onLoginButtonPressed
-                    : null,
-                text: 'LOG IN',
-                margin: EdgeInsets.only(
-                    left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  _onLoginButtonPressed() {
-    // Rather than do this, handle the errors based on the error state after the mapEventToState, same for signup
-    // if (_loginEmailTextEditingController.text == '' ||
-    //     _loginPasswordTextEditingController.text == '') {
-    //   Scaffold.of(context).showSnackBar(missingRequiredSnackBar);
-    //   return;
-    // }
-
-    authBloc.onLoginButtonPressed(
-        email: _loginEmailTextEditingController.text,
-        password: _loginPasswordTextEditingController.text);
-  }
-
-  Widget _buildAuthHomePage() {
-    return BlocBuilder(
-        bloc: authBloc,
-        builder: (BuildContext context, AuthenticationState authState) {
-          if (authState.isAuthenticated) {
-            // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
-            // gets angry.
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(context).pushNamed('/home');
-            });
-          }
-
-          // show a loading indicator if the state has updated to indicate it is processing a login
-          if (authState.isLoading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          return Container(
-            color: Colors.white,
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(height: 60.0),
-                        Container(
-                          child: Text(
-                            'EAT',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 80.0,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          child: Text(
-                            'app',
-                            style: TextStyle(
-                              fontSize: 50.0,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    child: Column(
-                      children: <Widget>[
-                        StandardOutlinedButton(
-                          text: 'SIGN UP',
-                          onPressed: _gotoSignupPage,
-                          margin: EdgeInsets.only(
-                              left: 30.0, right: 30.0, top: 80.0),
-                        ),
-                        StandardFilledButton(
-                          margin: EdgeInsets.only(
-                              left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
-                          text: 'LOG IN',
-                          onPressed: _gotoLoginPage,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
-  _onSignupButtonPressed() {
-    // if (_signupEmailTextEditingController.text == '' ||
-    //     _signupPasswordTextEditingController.text == '' ||
-    //     _signupNameTextEditingController.text == '' ||
-    //     _signupRepeatPasswordTextEditingController.text == '') {
-    //   Scaffold.of(context).showSnackBar(missingRequiredSnackBar);
-    //   return;
-    // } else if (_signupPasswordTextEditingController.text.length < 8) {
-    //   Scaffold.of(context).showSnackBar(passwordShortSnackBar);
-    //   return;
-    // } else if (_signupPasswordTextEditingController.text !=
-    //     _signupRepeatPasswordTextEditingController.text) {
-    //   Scaffold.of(context).showSnackBar(passwordsNotMatchingSnackBar);
-    //   return;
-    // }
-
-    authBloc.onSignupButtonPressed(
-        fullName: _signupNameTextEditingController.text,
-        email: _signupEmailTextEditingController.text,
-        password: _signupPasswordTextEditingController.text);
-  }
-
-  Widget _buildSignupPage() {
-    return BlocBuilder(
-        bloc: authBloc,
-        builder: (BuildContext context, AuthenticationState authState) {
-          if (authState.isAuthenticated) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(context).pushNamed('/home');
-            });
-          }
-
-          // show a loading indicator if the state has updated to indicate it is processing a login
-          if (authState.isLoading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          return Container(
-            color: Colors.white,
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: ListView(
-              children: <Widget>[
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 120.0, vertical: 40.0),
-                  child: Center(
-                    child: Icon(
-                      Icons.open_in_browser,
-                      color: Colors.redAccent,
-                      size: 50.0,
-                    ),
-                  ),
-                ),
-                NormalTextInput(
-                  title: 'FULL NAME',
-                  textEditingController: _signupNameTextEditingController,
-                  hintText: 'Enter your full name...',
-                ),
-                Divider(
-                  height: 24.0,
-                ),
-                NormalTextInput(
-                  title: 'EMAIL',
-                  textEditingController: _signupEmailTextEditingController,
-                  hintText: 'Enter your email...',
-                ),
-                Divider(
-                  height: 24.0,
-                ),
-                NormalTextInput(
-                  title: 'PASSWORD',
-                  obscureText: true,
-                  textEditingController: _signupPasswordTextEditingController,
-                  hintText: 'Enter your password...',
-                ),
-                Divider(
-                  height: 24.0,
-                ),
-                NormalTextInput(
-                  title: 'REPEAT PASSWORD',
-                  hintText: 'Repeat your password...',
-                  obscureText: true,
-                  textEditingController:
-                      _signupRepeatPasswordTextEditingController,
-                ),
-                Divider(
-                  height: 24.0,
-                ),
-                StandardFilledButton(
-                  text: 'SIGN UP',
-                  onPressed: authState.isAuthenticateButtonEnabled
-                      ? _onSignupButtonPressed
-                      : null,
-                  margin: EdgeInsets.only(
-                      left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
-                ),
-              ],
-            ),
-          );
-        });
   }
 
   void _gotoLoginPage() {

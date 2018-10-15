@@ -7,15 +7,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 // A bloc is a state management method for separating business logic and presentation components within an app.
-// This utilizes streams, which reflect the asynchronous nature of mobile apps. 
+// This utilizes streams, which reflect the asynchronous nature of mobile apps.
 
 // The basics of a bloc are as follows:
 // The presentation component will send Events via a dispatch method call. This Event is send to the bloc where
 // it is either processed and/or sent to the backend (e.g. Firebase in my case). Firebase will then return
 // an async response (which is why streams are used) back to the bloc. Blocs contain their own state, in the
-// below code there is the AuthenticationState. This state can then be updated within the block and using the 
+// below code there is the AuthenticationState. This state can then be updated within the block and using the
 // mapEventToState, this state is then reflected in the presentation components (ui).
-
 
 /// AuthenticationState has a few different statuses and properties that can be used within the app:
 /// isLoading: this will be true when a login is occuring
@@ -28,12 +27,11 @@ class AuthenticationState {
   final String error;
   final bool isAuthenticateButtonEnabled;
 
-  AuthenticationState({
-    @required this.isLoading,
-    @required this.isAuthenticated,
-    @required this.error,
-    @required this.isAuthenticateButtonEnabled
-  });
+  AuthenticationState(
+      {@required this.isLoading,
+      @required this.isAuthenticated,
+      @required this.error,
+      @required this.isAuthenticateButtonEnabled});
 
   // This is the initial state for the AuthenticationBloc. Not loading, button enabled and no error or token.
   factory AuthenticationState.initial() {
@@ -80,17 +78,13 @@ class AuthenticationState {
 /// AuthenticationBloc. There is not a generic LoginEvent and so this is why this class is abstract.
 abstract class AuthenticationEvent {}
 
-
 /// LoginButtonPressed is an event that is dispatched when the user attempts to signing. Verification that
 /// the inputted email and password are of correct format and length will be done prior to this event being called.
 class LoginButtonPressed extends AuthenticationEvent {
   final String email;
   final String password;
 
-  LoginButtonPressed({
-    @required this.email,
-    @required this.password
-  });
+  LoginButtonPressed({@required this.email, @required this.password});
 }
 
 class SignupButtonPressed extends AuthenticationEvent {
@@ -98,67 +92,91 @@ class SignupButtonPressed extends AuthenticationEvent {
   final String email;
   final String password;
 
-  SignupButtonPressed({
-    @required this.fullName,
-    @required this.email,
-    @required this.password
-  });
+  SignupButtonPressed(
+      {@required this.fullName, @required this.email, @required this.password});
 }
 
+class AutoLogin extends AuthenticationEvent {}
 
 /// The AuthenticationBloc is the final piece in the bloc method for the login function.
 /// The AuthenticationBloc contains the authentication state and implements the onLoginButtonPressed method.
 /// When this is called the LoginButtonPressed event is dispatched to the Bloc. This is then processed right away
 /// (at the moment, before Firebase) and in mapEventToState, the event is processed and the state is updated which
 /// is then reflected in the UI by moving to the home page, for example.
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  AuthenticationState get initialState => AuthenticationState.initial(); // TODO change this so that auto logs in
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
+  AuthenticationState get initialState => AuthenticationState.initial();
 
   @override
-  Stream<AuthenticationState> mapEventToState(AuthenticationState authState, AuthenticationEvent event) async* {
-    if(event is LoginButtonPressed) {
+  Stream<AuthenticationState> mapEventToState(
+      AuthenticationState authState, AuthenticationEvent event) async* {
+    if (event is LoginButtonPressed) {
       yield AuthenticationState.loading();
 
       try {
         final FirebaseUser _user = await _login(event.email, event.password);
         yield AuthenticationState.success();
       } catch (error) {
-        yield AuthenticationState.failure(error);
+        yield AuthenticationState.failure(error.message);
       }
     } else if (event is SignupButtonPressed) {
       yield AuthenticationState.loading();
 
       try {
-        final FirebaseUser _user = await _signup(event.fullName, event.email, event.password);
+        final FirebaseUser _user =
+            await _signup(event.fullName, event.email, event.password);
         yield AuthenticationState.success();
-      } catch(error) {
-        yield AuthenticationState.failure(error);
+      } catch (error) {
+        yield AuthenticationState.failure(error.message);
+      }
+    } else if (event is AutoLogin) {
+      yield AuthenticationState.loading();
+
+      try {
+        final FirebaseUser _user = await _login('', '', true);
+        yield AuthenticationState.success();
+      } catch (error) {
+        yield AuthenticationState.failure(error.message);
       }
     }
   }
 
-  void onLoginButtonPressed({@required String email, @required String password}) {
-    dispatch(
-      LoginButtonPressed(email: email, password: password )
-    );
+  void onLoginButtonPressed(
+      {@required String email, @required String password}) {
+    dispatch(LoginButtonPressed(email: email, password: password));
   }
 
-  void onSignupButtonPressed({@required String fullName, @required String email, @required String password}) {
-    dispatch(
-      SignupButtonPressed(fullName: fullName, email: email, password: password)
-    );
+  void onSignupButtonPressed(
+      {@required String fullName,
+      @required String email,
+      @required String password}) {
+    dispatch(SignupButtonPressed(
+        fullName: fullName, email: email, password: password));
   }
 
-  Future<FirebaseUser> _login(String email, String password) {
-    // Use this code later when doing automatic login
-    // if(_auth.currentUser() != null) {
-    //   return _auth.currentUser();
-    // }
+  void autoLogin() {
+    dispatch(AutoLogin());
+  }
+
+  Future<FirebaseUser> _login(String email, String password,
+      [bool autoLogin = false]) {
+    if (autoLogin) {
+      if (_auth.currentUser() != null) return _auth.currentUser();
+    } else if (email == '')
+      throw Exception('Email is empty');
+    else if (password == '') throw Exception('Password is empty');
+
     return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
   Future<FirebaseUser> _signup(String fullName, String email, String password) {
-    return _auth.createUserWithEmailAndPassword(email: email, password: password);
+    if (fullName == '')
+      throw Exception('Full name is empty');
+    else if (email == '')
+      throw Exception('Email is empty');
+    else if (password == '') throw Exception('Password is empty');
+
+    return _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
   }
 }
-

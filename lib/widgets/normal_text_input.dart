@@ -11,12 +11,14 @@ class NormalTextInput extends StatefulWidget {
   final String hintText;
   final TextEditingController textEditingController;
   final bool obscureText;
+  final TextCapitalization textCapitalization;
 
   NormalTextInput(
       {@required this.title,
       this.hintText = '',
       @required this.textEditingController,
-      this.obscureText = false
+      this.obscureText = false,
+      this.textCapitalization = TextCapitalization.none,
       });
 
   @override
@@ -67,6 +69,7 @@ class _NormalTextInputState extends State<NormalTextInput> {
             children: <Widget>[
               Expanded(
                 child: TextField(
+                  textCapitalization: widget.textCapitalization,
                   controller: widget.textEditingController,
                   obscureText: widget.obscureText,
                   textAlign: TextAlign.left,
