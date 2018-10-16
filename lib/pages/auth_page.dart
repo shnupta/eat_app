@@ -32,13 +32,12 @@ class _AuthPageState extends State<AuthPage> {
     viewportFraction: 1.0,
   );
 
-  AuthenticationBloc authBloc;
-
   // The build method is required for any widget. This is what tells
   // Flutter, how it should render the content of my page.
   @override
   Widget build(BuildContext context) {
-    authBloc = BlocProvider.of(context) as AuthenticationBloc;
+    AuthenticationBloc authBloc =
+        BlocProvider.of(context) as AuthenticationBloc;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -46,48 +45,31 @@ class _AuthPageState extends State<AuthPage> {
         height: MediaQuery.of(context)
             .size
             .height, // This queries the device to find out its screen information
-        child: BlocBuilder<AuthenticationEvent, AuthenticationState>(
-            bloc: authBloc,
-            builder: (BuildContext context, AuthenticationState authState) {
-              // if (widget.autoLogin) {
-              //   authBloc.autoLogin();
-              // }
-
-              if (authState.isAuthenticated) {
-                // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
-                // gets angry.
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.of(context).pushNamed('/home');
-                });
-              }
-
-              // show a loading indicator if the state has updated to indicate it is processing a login
-              if (authState.isLoading) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              return PageView(
-                controller: _pageController,
-                physics: BouncingScrollPhysics(),
-                children: <Widget>[
-                  // change these to their own widgets
-                  LoginPage(),
-                  AuthHomePage(
-                    gotoLoginPage: _gotoLoginPage,
-                    gotoSignupPage: _gotoSignupPage,
-                  ), // Landing splash screen, app title and logo, login and signup buttons
-                  SignupPage(),
-                ],
-                onPageChanged: (int page) {
-                  if (page == 1)
-                    FocusScope.of(context)
-                        .requestFocus(FocusNode()); // hides the keyboard
-                },
-                scrollDirection: Axis.horizontal,
-              );
-            }),
+        child: PageView(
+          controller: _pageController,
+          physics: BouncingScrollPhysics(),
+          children: <Widget>[
+            // change these to their own widgets
+            BlocProvider(child: LoginPage(), bloc: authBloc),
+            BlocProvider(
+              child: AuthHomePage(
+                gotoLoginPage: _gotoLoginPage,
+                gotoSignupPage: _gotoSignupPage,
+              ),
+              bloc: authBloc,
+            ), // Landing splash screen, app title and logo, login and signup buttons
+            BlocProvider(
+              child: SignupPage(),
+              bloc: authBloc,
+            ),
+          ],
+          onPageChanged: (int page) {
+            if (page == 1)
+              FocusScope.of(context)
+                  .requestFocus(FocusNode()); // hides the keyboard
+          },
+          scrollDirection: Axis.horizontal,
+        ),
       ),
     );
   }

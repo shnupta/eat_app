@@ -39,20 +39,20 @@ class _AuthHomePageState extends State<AuthHomePage> {
           //   });
           // }
 
-          // if (authState.isAuthenticated) {
-          //   // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
-          //   // gets angry.
-          //   WidgetsBinding.instance.addPostFrameCallback((_) {
-          //     Navigator.of(context).pushNamed('/home');
-          //   });
-          // }
+          if (authState.isAuthenticated) {
+            // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
+            // gets angry.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pushNamed('/home');
+            });
+          }
 
-          // // show a loading indicator if the state has updated to indicate it is processing a login
-          // if (authState.isLoading) {
-          //   return Center(
-          //     child: CircularProgressIndicator(),
-          //   );
-          // }
+          // show a loading indicator if the state has updated to indicate it is processing a login
+          if (authState.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
           return Container(
             color: Colors.white,

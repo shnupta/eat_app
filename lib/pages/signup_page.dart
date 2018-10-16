@@ -34,25 +34,25 @@ class _SignupPageState extends State<SignupPage> {
     return BlocBuilder(
         bloc: authBloc,
         builder: (BuildContext context, AuthenticationState authState) {
-          if (authState.isAuthenticated) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(context).pushNamed('/home');
-            });
-          }
+          // if (authState.isAuthenticated) {
+          //   WidgetsBinding.instance.addPostFrameCallback((_) {
+          //     Navigator.of(context).pushNamed('/home');
+          //   });
+          // }
 
-          // show a loading indicator if the state has updated to indicate it is processing a login
-          if (authState.isLoading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+          // // show a loading indicator if the state has updated to indicate it is processing a login
+          // if (authState.isLoading) {
+          //   return Center(
+          //     child: CircularProgressIndicator(),
+          //   );
+          // }
 
-          if (authState.error != '' && !errorShown) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Scaffold.of(context).showSnackBar(errorSnackBar(authState.error));
-              errorShown = true;
-            });
-          }
+          // if (authState.error != '' && !errorShown) {
+          //   WidgetsBinding.instance.addPostFrameCallback((_) {
+          //     Scaffold.of(context).showSnackBar(errorSnackBar(authState.error));
+          //     errorShown = true;
+          //   });
+          // }
 
           return Container(
             color: Colors.white,

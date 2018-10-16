@@ -182,8 +182,7 @@ class AuthenticationBloc
     } else if (email == '')
       throw Exception('Email is empty');
     else if (password == '') throw Exception('Password is empty');
-
-    return _auth.signInWithEmailAndPassword(email: email, password: password);
+    else return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
   Future<FirebaseUser> _signup(String fullName, String email, String password, String passwordRepeated) {
@@ -194,8 +193,7 @@ class AuthenticationBloc
     else if (password == '') throw Exception('Password is empty');
     else if(passwordRepeated == '') throw Exception('Repeated password is empty');
     else if(password != passwordRepeated) throw Exception('Passwords do not match');
-
-    return _auth.createUserWithEmailAndPassword(
+    else return _auth.createUserWithEmailAndPassword(
         email: email, password: password);
   }
 
