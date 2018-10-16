@@ -32,19 +32,21 @@ class _AuthPageState extends State<AuthPage> {
     viewportFraction: 1.0,
   );
 
-  AuthenticationBloc authBloc = AuthenticationBloc();
+  AuthenticationBloc authBloc;
 
   // The build method is required for any widget. This is what tells
   // Flutter, how it should render the content of my page.
   @override
   Widget build(BuildContext context) {
+    authBloc = BlocProvider.of(context) as AuthenticationBloc;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
         height: MediaQuery.of(context)
             .size
             .height, // This queries the device to find out its screen information
-        child: BlocBuilder<AuthenticationState>(
+        child: BlocBuilder<AuthenticationEvent, AuthenticationState>(
             bloc: authBloc,
             builder: (BuildContext context, AuthenticationState authState) {
               // if (widget.autoLogin) {

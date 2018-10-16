@@ -27,10 +27,10 @@ class _SignupPageState extends State<SignupPage> {
 
   bool errorShown = true;
 
-  final AuthenticationBloc authBloc = AuthenticationBloc();
-
   @override
   Widget build(BuildContext context) {
+    final authBloc = BlocProvider.of(context) as AuthenticationBloc;
+
     return BlocBuilder(
         bloc: authBloc,
         builder: (BuildContext context, AuthenticationState authState) {
@@ -110,7 +110,7 @@ class _SignupPageState extends State<SignupPage> {
                 StandardFilledButton(
                   text: 'SIGN UP',
                   onPressed: authState.isAuthenticateButtonEnabled
-                      ? _onSignupButtonPressed
+                      ? () => _onSignupButtonPressed(authBloc)
                       : null,
                   margin: EdgeInsets.only(
                       left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
@@ -121,7 +121,7 @@ class _SignupPageState extends State<SignupPage> {
         });
   }
 
-  _onSignupButtonPressed() {
+  _onSignupButtonPressed(AuthenticationBloc authBloc) {
     // if (_signupEmailTextEditingController.text == '' ||
     //     _signupPasswordTextEditingController.text == '' ||
     //     _signupNameTextEditingController.text == '' ||
@@ -140,7 +140,8 @@ class _SignupPageState extends State<SignupPage> {
     authBloc.onSignupButtonPressed(
         fullName: _signupNameTextEditingController.text,
         email: _signupEmailTextEditingController.text,
-        password: _signupPasswordTextEditingController.text);
+        password: _signupPasswordTextEditingController.text,
+        passwordRepeated: _signupRepeatPasswordTextEditingController.text);
 
     setState(() {
       errorShown = false;

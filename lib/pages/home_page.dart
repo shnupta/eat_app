@@ -14,13 +14,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  AuthenticationBloc authBloc = AuthenticationBloc();
+
+  AuthenticationBloc authBloc;
 
   @override
   Widget build(BuildContext context) {
+    authBloc = BlocProvider.of(context) as AuthenticationBloc;
+
     return Scaffold(
       backgroundColor: Colors.redAccent,
-      body: BlocBuilder<AuthenticationState>(
+      body: BlocBuilder<AuthenticationEvent, AuthenticationState>(
         bloc: authBloc,
         builder: (BuildContext context, AuthenticationState authState) {
           // if(!authState.isAuthenticated) {

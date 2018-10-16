@@ -22,13 +22,13 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _loginPasswordTextEditingController =
       TextEditingController();
 
-  final AuthenticationBloc authBloc = AuthenticationBloc();
-
   bool errorShown = true;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationState>(
+    final authBloc = BlocProvider.of(context) as AuthenticationBloc;
+
+    return BlocBuilder(
       bloc: authBloc,
       builder: (BuildContext context, AuthenticationState authState) {
         // Eventually won't need this once BlocProvider is implemented
@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                 // only allow the button to trigger the button press function is the state says it should
                 // be enabled
                 onPressed: authState.isAuthenticateButtonEnabled
-                    ? _onLoginButtonPressed
+                    ? () =>_onLoginButtonPressed(authBloc)
                     : null,
                 text: 'LOG IN',
                 margin: EdgeInsets.only(
@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _onLoginButtonPressed() {
+  _onLoginButtonPressed(AuthenticationBloc authBloc) {
     // Rather than do this, handle the errors based on the error state after the mapEventToState, same for signup
     // if (_loginEmailTextEditingController.text == '' ||
     //     _loginPasswordTextEditingController.text == '') {
