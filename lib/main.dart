@@ -22,8 +22,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-  AuthenticationBloc _authBloc = AuthenticationBloc();
-
   // This widget is the root of my application.
   @override
   Widget build(BuildContext context) {
@@ -34,8 +32,8 @@ class _MyAppState extends State<MyApp> {
       title: 'eat_app',
       initialRoute: '/true',
       routes: {
-        '/': (BuildContext context) => BlocProvider(bloc: _authBloc, child: AuthPage()),
-        '/home': (BuildContext context) => BlocProvider(bloc: _authBloc, child: HomePage()),
+        '/': (BuildContext context) => AuthPage(),
+        '/home': (BuildContext context) => HomePage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         final List<String> elements = settings.name.split('/'); // Replace this with my custom list type eventually
@@ -43,7 +41,7 @@ class _MyAppState extends State<MyApp> {
 
         if(elements[1] == 'true' || elements[1] == 'false') {
           return MaterialPageRoute(
-            builder: (BuildContext context) => BlocProvider(bloc: _authBloc, child: AuthPage(autoLogin: elements[1] == 'true' ? true : false)),
+            builder: (BuildContext context) => AuthPage(autoLogin: elements[1] == 'true' ? true : false),
           );
         }
       },

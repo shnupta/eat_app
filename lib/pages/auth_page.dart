@@ -36,9 +36,6 @@ class _AuthPageState extends State<AuthPage> {
   // Flutter, how it should render the content of my page.
   @override
   Widget build(BuildContext context) {
-    AuthenticationBloc authBloc =
-        BlocProvider.of(context) as AuthenticationBloc;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -50,18 +47,12 @@ class _AuthPageState extends State<AuthPage> {
           physics: BouncingScrollPhysics(),
           children: <Widget>[
             // change these to their own widgets
-            BlocProvider(child: LoginPage(), bloc: authBloc),
-            BlocProvider(
-              child: AuthHomePage(
+            LoginPage(),
+            AuthHomePage(
                 gotoLoginPage: _gotoLoginPage,
                 gotoSignupPage: _gotoSignupPage,
-              ),
-              bloc: authBloc,
-            ), // Landing splash screen, app title and logo, login and signup buttons
-            BlocProvider(
-              child: SignupPage(),
-              bloc: authBloc,
-            ),
+              ), // Landing splash screen, app title and logo, login and signup buttons
+            SignupPage(),
           ],
           onPageChanged: (int page) {
             if (page == 1)

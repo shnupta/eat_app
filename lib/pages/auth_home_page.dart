@@ -20,13 +20,14 @@ class AuthHomePage extends StatefulWidget {
 }
 
 class _AuthHomePageState extends State<AuthHomePage> {
-  AuthenticationBloc authBloc;
 
   bool triedAutoLogin = false;
 
+  AuthenticationBloc authBloc = AuthenticationBloc();
+
   @override
   Widget build(BuildContext context) {
-    authBloc = BlocProvider.of(context) as AuthenticationBloc;
+    
 
     return BlocBuilder(
         bloc: authBloc,
