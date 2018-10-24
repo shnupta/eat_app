@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:eat_app/widgets/standard_filled_button.dart';
 import 'package:eat_app/widgets/standard_outlined_button.dart';

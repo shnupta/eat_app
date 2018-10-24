@@ -25,20 +25,20 @@ class AuthenticationState {
   final bool isLoading;
   final bool isAuthenticated;
   final String error;
-  final bool isAuthenticateButtonEnabled;
+  final bool isInitialising;
 
   AuthenticationState(
       {@required this.isLoading,
       @required this.isAuthenticated,
       @required this.error,
-      @required this.isAuthenticateButtonEnabled});
+      @required this.isInitialising});
 
   // This is the initial state for the AuthenticationBloc. Not loading, button enabled and no error or token.
-  factory AuthenticationState.initial() {
+  factory AuthenticationState.initialising() {
     return AuthenticationState(
       isLoading: false,
       isAuthenticated: false,
-      isAuthenticateButtonEnabled: true,
+      isInitialising: true,
       error: '',
     );
   }
@@ -48,7 +48,7 @@ class AuthenticationState {
     return AuthenticationState(
       isLoading: true,
       isAuthenticated: false,
-      isAuthenticateButtonEnabled: false,
+      isInitialising: false,
       error: '',
     );
   }
@@ -58,17 +58,27 @@ class AuthenticationState {
     return AuthenticationState(
       isLoading: false,
       isAuthenticated: false,
-      isAuthenticateButtonEnabled: true,
+      isInitialising: false,
       error: error,
     );
   }
 
   // Returns a authentication state that indicates a successful login.
-  factory AuthenticationState.loggedIn() {
+  factory AuthenticationState.authenticated() {
     return AuthenticationState(
       isLoading: false,
       isAuthenticated: true,
-      isAuthenticateButtonEnabled: true,
+      isInitialising: false,
+      error: '',
+    );
+  }
+
+  // Returns a authentication state that indicates no user is logged in
+  factory AuthenticationState.unauthenticated() {
+    return AuthenticationState(
+      isLoading: false,
+      isAuthenticated: false,
+      isInitialising: false,
       error: '',
     );
   }
@@ -80,26 +90,26 @@ abstract class AuthenticationEvent {}
 
 /// LoginButtonPressed is an event that is dispatched when the user attempts to signing. Verification that
 /// the inputted email and password are of correct format and length will be done prior to this event being called.
-class LoginButtonPressed extends AuthenticationEvent {
+class LoginEvent extends AuthenticationEvent {
   final String email;
   final String password;
 
-  LoginButtonPressed({@required this.email, @required this.password});
+  LoginEvent({@required this.email, @required this.password});
 }
 
-class SignupButtonPressed extends AuthenticationEvent {
+class SignupEvent extends AuthenticationEvent {
   final String fullName;
   final String email;
   final String password;
   final String passwordRepeated;
 
-  SignupButtonPressed(
+  SignupEvent(
       {@required this.fullName, @required this.email, @required this.password, @required this.passwordRepeated});
 }
 
-class AutoLogin extends AuthenticationEvent {}
+class AutoLoginEvent extends AuthenticationEvent {}
 
-class LogoutButtonPressed extends AuthenticationEvent {}
+class LogoutEvent extends AuthenticationEvent {}
 
 /// The AuthenticationBloc is the final piece in the bloc method for the login function.
 /// The AuthenticationBloc contains the authentication state and implements the onLoginButtonPressed method.
@@ -108,71 +118,71 @@ class LogoutButtonPressed extends AuthenticationEvent {}
 /// is then reflected in the UI by moving to the home page, for example.
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  AuthenticationState get initialState => AuthenticationState.initial();
+  AuthenticationState get initialState => AuthenticationState.initialising();
 
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationState authState, AuthenticationEvent event) async* {
-    if (event is LoginButtonPressed) {
+    if (event is LoginEvent) {
       yield AuthenticationState.loading();
 
       try {
         final FirebaseUser _user = await _login(event.email, event.password);
-        yield AuthenticationState.loggedIn();
+        yield AuthenticationState.authenticated();
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
-    } else if (event is SignupButtonPressed) {
+    } else if (event is SignupEvent) {
       yield AuthenticationState.loading();
 
       try {
         final FirebaseUser _user =
             await _signup(event.fullName, event.email, event.password, event.passwordRepeated);
-        yield AuthenticationState.loggedIn(); // change for signup event
+        yield AuthenticationState.authenticated(); // change for signup event
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
-    } else if (event is AutoLogin) {
+    } else if (event is AutoLoginEvent) {
       yield AuthenticationState.loading();
 
       try {
         final FirebaseUser _user = await _login('', '', true);
-        yield AuthenticationState.loggedIn();
+        yield AuthenticationState.authenticated();
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
-    } else if(event is LogoutButtonPressed) {
+    } else if(event is LogoutEvent) {
       yield AuthenticationState.loading();
 
       try {
         await _logout();
-        yield AuthenticationState.initial();
+        yield AuthenticationState.unauthenticated();
       } catch(error) {
         yield AuthenticationState.failure(error.message);
       }
     }
   }
 
-  void onLoginButtonPressed(
+  void onLogin(
       {@required String email, @required String password}) {
-    dispatch(LoginButtonPressed(email: email, password: password));
+    dispatch(LoginEvent(email: email, password: password));
   }
 
-  void onSignupButtonPressed(
+  void onSignup(
       {@required String fullName,
       @required String email,
       @required String password,
       @required String passwordRepeated}) {
-    dispatch(SignupButtonPressed(
+    dispatch(SignupEvent(
         fullName: fullName, email: email, password: password, passwordRepeated: passwordRepeated));
   }
 
-  void logout() {
-    dispatch(LogoutButtonPressed());
+  void onLogout() {
+    dispatch(LogoutEvent());
   }
 
-  void autoLogin() {
-    dispatch(AutoLogin());
+  void onAutoLogin() {
+    dispatch(AutoLoginEvent());
   }
 
   Future<FirebaseUser> _login(String email, String password,

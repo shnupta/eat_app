@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:eat_app/blocs/authentication_bloc.dart';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:eat_app/widgets/normal_text_input.dart';
 import 'package:eat_app/widgets/standard_filled_button.dart';
@@ -111,9 +111,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 StandardFilledButton(
                   text: 'SIGN UP',
-                  onPressed: authState.isAuthenticateButtonEnabled
-                      ? () => _onSignupButtonPressed(authBloc)
-                      : null,
+                  onPressed: () => _onSignupButtonPressed(authBloc),
                   margin: EdgeInsets.only(
                       left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
                 ),
@@ -139,7 +137,7 @@ class _SignupPageState extends State<SignupPage> {
     //   return;
     // }
 
-    authBloc.onSignupButtonPressed(
+    authBloc.onSignup(
         fullName: _signupNameTextEditingController.text,
         email: _signupEmailTextEditingController.text,
         password: _signupPasswordTextEditingController.text,

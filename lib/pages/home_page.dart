@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:eat_app/blocs/authentication_bloc.dart';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:eat_app/widgets/standard_outlined_button.dart';
 
@@ -15,11 +15,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  AuthenticationBloc authBloc;
+  AuthenticationBloc authBloc = AuthenticationBloc();
 
   @override
   Widget build(BuildContext context) {
-    authBloc = BlocProvider.of(context) as AuthenticationBloc;
+    //authBloc = BlocProvider.of(context) as AuthenticationBloc;
 
     return Scaffold(
       backgroundColor: Colors.redAccent,
@@ -44,6 +44,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   _onLogoutButtonPressed() {
-    authBloc.logout();
+    authBloc.onLogout();
   }
 }

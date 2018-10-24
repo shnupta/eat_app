@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:eat_app/blocs/authentication_bloc.dart';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:eat_app/widgets/normal_text_input.dart';
 import 'package:eat_app/widgets/standard_filled_button.dart';
@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
           // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
           // gets angry.
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).pushNamed('/home');
+            Navigator.of(context).popAndPushNamed('/home');
           });
         }
 
@@ -103,9 +103,7 @@ class _LoginPageState extends State<LoginPage> {
               StandardFilledButton(
                 // only allow the button to trigger the button press function is the state says it should
                 // be enabled
-                onPressed: authState.isAuthenticateButtonEnabled
-                    ? () =>_onLoginButtonPressed(authBloc)
-                    : null,
+                onPressed: () =>_onLoginButtonPressed(authBloc),
                 text: 'LOG IN',
                 margin: EdgeInsets.only(
                     left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
@@ -125,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
     //   return;
     // }
 
-    authBloc.onLoginButtonPressed(
+    authBloc.onLogin(
         email: _loginEmailTextEditingController.text,
         password: _loginPasswordTextEditingController.text);
 
