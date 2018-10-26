@@ -10,6 +10,9 @@ import 'package:eat_app/blocs/authentication/authentication.dart';
 import 'package:flutter/services.dart';
 
 void main() {
+  // This is the authentication bloc that will persist throughout my whole app, it will be used
+  // to perform authentication actions such as reauthenticate the user, login and logout in different parts of
+  // the app.
   AuthenticationBloc authBloc = AuthenticationBloc();
   runApp(new MyApp(authBloc));
 }
@@ -22,8 +25,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of my application.
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    return BlocProvider(
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]); // Only allow the device to be in portrait mode
+    return BlocProvider( 
+      // The BlocProvider, provides my authentication bloc to all children of this build context so that they
+      // can inherit it and use it in their own methods
       bloc: authBloc,
       child: new MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -34,6 +39,11 @@ class MyApp extends StatelessWidget {
     );
   }
 
+  /// Determines which root page to show the user
+  /// 
+  /// It is possible that the user is already logged in, if so, Firebase will have this user info cached
+  /// and I can just send the user to the logged in page already after an AutoLogin event has been dispatched
+  /// and processed by the auth bloc. Else I need to set the root page as the login/signup page.
   Widget _rootPage() {
     return BlocBuilder<AuthenticationEvent, AuthenticationState>(
       bloc: authBloc,
@@ -54,6 +64,7 @@ class MyApp extends StatelessWidget {
           _widgets.add(_loadingIndicator());
         }
         
+        // A stack does what it says on the tin, stacks widgets (or in my case entire pages) on top of eachother.
         return Stack(
           children: _widgets,
         );
@@ -67,6 +78,8 @@ class MyApp extends StatelessWidget {
     );
   }
 
+  /// Shows a spinning, circular loading indicator with a slightly opaque grey background, over whatever is 
+  /// currently present on the screen
   Widget _loadingIndicator() {
     return Stack(
       children: <Widget>[

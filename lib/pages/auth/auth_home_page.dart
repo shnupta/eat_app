@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:eat_app/widgets/standard_filled_button.dart';
 import 'package:eat_app/widgets/standard_outlined_button.dart';
 
+
+/// The centre page of the 3 page auth system. Contains the app name and logo and the two buttons to navigate
+/// to the signup and login pages.
 class AuthHomePage extends StatelessWidget {
+  /// The function that causes the PageController to navigate to the login page
   final Function gotoLoginPage;
+  /// The function that causes the PageController to navigate to the signup page
   final Function gotoSignupPage;
 
   AuthHomePage({@required this.gotoLoginPage, @required this.gotoSignupPage});

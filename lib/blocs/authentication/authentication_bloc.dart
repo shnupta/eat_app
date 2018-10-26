@@ -29,9 +29,12 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationState get initialState => AuthenticationState.initialising();
 
+  /// When an event is dispatched, the bloc calls this method to allow me to transform that event and any 
+  /// parameters it may have, into a state that can be consumed by the rest of the app.
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationState authState, AuthenticationEvent event) async* {
+        
     if (event is LoginEvent) {
       yield AuthenticationState.loading();
 

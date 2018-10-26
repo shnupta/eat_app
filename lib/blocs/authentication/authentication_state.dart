@@ -19,8 +19,11 @@ class AuthenticationState {
       @required this.isInitialising,
       this.user});
 
+  // Copies the values of the current instance itself, unless arguments are passed to change this
   AuthenticationState copyWith({FirebaseUser user, bool isLoading, bool isAuthenticated, String error, bool isInitialising}) {
     return AuthenticationState(
+      // The syntax: obj1 ?? obj2 can be read as the following:
+      // If obj1 exists use this, else use obj2
       isLoading: isLoading ?? this.isLoading,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       isInitialising: isInitialising ?? this.isInitialising,

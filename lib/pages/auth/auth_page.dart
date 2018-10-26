@@ -8,9 +8,6 @@ import 'package:eat_app/pages/auth/auth_home_page.dart';
 /// auth page landing, a login page and a signup page. It is a
 /// stateful widget so contains data about itself.
 class AuthPage extends StatelessWidget {
-  final autoLogin;
-
-  AuthPage({this.autoLogin = false});
 
   // This page controller allows me to control a PageView so I can
   // set things such as the default page and how the PageView moves.

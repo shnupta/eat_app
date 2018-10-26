@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+/// Shows a flat, rectangular button with text in the middle with no border.
 class FlatTextButton extends StatelessWidget {
   final String text;
   final Function onPressed;

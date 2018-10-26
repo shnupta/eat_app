@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eat_app/widgets/normal_text_input.dart';
 import 'package:eat_app/widgets/standard_filled_button.dart';
 
+
+/// The signup page contains the form and buttons required to signup for the app.
 class SignupPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -109,21 +111,6 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   _onSignupButtonPressed(AuthenticationBloc authBloc) {
-    // if (_signupEmailTextEditingController.text == '' ||
-    //     _signupPasswordTextEditingController.text == '' ||
-    //     _signupNameTextEditingController.text == '' ||
-    //     _signupRepeatPasswordTextEditingController.text == '') {
-    //   Scaffold.of(context).showSnackBar(missingRequiredSnackBar);
-    //   return;
-    // } else if (_signupPasswordTextEditingController.text.length < 8) {
-    //   Scaffold.of(context).showSnackBar(passwordShortSnackBar);
-    //   return;
-    // } else if (_signupPasswordTextEditingController.text !=
-    //     _signupRepeatPasswordTextEditingController.text) {
-    //   Scaffold.of(context).showSnackBar(passwordsNotMatchingSnackBar);
-    //   return;
-    // }
-
     authBloc.onSignup(
         fullName: _signupNameTextEditingController.text,
         email: _signupEmailTextEditingController.text,

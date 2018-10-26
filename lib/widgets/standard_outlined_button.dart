@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A button with a solid background colour and also a solid border colour.
 class StandardOutlinedButton extends StatelessWidget {
   final String text;
   final Function onPressed;

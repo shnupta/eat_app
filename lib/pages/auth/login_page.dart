@@ -8,6 +8,8 @@ import 'package:eat_app/widgets/normal_text_input.dart';
 import 'package:eat_app/widgets/standard_filled_button.dart';
 import 'package:eat_app/widgets/flat_text_button.dart';
 
+
+/// The login page contains the email and password text inputs and the login button.
 class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -99,13 +101,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _onLoginButtonPressed(AuthenticationBloc authBloc) {
-    // Rather than do this, handle the errors based on the error state after the mapEventToState, same for signup
-    // if (_loginEmailTextEditingController.text == '' ||
-    //     _loginPasswordTextEditingController.text == '') {
-    //   Scaffold.of(context).showSnackBar(missingRequiredSnackBar);
-    //   return;
-    // }
-
+    // Pass the entered details to the auth bloc which will then cause a LoginEvent to be dispatched
     authBloc.onLogin(
         email: _loginEmailTextEditingController.text,
         password: _loginPasswordTextEditingController.text);

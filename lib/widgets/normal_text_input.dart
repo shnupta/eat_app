@@ -27,6 +27,9 @@ class NormalTextInput extends StatefulWidget {
   }
 }
 
+
+// This is a stateful widget because at some point I may add the option to be able to change the obscurity of the
+// text so that a user can view their entered password if they wish to.
 class _NormalTextInputState extends State<NormalTextInput> {
 
   @override

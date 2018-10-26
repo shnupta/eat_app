@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+/// A rounded button with a solid background colour and splash colour.
 class StandardFilledButton extends StatelessWidget {
   final String text;
   final Function onPressed;
