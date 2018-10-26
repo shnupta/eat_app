@@ -1,0 +1,1 @@
+// This file will contain the Database class that I will use to communicate with my Firebase backend
