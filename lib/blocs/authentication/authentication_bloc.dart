@@ -50,6 +50,12 @@ class AuthenticationBloc
       try {
         final FirebaseUser _user =
             await _signup(event.fullName, event.email, event.password, event.passwordRepeated);
+        _user.sendEmailVerification();
+        UserUpdateInfo updateInfo = UserUpdateInfo();
+        updateInfo.displayName = event.fullName;
+        _user.updateProfile(
+          updateInfo
+        );
         yield AuthenticationState.authenticated(_user);
       } catch (error) {
         yield AuthenticationState.failure(error.message);
@@ -120,8 +126,11 @@ class AuthenticationBloc
     else if (password == '') throw Exception('Password is empty');
     else if(passwordRepeated == '') throw Exception('Repeated password is empty');
     else if(password != passwordRepeated) throw Exception('Passwords do not match');
-    else return _auth.createUserWithEmailAndPassword(
+    else {
+      
+      return _auth.createUserWithEmailAndPassword(
         email: email, password: password);
+    }
   }
 
   Future<void> _logout() {

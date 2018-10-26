@@ -80,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   FlatTextButton(
                     text: 'Forgot your password?',
-                    onPressed: () => null,
+                    onPressed: () => _onForgotPasswordButtonPressed(authBloc),
                     padding: EdgeInsets.only(right: 20.0),
                   ),
                 ],
@@ -109,6 +109,10 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       errorShown = false;
     });
+  }
+
+  _onForgotPasswordButtonPressed(AuthenticationBloc authBloc) {
+    
   }
 
   SnackBar errorSnackBar(String error) {

@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
         bloc: authBloc,
         builder: (BuildContext context, AuthenticationState authState) {
           if(authState.isAuthenticated) {
-            print(authState.user.email);
+            print(authState.user.toString());
           }
           
           return Container(
