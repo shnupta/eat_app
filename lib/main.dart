@@ -29,24 +29,35 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: _createTheme(),
         title: 'eat_app',
-        initialRoute: '/true',
-        routes: {
-          '/': (BuildContext context) => AuthPage(),
-          '/home': (BuildContext context) => BlocBuilder(builder: (context, state) => HomePage(), bloc: authBloc),
-        },
-        onGenerateRoute: (RouteSettings settings) {
-          final List<String> elements = settings.name
-              .split('/'); // Replace this with my custom list type eventually
-          if (elements[0] != '') return null;
-
-          if (elements[1] == 'true' || elements[1] == 'false') {
-            return MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  AuthPage(autoLogin: elements[1] == 'true' ? true : false),
-            );
-          }
-        },
+        home: _rootPage(),
       ),
+    );
+  }
+
+  Widget _rootPage() {
+    return BlocBuilder<AuthenticationEvent, AuthenticationState>(
+      bloc: authBloc,
+      builder: (BuildContext context, AuthenticationState authState) {
+        List<Widget> _widgets = [];
+
+        if (authState.isInitialising) {
+          authBloc.onAutoLogin();
+        }
+
+        if (authState.isLoading) {
+          _widgets.add(_loadingIndicator());
+        }
+
+        if (authState.isAuthenticated) {
+          _widgets.add(HomePage());
+        } else {
+          _widgets.add(AuthPage());
+        }
+        
+        return Stack(
+          children: _widgets,
+        );
+      },
     );
   }
 
@@ -55,4 +66,18 @@ class MyApp extends StatelessWidget {
       fontFamily: 'K2D',
     );
   }
+
+  Widget _loadingIndicator() {
+    return Stack(
+      children: <Widget>[
+        Opacity(
+          opacity: 0.3,
+          child: ModalBarrier(dismissible: false, color: Colors.grey),
+        ),
+        Center(
+          child: CircularProgressIndicator(),
+        ),
+      ],
+    );
+}
 }

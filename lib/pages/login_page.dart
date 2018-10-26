@@ -24,38 +24,15 @@ class _LoginPageState extends State<LoginPage> {
 
   bool errorShown = true;
 
-  AuthenticationBloc authBloc = AuthenticationBloc();
+  AuthenticationBloc authBloc;
 
   @override
   Widget build(BuildContext context) {
-    
+    authBloc = BlocProvider.of<AuthenticationBloc>(context);
 
     return BlocBuilder(
       bloc: authBloc,
       builder: (BuildContext context, AuthenticationState authState) {
-        // Eventually won't need this once BlocProvider is implemented
-        // All of the loading and nav stuff will be done from auth_page.dart
-        if (authState.isAuthenticated) {
-          // We have to wait for the widgets to build before the Navigator can change pages, else Flutter
-          // gets angry.
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).popAndPushNamed('/home');
-          });
-        }
-
-        // show a loading indicator if the state has updated to indicate it is processing a login
-        if (authState.isLoading) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        if (authState.error != '' && !errorShown) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Scaffold.of(context).showSnackBar(errorSnackBar(authState.error));
-            errorShown = true;
-          });
-        }
 
         return Container(
           color: Colors.white,

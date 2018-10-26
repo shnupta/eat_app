@@ -4,30 +4,17 @@ import 'package:eat_app/pages/login_page.dart';
 import 'package:eat_app/pages/signup_page.dart';
 import 'package:eat_app/pages/auth_home_page.dart';
 
-import 'package:eat_app/blocs/authentication_bloc.dart';
-import 'package:bloc/bloc.dart';
-
 /// The AuthPage class is a page that will display three screens. A
 /// auth page landing, a login page and a signup page. It is a
 /// stateful widget so contains data about itself.
-class AuthPage extends StatefulWidget {
+class AuthPage extends StatelessWidget {
   final autoLogin;
 
   AuthPage({this.autoLogin = false});
 
-  @override
-  State<StatefulWidget> createState() {
-    return _AuthPageState();
-  }
-}
-
-/// This is the state (data) class for the auth page. This contains
-/// all the variables, functions etc. that will be needed inside the
-/// auth page.
-class _AuthPageState extends State<AuthPage> {
   // This page controller allows me to control a PageView so I can
   // set things such as the default page and how the PageView moves.
-  PageController _pageController = PageController(
+  final PageController _pageController = PageController(
     initialPage: 1,
     viewportFraction: 1.0,
   );

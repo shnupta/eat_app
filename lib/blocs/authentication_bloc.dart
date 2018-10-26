@@ -22,6 +22,7 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 /// is occuring to prevent multiple authentication attempts over the top of eachother
 
 class AuthenticationState {
+  final FirebaseUser user;
   final bool isLoading;
   final bool isAuthenticated;
   final String error;
@@ -31,7 +32,8 @@ class AuthenticationState {
       {@required this.isLoading,
       @required this.isAuthenticated,
       @required this.error,
-      @required this.isInitialising});
+      @required this.isInitialising,
+      this.user});
 
   // This is the initial state for the AuthenticationBloc. Not loading, button enabled and no error or token.
   factory AuthenticationState.initialising() {
@@ -64,8 +66,9 @@ class AuthenticationState {
   }
 
   // Returns a authentication state that indicates a successful login.
-  factory AuthenticationState.authenticated() {
+  factory AuthenticationState.authenticated(FirebaseUser _user) {
     return AuthenticationState(
+      user: _user,
       isLoading: false,
       isAuthenticated: true,
       isInitialising: false,
@@ -128,7 +131,7 @@ class AuthenticationBloc
 
       try {
         final FirebaseUser _user = await _login(event.email, event.password);
-        yield AuthenticationState.authenticated();
+        yield AuthenticationState.authenticated(_user);
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
@@ -138,7 +141,7 @@ class AuthenticationBloc
       try {
         final FirebaseUser _user =
             await _signup(event.fullName, event.email, event.password, event.passwordRepeated);
-        yield AuthenticationState.authenticated(); // change for signup event
+        yield AuthenticationState.authenticated(_user);
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
@@ -147,7 +150,7 @@ class AuthenticationBloc
 
       try {
         final FirebaseUser _user = await _login('', '', true);
-        yield AuthenticationState.authenticated();
+        yield AuthenticationState.authenticated(_user);
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
@@ -187,12 +190,16 @@ class AuthenticationBloc
 
   Future<FirebaseUser> _login(String email, String password,
       [bool autoLogin = false]) async {
+
+    Future<FirebaseUser> user;
     if (autoLogin) {
-      if (await _auth.currentUser() != null) return _auth.currentUser();
+      if (await _auth.currentUser() != null) user = _auth.currentUser();
     } else if (email == '')
       throw Exception('Email is empty');
     else if (password == '') throw Exception('Password is empty');
-    else return _auth.signInWithEmailAndPassword(email: email, password: password);
+    else user = _auth.signInWithEmailAndPassword(email: email, password: password);
+
+    return user;
   }
 
   Future<FirebaseUser> _signup(String fullName, String email, String password, String passwordRepeated) {

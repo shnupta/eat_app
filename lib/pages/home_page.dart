@@ -6,36 +6,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:eat_app/widgets/standard_outlined_button.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _HomePageState();
-  }
-}
-
-class _HomePageState extends State<HomePage> {
-
-  AuthenticationBloc authBloc = AuthenticationBloc();
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //authBloc = BlocProvider.of(context) as AuthenticationBloc;
+    final authBloc  = BlocProvider.of<AuthenticationBloc>(context);
 
     return Scaffold(
       backgroundColor: Colors.redAccent,
       body: BlocBuilder<AuthenticationEvent, AuthenticationState>(
         bloc: authBloc,
         builder: (BuildContext context, AuthenticationState authState) {
-          // if(!authState.isAuthenticated) {
-          //   WidgetsBinding.instance.addPostFrameCallback((_) {
-          //     Navigator.of(context).pushNamed('/false');
-          //   });
-          // }
+          print(authState.user.email);
           return Container(
             width: MediaQuery.of(context).size.width,
             child: StandardOutlinedButton(
               text: 'LOGOUT',
-              onPressed: _onLogoutButtonPressed,
+              onPressed: () => _onLogoutButtonPressed(authBloc),
             ),
           );
         },
@@ -43,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _onLogoutButtonPressed() {
+  _onLogoutButtonPressed(AuthenticationBloc authBloc) {
     authBloc.onLogout();
   }
 }
