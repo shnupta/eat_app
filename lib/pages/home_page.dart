@@ -16,7 +16,10 @@ class HomePage extends StatelessWidget {
       body: BlocBuilder<AuthenticationEvent, AuthenticationState>(
         bloc: authBloc,
         builder: (BuildContext context, AuthenticationState authState) {
-          print(authState.user.email);
+          if(authState.isAuthenticated) {
+            print(authState.user.email);
+          }
+          
           return Container(
             width: MediaQuery.of(context).size.width,
             child: StandardOutlinedButton(

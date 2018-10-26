@@ -46,7 +46,7 @@ class AuthenticationState {
   }
 
   // Returns the authentication state which represents that the login is now being processed.
-  factory AuthenticationState.loading() {
+  factory AuthenticationState.loading({bool isAuthenticated = false}) {
     return AuthenticationState(
       isLoading: true,
       isAuthenticated: false,
@@ -150,12 +150,13 @@ class AuthenticationBloc
 
       try {
         final FirebaseUser _user = await _login('', '', true);
-        yield AuthenticationState.authenticated(_user);
+        if(_user != null) yield AuthenticationState.authenticated(_user);
+        else yield AuthenticationState.unauthenticated();
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
     } else if(event is LogoutEvent) {
-      yield AuthenticationState.loading();
+      yield AuthenticationState.loading(isAuthenticated: authState.isAuthenticated);
 
       try {
         await _logout();
@@ -193,7 +194,7 @@ class AuthenticationBloc
 
     Future<FirebaseUser> user;
     if (autoLogin) {
-      if (await _auth.currentUser() != null) user = _auth.currentUser();
+      user = _auth.currentUser();
     } else if (email == '')
       throw Exception('Email is empty');
     else if (password == '') throw Exception('Password is empty');

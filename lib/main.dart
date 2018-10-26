@@ -40,18 +40,18 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, AuthenticationState authState) {
         List<Widget> _widgets = [];
 
+        if (authState.isAuthenticated) {
+          _widgets.add(HomePage());
+        } else {
+          _widgets.add(AuthPage());
+        }
+
         if (authState.isInitialising) {
           authBloc.onAutoLogin();
         }
 
         if (authState.isLoading) {
           _widgets.add(_loadingIndicator());
-        }
-
-        if (authState.isAuthenticated) {
-          _widgets.add(HomePage());
-        } else {
-          _widgets.add(AuthPage());
         }
         
         return Stack(

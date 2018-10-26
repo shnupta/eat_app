@@ -36,6 +36,13 @@ class _SignupPageState extends State<SignupPage> {
     return BlocBuilder(
         bloc: authBloc,
         builder: (BuildContext context, AuthenticationState authState) {
+          if (authState.error != '' && !errorShown) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Scaffold.of(context).showSnackBar(errorSnackBar(authState.error));
+              errorShown = true;
+            });
+          }
+
           return Container(
             color: Colors.white,
             height: MediaQuery.of(context).size.height,

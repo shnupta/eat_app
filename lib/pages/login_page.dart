@@ -33,6 +33,12 @@ class _LoginPageState extends State<LoginPage> {
     return BlocBuilder(
       bloc: authBloc,
       builder: (BuildContext context, AuthenticationState authState) {
+        if (authState.error != '' && !errorShown) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Scaffold.of(context).showSnackBar(errorSnackBar(authState.error));
+            errorShown = true;
+          });
+        }
 
         return Container(
           color: Colors.white,
@@ -80,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
               StandardFilledButton(
                 // only allow the button to trigger the button press function is the state says it should
                 // be enabled
-                onPressed: () =>_onLoginButtonPressed(authBloc),
+                onPressed: () => _onLoginButtonPressed(authBloc),
                 text: 'LOG IN',
                 margin: EdgeInsets.only(
                     left: 30.0, right: 30.0, top: 30.0, bottom: 10.0),
@@ -105,8 +111,8 @@ class _LoginPageState extends State<LoginPage> {
         password: _loginPasswordTextEditingController.text);
 
     setState(() {
-          errorShown = false;
-        });
+      errorShown = false;
+    });
   }
 
   SnackBar errorSnackBar(String error) {
