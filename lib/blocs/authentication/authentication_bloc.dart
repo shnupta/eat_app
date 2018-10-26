@@ -4,6 +4,9 @@ import 'package:bloc/bloc.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:eat_app/blocs/authentication/authentication_state.dart';
+import 'package:eat_app/blocs/authentication/authentication_event.dart';
+
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 // A bloc is a state management method for separating business logic and presentation components within an app.
@@ -16,103 +19,6 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 // below code there is the AuthenticationState. This state can then be updated within the block and using the
 // mapEventToState, this state is then reflected in the presentation components (ui).
 
-/// AuthenticationState has a few different statuses and properties that can be used within the app:
-/// isLoading: this will be true when a login is occuring
-/// isAuthenticateButtonEnabled: will turn false when a authentication event
-/// is occuring to prevent multiple authentication attempts over the top of eachother
-
-class AuthenticationState {
-  final FirebaseUser user;
-  final bool isLoading;
-  final bool isAuthenticated;
-  final String error;
-  final bool isInitialising;
-
-  AuthenticationState(
-      {@required this.isLoading,
-      @required this.isAuthenticated,
-      @required this.error,
-      @required this.isInitialising,
-      this.user});
-
-  // This is the initial state for the AuthenticationBloc. Not loading, button enabled and no error or token.
-  factory AuthenticationState.initialising() {
-    return AuthenticationState(
-      isLoading: false,
-      isAuthenticated: false,
-      isInitialising: true,
-      error: '',
-    );
-  }
-
-  // Returns the authentication state which represents that the login is now being processed.
-  factory AuthenticationState.loading({bool isAuthenticated = false}) {
-    return AuthenticationState(
-      isLoading: true,
-      isAuthenticated: false,
-      isInitialising: false,
-      error: '',
-    );
-  }
-
-  // Returns a authentication state that indicates there was an error.
-  factory AuthenticationState.failure(String error) {
-    return AuthenticationState(
-      isLoading: false,
-      isAuthenticated: false,
-      isInitialising: false,
-      error: error,
-    );
-  }
-
-  // Returns a authentication state that indicates a successful login.
-  factory AuthenticationState.authenticated(FirebaseUser _user) {
-    return AuthenticationState(
-      user: _user,
-      isLoading: false,
-      isAuthenticated: true,
-      isInitialising: false,
-      error: '',
-    );
-  }
-
-  // Returns a authentication state that indicates no user is logged in
-  factory AuthenticationState.unauthenticated() {
-    return AuthenticationState(
-      isLoading: false,
-      isAuthenticated: false,
-      isInitialising: false,
-      error: '',
-    );
-  }
-}
-
-/// AuthenticationEvent represents a type of event that occurs which is related to the AuthenticationState and
-/// AuthenticationBloc. There is not a generic LoginEvent and so this is why this class is abstract.
-abstract class AuthenticationEvent {}
-
-/// LoginButtonPressed is an event that is dispatched when the user attempts to signing. Verification that
-/// the inputted email and password are of correct format and length will be done prior to this event being called.
-class LoginEvent extends AuthenticationEvent {
-  final String email;
-  final String password;
-
-  LoginEvent({@required this.email, @required this.password});
-}
-
-class SignupEvent extends AuthenticationEvent {
-  final String fullName;
-  final String email;
-  final String password;
-  final String passwordRepeated;
-
-  SignupEvent(
-      {@required this.fullName, @required this.email, @required this.password, @required this.passwordRepeated});
-}
-
-class AutoLoginEvent extends AuthenticationEvent {}
-
-class LogoutEvent extends AuthenticationEvent {}
 
 /// The AuthenticationBloc is the final piece in the bloc method for the login function.
 /// The AuthenticationBloc contains the authentication state and implements the onLoginButtonPressed method.
@@ -156,7 +62,7 @@ class AuthenticationBloc
         yield AuthenticationState.failure(error.message);
       }
     } else if(event is LogoutEvent) {
-      yield AuthenticationState.loading(isAuthenticated: authState.isAuthenticated);
+      yield authState.copyWith(isLoading: true);
 
       try {
         await _logout();

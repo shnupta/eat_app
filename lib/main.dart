@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/pages/auth_page.dart';
-import 'package:eat_app/pages/home_page.dart';
+import 'package:eat_app/pages/auth/auth.dart';
+import 'package:eat_app/pages/home/home.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:eat_app/blocs/authentication_bloc.dart';
+import 'package:eat_app/blocs/authentication/authentication.dart';
 
 import 'package:flutter/services.dart';
 

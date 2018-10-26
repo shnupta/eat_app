@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/blocs/authentication_bloc.dart';
+import 'package:eat_app/blocs/authentication/authentication.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
