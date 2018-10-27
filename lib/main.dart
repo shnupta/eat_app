@@ -26,6 +26,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]); // Only allow the device to be in portrait mode
+    SystemChrome.setEnabledSystemUIOverlays([]); // Hide notificaiton and navigation bars
+
     return BlocProvider( 
       // The BlocProvider, provides my authentication bloc to all children of this build context so that they
       // can inherit it and use it in their own methods
@@ -75,6 +77,7 @@ class MyApp extends StatelessWidget {
   ThemeData _createTheme() {
     return ThemeData(
       fontFamily: 'K2D',
+      primaryColor: Colors.redAccent,
     );
   }
 
