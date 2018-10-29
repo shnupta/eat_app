@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]); // Only allow the device to be in portrait mode
-    SystemChrome.setEnabledSystemUIOverlays([]); // Hide notificaiton and navigation bars
+    //SystemChrome.setEnabledSystemUIOverlays([]); // Hide notificaiton and navigation bars
 
     return BlocProvider( 
       // The BlocProvider, provides my authentication bloc to all children of this build context so that they
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         List<Widget> _widgets = [];
 
         if (authState.isAuthenticated) {
-          _widgets.add(HomePage());
+          _widgets.add(HomeContainerPage());
         } else {
           _widgets.add(AuthPage());
         }
