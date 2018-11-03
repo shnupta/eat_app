@@ -27,3 +27,9 @@ class SignupEvent extends AuthenticationEvent {
 class AutoLoginEvent extends AuthenticationEvent {}
 
 class LogoutEvent extends AuthenticationEvent {}
+
+class ForgotPasswordEvent extends AuthenticationEvent {
+  String email;
+
+  ForgotPasswordEvent({@required this.email});
+}

@@ -29,6 +29,8 @@ class _SignupPageState extends State<SignupPage> {
 
   bool errorShown = true;
 
+  bool infoShown = true;
+
   AuthenticationBloc authBloc;
 
   @override
@@ -42,6 +44,13 @@ class _SignupPageState extends State<SignupPage> {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Scaffold.of(context).showSnackBar(errorSnackBar(authState.error));
               errorShown = true;
+            });
+          }
+
+          if (authState.info != '' && !infoShown) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Scaffold.of(context).showSnackBar(errorSnackBar(authState.info));
+              infoShown = true;
             });
           }
 
@@ -119,6 +128,7 @@ class _SignupPageState extends State<SignupPage> {
 
     setState(() {
       errorShown = false;
+      infoShown = false;
     });
   }
 

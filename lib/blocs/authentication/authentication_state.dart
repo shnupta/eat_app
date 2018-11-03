@@ -10,17 +10,19 @@ class AuthenticationState {
   final bool isLoading;
   final bool isAuthenticated;
   final String error;
+  final String info;
   final bool isInitialising;
 
   AuthenticationState(
       {@required this.isLoading,
       @required this.isAuthenticated,
       @required this.error,
+      @required this.info,
       @required this.isInitialising,
       this.user});
 
   // Copies the values of the current instance itself, unless arguments are passed to change this
-  AuthenticationState copyWith({FirebaseUser user, bool isLoading, bool isAuthenticated, String error, bool isInitialising}) {
+  AuthenticationState copyWith({FirebaseUser user, bool isLoading, bool isAuthenticated, String error, String info, bool isInitialising}) {
     return AuthenticationState(
       // The syntax: obj1 ?? obj2 can be read as the following:
       // If obj1 exists use this, else use obj2
@@ -29,6 +31,7 @@ class AuthenticationState {
       isInitialising: isInitialising ?? this.isInitialising,
       user: user ?? this.user,
       error: error ?? this.error,
+      info: info ?? this.info,
     );
   }
 
@@ -39,6 +42,7 @@ class AuthenticationState {
       isAuthenticated: false,
       isInitialising: true,
       error: '',
+      info: '',
     );
   }
 
@@ -49,6 +53,7 @@ class AuthenticationState {
       isAuthenticated: false,
       isInitialising: false,
       error: '',
+      info: '',
     );
   }
 
@@ -59,6 +64,7 @@ class AuthenticationState {
       isAuthenticated: false,
       isInitialising: false,
       error: error,
+      info: '',
     );
   }
 
@@ -70,6 +76,7 @@ class AuthenticationState {
       isAuthenticated: true,
       isInitialising: false,
       error: '',
+      info: '',
     );
   }
 
@@ -80,6 +87,17 @@ class AuthenticationState {
       isAuthenticated: false,
       isInitialising: false,
       error: '',
+      info: '',
+    );
+  }
+
+  factory AuthenticationState.information(String info) {
+    return AuthenticationState(
+      isLoading: false,
+      isAuthenticated: false,
+      isInitialising: false,
+      error: '',
+      info: info,
     );
   }
 }

@@ -8,7 +8,6 @@ import 'package:eat_app/widgets/normal_text_input.dart';
 import 'package:eat_app/widgets/standard_filled_button.dart';
 import 'package:eat_app/widgets/flat_text_button.dart';
 
-
 /// The login page contains the email and password text inputs and the login button.
 class LoginPage extends StatefulWidget {
   @override
@@ -24,7 +23,12 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _loginPasswordTextEditingController =
       TextEditingController();
 
+  TextEditingController _forgotPasswordTextEditingController =
+      TextEditingController();
+
   bool errorShown = true;
+
+  bool infoShown = true;
 
   AuthenticationBloc authBloc;
 
@@ -39,6 +43,13 @@ class _LoginPageState extends State<LoginPage> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Scaffold.of(context).showSnackBar(errorSnackBar(authState.error));
             errorShown = true;
+          });
+        }
+
+        if (authState.info != '' && !infoShown) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Scaffold.of(context).showSnackBar(errorSnackBar(authState.info));
+            infoShown = true;
           });
         }
 
@@ -80,7 +91,8 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   FlatTextButton(
                     text: 'Forgot your password?',
-                    onPressed: () => _onForgotPasswordButtonPressed(authBloc),
+                    onPressed: () =>
+                        _onForgotPasswordButtonPressed(authBloc, context),
                     padding: EdgeInsets.only(right: 20.0),
                   ),
                 ],
@@ -108,11 +120,50 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() {
       errorShown = false;
+      infoShown = false;
     });
   }
 
-  _onForgotPasswordButtonPressed(AuthenticationBloc authBloc) {
-    
+  _onForgotPasswordButtonPressed(
+      AuthenticationBloc authBloc, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 10.0),
+              child: Column(
+                children: <Widget>[
+                  NormalTextInput(
+                    textEditingController: _forgotPasswordTextEditingController,
+                    title: 'Email',
+                    hintText: 'Enter your email...',
+                  ),
+                  SizedBox(height: 20.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                    child: StandardFilledButton(
+                      text: 'SEND RESET EMAIL',
+                      onPressed: () {
+                          _onForgotPasswordSendEmailButtonPressed(authBloc);
+                          Navigator.of(context).pop();
+                      }
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ]);
+        });
+  }
+
+  _onForgotPasswordSendEmailButtonPressed(AuthenticationBloc authBloc) {
+    authBloc.onForgotPassword(email: _forgotPasswordTextEditingController.text);
+
+    setState(() {
+      errorShown = false;
+      infoShown = false;
+    });
   }
 
   SnackBar errorSnackBar(String error) {

@@ -19,7 +19,6 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 // below code there is the AuthenticationState. This state can then be updated within the block and using the
 // mapEventToState, this state is then reflected in the presentation components (ui).
 
-
 /// The AuthenticationBloc is the final piece in the bloc method for the login function.
 /// The AuthenticationBloc contains the authentication state and implements the onLoginButtonPressed method.
 /// When this is called the LoginButtonPressed event is dispatched to the Bloc. This is then processed right away
@@ -29,18 +28,22 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationState get initialState => AuthenticationState.initialising();
 
-  /// When an event is dispatched, the bloc calls this method to allow me to transform that event and any 
+  /// When an event is dispatched, the bloc calls this method to allow me to transform that event and any
   /// parameters it may have, into a state that can be consumed by the rest of the app.
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationState authState, AuthenticationEvent event) async* {
-        
     if (event is LoginEvent) {
       yield AuthenticationState.loading();
 
       try {
         final FirebaseUser _user = await _login(event.email, event.password);
-        yield AuthenticationState.authenticated(_user);
+        if (_user != null) {
+          if (!_user.isEmailVerified)
+            yield AuthenticationState.information('Please verify your email.');
+          else
+            yield AuthenticationState.authenticated(_user);
+        } else yield AuthenticationState.unauthenticated();
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
@@ -48,15 +51,13 @@ class AuthenticationBloc
       yield AuthenticationState.loading();
 
       try {
-        final FirebaseUser _user =
-            await _signup(event.fullName, event.email, event.password, event.passwordRepeated);
+        final FirebaseUser _user = await _signup(event.fullName, event.email,
+            event.password, event.passwordRepeated);
         _user.sendEmailVerification();
         UserUpdateInfo updateInfo = UserUpdateInfo();
         updateInfo.displayName = event.fullName;
-        _user.updateProfile(
-          updateInfo
-        );
-        yield AuthenticationState.authenticated(_user);
+        _user.updateProfile(updateInfo);
+        yield AuthenticationState.information('Verify your email, then login.');
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
@@ -65,25 +66,41 @@ class AuthenticationBloc
 
       try {
         final FirebaseUser _user = await _login('', '', true);
-        if(_user != null) yield AuthenticationState.authenticated(_user);
-        else yield AuthenticationState.unauthenticated();
+        if (_user != null) {
+          if (!_user.isEmailVerified)
+            yield AuthenticationState.information('Please verify your email.');
+          else
+            yield AuthenticationState.authenticated(_user);
+        } else
+          yield AuthenticationState.unauthenticated();
       } catch (error) {
+        print(error.toString());
         yield AuthenticationState.failure(error.message);
       }
-    } else if(event is LogoutEvent) {
+    } else if (event is LogoutEvent) {
       yield authState.copyWith(isLoading: true);
 
       try {
         await _logout();
         yield AuthenticationState.unauthenticated();
-      } catch(error) {
+      } catch (error) {
         yield AuthenticationState.failure(error.message);
+      }
+    } else if (event is ForgotPasswordEvent) {
+      yield AuthenticationState.loading();
+
+      try {
+        await _sendPasswordResetEmail(event.email);
+
+        yield AuthenticationState.information(
+            'Reset your password with the link in the email sent to you');
+      } catch (error) {
+        yield AuthenticationState.failure(error);
       }
     }
   }
 
-  void onLogin(
-      {@required String email, @required String password}) {
+  void onLogin({@required String email, @required String password}) {
     dispatch(LoginEvent(email: email, password: password));
   }
 
@@ -93,7 +110,10 @@ class AuthenticationBloc
       @required String password,
       @required String passwordRepeated}) {
     dispatch(SignupEvent(
-        fullName: fullName, email: email, password: password, passwordRepeated: passwordRepeated));
+        fullName: fullName,
+        email: email,
+        password: password,
+        passwordRepeated: passwordRepeated));
   }
 
   void onLogout() {
@@ -104,36 +124,48 @@ class AuthenticationBloc
     dispatch(AutoLoginEvent());
   }
 
+  void onForgotPassword({@required String email}) {
+    dispatch(ForgotPasswordEvent(email: email));
+  }
+
   Future<FirebaseUser> _login(String email, String password,
       [bool autoLogin = false]) async {
-
     Future<FirebaseUser> user;
     if (autoLogin) {
       user = _auth.currentUser();
     } else if (email == '')
       throw Exception('Email is empty');
-    else if (password == '') throw Exception('Password is empty');
-    else user = _auth.signInWithEmailAndPassword(email: email, password: password);
+    else if (password == '')
+      throw Exception('Password is empty');
+    else
+      user = _auth.signInWithEmailAndPassword(email: email, password: password);
 
     return user;
   }
 
-  Future<FirebaseUser> _signup(String fullName, String email, String password, String passwordRepeated) {
+  Future<FirebaseUser> _signup(
+      String fullName, String email, String password, String passwordRepeated) {
     if (fullName == '')
       throw Exception('Full name is empty');
     else if (email == '')
       throw Exception('Email is empty');
-    else if (password == '') throw Exception('Password is empty');
-    else if(passwordRepeated == '') throw Exception('Repeated password is empty');
-    else if(password != passwordRepeated) throw Exception('Passwords do not match');
+    else if (password == '')
+      throw Exception('Password is empty');
+    else if (passwordRepeated == '')
+      throw Exception('Repeated password is empty');
+    else if (password != passwordRepeated)
+      throw Exception('Passwords do not match');
     else {
-      
       return _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
+          email: email, password: password);
     }
   }
 
   Future<void> _logout() {
     return _auth.signOut();
+  }
+
+  Future<void> _sendPasswordResetEmail(String email) {
+    return _auth.sendPasswordResetEmail(email: email);
   }
 }
