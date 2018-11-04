@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:eat_app/blocs/authentication/authentication_state.dart';
 import 'package:eat_app/blocs/authentication/authentication_event.dart';
 
+import 'package:eat_app/models/models.dart';
+
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 // A bloc is a state management method for separating business logic and presentation components within an app.
@@ -33,17 +35,21 @@ class AuthenticationBloc
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationState authState, AuthenticationEvent event) async* {
+    
     if (event is LoginEvent) {
+      // tell the app to react and show something to the user to indicate we are doing some work
       yield AuthenticationState.loading();
 
       try {
         final FirebaseUser _user = await _login(event.email, event.password);
+
+        // check that the login succeeded
         if (_user != null) {
-          if (!_user.isEmailVerified)
+          if (!_user.isEmailVerified) // if they haven't verified their email yet they can't login
             yield AuthenticationState.information('Please verify your email.');
           else
-            yield AuthenticationState.authenticated(_user);
-        } else yield AuthenticationState.unauthenticated();
+            yield AuthenticationState.authenticated(User.fromFirebaseUser(_user)); // change to the logged in state
+        } else yield AuthenticationState.unauthenticated(); // for some reason didn't authenticate with no error
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
@@ -53,24 +59,32 @@ class AuthenticationBloc
       try {
         final FirebaseUser _user = await _signup(event.fullName, event.email,
             event.password, event.passwordRepeated);
-        _user.sendEmailVerification();
+        _user.sendEmailVerification(); // the user needs to verify their email before they can login
+
+        // we need to update this firebase user's name
         UserUpdateInfo updateInfo = UserUpdateInfo();
         updateInfo.displayName = event.fullName;
         _user.updateProfile(updateInfo);
-        yield AuthenticationState.information('Verify your email, then login.');
+
+        // create my own user as this is what the database class uses to save to firebase
+        User saveUser = User.fromFirebaseUser(_user); 
+        saveUser.fullName = event.fullName;
+        Database.saveNewUser(saveUser);
+
+        yield AuthenticationState.information('Verify your email, then login.'); // not an error but information
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
-    } else if (event is AutoLoginEvent) {
+    } else if (event is AutoLoginEvent) { // occurs on intialisation so the user doesn't have to login every time
       yield AuthenticationState.loading();
 
       try {
         final FirebaseUser _user = await _login('', '', true);
         if (_user != null) {
-          if (!_user.isEmailVerified)
+          if (!_user.isEmailVerified) // same as with normal login
             yield AuthenticationState.information('Please verify your email.');
           else
-            yield AuthenticationState.authenticated(_user);
+            yield AuthenticationState.authenticated(User.fromFirebaseUser(_user));
         } else
           yield AuthenticationState.unauthenticated();
       } catch (error) {
@@ -100,6 +114,7 @@ class AuthenticationBloc
     }
   }
 
+  // this function just dispatches a login event, the details of the login are passed to this function
   void onLogin({@required String email, @required String password}) {
     dispatch(LoginEvent(email: email, password: password));
   }
@@ -128,6 +143,9 @@ class AuthenticationBloc
     dispatch(ForgotPasswordEvent(email: email));
   }
 
+  /// Tries to log a user in with the specified [email] and [password]
+  /// If [autoLogin] is passed with a true value, then the function will attempt to just return the currently
+  /// logged in user from the FirebaseAuth cache.
   Future<FirebaseUser> _login(String email, String password,
       [bool autoLogin = false]) async {
     Future<FirebaseUser> user;
@@ -143,6 +161,7 @@ class AuthenticationBloc
     return user;
   }
 
+  /// Creates a new user on Firebase
   Future<FirebaseUser> _signup(
       String fullName, String email, String password, String passwordRepeated) {
     if (fullName == '')
@@ -161,10 +180,12 @@ class AuthenticationBloc
     }
   }
 
+  /// Logs out a user.
   Future<void> _logout() {
     return _auth.signOut();
   }
 
+  /// When a user has forgotten their email, this is called and Firebase will send a link to reset their password.
   Future<void> _sendPasswordResetEmail(String email) {
     return _auth.sendPasswordResetEmail(email: email);
   }

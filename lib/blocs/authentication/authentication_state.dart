@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:eat_app/models/user.dart';
+
 /// AuthenticationState has a few different statuses and properties that can be used within the app:
 /// isLoading: this will be true when a login is occuring
 /// isAuthenticateButtonEnabled: will turn false when a authentication event
 /// is occuring to prevent multiple authentication attempts over the top of eachother
 class AuthenticationState {
-  final FirebaseUser user;
+  final User user;
   final bool isLoading;
   final bool isAuthenticated;
   final String error;
@@ -69,7 +71,7 @@ class AuthenticationState {
   }
 
   // Returns a authentication state that indicates a successful login.
-  factory AuthenticationState.authenticated(FirebaseUser _user) {
+  factory AuthenticationState.authenticated(User _user) {
     return AuthenticationState(
       user: _user,
       isLoading: false,
