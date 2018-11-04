@@ -18,7 +18,7 @@ class Database {
     _firestore.collection(_usersCollectionPath).document(user.id).setData(user.toMap());
   }
 
-  static User getUserInfo(String id) {
+  // static User getUserInfo(String id) {
 
-  }
+  // }
 }
