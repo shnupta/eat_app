@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/widgets/standard_filled_button.dart';
-import 'package:eat_app/widgets/standard_outlined_button.dart';
+import 'package:eat_app/widgets.dart';
 
 
 /// The centre page of the 3 page auth system. Contains the app name and logo and the two buttons to navigate

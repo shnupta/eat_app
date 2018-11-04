@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/blocs/authentication/authentication.dart';
+import 'package:eat_app/blocs/authentication.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:eat_app/widgets/normal_text_input.dart';
-import 'package:eat_app/widgets/standard_filled_button.dart';
+import 'package:eat_app/widgets.dart';
 
 
 /// The signup page contains the form and buttons required to signup for the app.
