@@ -9,16 +9,14 @@ import 'package:eat_app/models/user.dart';
 /// I think pretty much all of the methods will be static as there isn't a need to initialise a database
 /// anywhere. It won't actually hold any data. It will just send and retrieve.
 class Database {
+  /// The reference to the default Firebase app
   static Firestore _firestore = Firestore.instance;
 
+  /// Path to the users collection in Firestore
   static String _usersCollectionPath = 'users';
 
   /// Will save [user] to the path 'users/<uid>' in the firestore.
   static void saveNewUser(User user) {
     _firestore.collection(_usersCollectionPath).document(user.id).setData(user.toMap());
   }
-
-  // static User getUserInfo(String id) {
-
-  // }
 }
