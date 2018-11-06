@@ -69,7 +69,7 @@ class AuthenticationBloc
         // create my own user as this is what the database class uses to save to firebase
         User saveUser = User.fromFirebaseUser(_user); 
         saveUser.fullName = event.fullName;
-        Database.saveNewUser(saveUser);
+        saveUser.saveUserToDatabase();
 
         yield AuthenticationState.information('Verify your email, then login.'); // not an error but information
       } catch (error) {
