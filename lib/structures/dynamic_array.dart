@@ -1,15 +1,17 @@
 import 'package:eat_app/structures/exceptions.dart';
 
+import 'dart:collection';
+
 // This is my own List structure.
 
-class DynamicList<T> {
+class DynamicArray<T> with IterableMixin<T> {
   List<T> _items;
   int _size;
   int _capacity;
 
   static const int _standardCapacity = 32;
 
-  DynamicList([int capacity = _standardCapacity]) {
+  DynamicArray([int capacity = _standardCapacity]) {
     _items = List<T>(capacity);
     _size = 0;
     _capacity = capacity;
@@ -24,6 +26,8 @@ class DynamicList<T> {
 
   /// Returns true if the array has no items.
   bool get isEmpty => _size == 0;
+
+  Iterator<T> get iterator => _items.iterator;
 
   /// Accesses the element at [index]
   T operator [](int index) {

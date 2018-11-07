@@ -1,1 +1,1 @@
-export 'structures/dynamic_list.dart';
+export 'structures/dynamic_array.dart';
