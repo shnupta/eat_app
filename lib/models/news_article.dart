@@ -10,11 +10,16 @@ class NewsArticle extends Article {
   /// Name of the author of the article.
   final String author;
 
-  NewsArticle({@required title, @required body, @required timestamp, @required this.author})
-  : super(title: title, body: body, timestamp: timestamp);
+  NewsArticle({@required title, @required body, @required timestamp, @required this.author, @required id})
+  : super(title: title, body: body, timestamp: timestamp, id: id,);
 
+
+  /// Constructs a [NewsArticle] from [map].
+  /// 
+  /// [map] should contain all the details necessary to contrust a [NewsArticle], such as id, title etc.
   factory NewsArticle.fromMap(Map<String, dynamic> map) {
     return NewsArticle(
+      id: map['id'],
       title: map['title'],
       body: map['body'],
       timestamp: map['timestamp'],

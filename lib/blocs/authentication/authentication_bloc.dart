@@ -115,10 +115,12 @@ class AuthenticationBloc
   }
 
   // this function just dispatches a login event, the details of the login are passed to this function
+  /// Dispatch a [LoginEvent] with the related [email] and [password]
   void onLogin({@required String email, @required String password}) {
     dispatch(LoginEvent(email: email, password: password));
   }
 
+  /// Dispatch a [SignupEvent] with the relevant details.
   void onSignup(
       {@required String fullName,
       @required String email,
@@ -131,14 +133,17 @@ class AuthenticationBloc
         passwordRepeated: passwordRepeated));
   }
 
+  /// Dispatch a [LogoutEvent]
   void onLogout() {
     dispatch(LogoutEvent());
   }
 
+  /// Dispatch an [AutoLoginEvent]
   void onAutoLogin() {
     dispatch(AutoLoginEvent());
   }
 
+  /// Dispatch a [ForgotPasswordEvent] with the user's [email]
   void onForgotPassword({@required String email}) {
     dispatch(ForgotPasswordEvent(email: email));
   }

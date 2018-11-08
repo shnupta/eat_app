@@ -34,6 +34,15 @@ class DynamicArray<T> with IterableMixin<T> {
     return _items[index];
   }
 
+  DynamicArray.fromList(List<T> list) {
+    _items = List<T>(list.length);
+    _size = list.length;
+    _capacity = list.length;
+    for(int i = 0; i < list.length; i++) {
+      _items[i] = list[i];
+    }
+  }
+
   /// Adds [item] to the end of the array.
   void add(T item) {
     if(_size == _capacity) {

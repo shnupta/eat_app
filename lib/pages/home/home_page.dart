@@ -13,7 +13,14 @@ class HomePage extends StatelessWidget {
       bloc: newsBloc,
       builder: (BuildContext context, NewsState newsState) {
         if(newsState.isInitialising) {
-          newsBloc.initialise();
+          newsBloc.loadNews();
+          return Container();
+        }
+
+        if(newsState.isLoading) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         }
 
         if (newsState.articles != null) {

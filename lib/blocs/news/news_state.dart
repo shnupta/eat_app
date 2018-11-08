@@ -14,6 +14,7 @@ class NewsState {
       @required this.error,
       @required this.articles});
 
+  /// This state is typical for when the HomePage has just been navigated to.
   factory NewsState.initialising() {
     return NewsState(
       articles: null,
@@ -23,6 +24,7 @@ class NewsState {
     );
   }
 
+  /// Indicates that news articles are being loaded or other processing is occurring inside the bloc.
   factory NewsState.loading() {
     return NewsState(
       articles: null,
@@ -32,6 +34,7 @@ class NewsState {
     );
   }
 
+  /// The normal state is where articles have been loaded and can now be displayed to the user.
   factory NewsState.normal(List<NewsArticle> articles) {
     return NewsState(
       articles: articles,
@@ -41,12 +44,23 @@ class NewsState {
     );
   }
 
+  /// Represents a state where an error has occured when interacting with the news bloc.
   factory NewsState.failure(String error) {
     return NewsState(
       articles: null,
       isLoading: false,
       isInitialising: false,
       error: error,
+    );
+  }
+
+  /// Copies the existing state with any changes that need to made being optional.
+  NewsState copyWith({List<NewsArticle> articles, bool isLoading, bool isInitialising, String error}) {
+    return NewsState(
+      articles: articles ?? this.articles,
+      isLoading: isLoading ?? this.isLoading,
+      isInitialising:  isInitialising ?? this.isInitialising,
+      error: error ?? this.error,
     );
   }
 }

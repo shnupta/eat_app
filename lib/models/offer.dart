@@ -12,6 +12,7 @@ class Offer extends Article {
       {@required title,
       @required body,
       @required timestamp,
-      @required this.restaurant})
-      : super(title: title, body: body, timestamp: timestamp);
+      @required this.restaurant,
+      @required id})
+      : super(title: title, body: body, timestamp: timestamp, id: id,);
 }

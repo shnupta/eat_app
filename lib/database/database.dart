@@ -27,11 +27,39 @@ class Database {
     _firestore.collection(collectionPath).document(documentID).setData(data, merge: true);
   }
 
+  /// Converts [document] into a map. Takes [document.data] and merges it with [document.documentID] 
+  /// to make one singular map of details needed.
+  static Map<String, dynamic> _documentToMap(DocumentSnapshot document) {
+    Map<String, dynamic> m = document.data;
+    m['id'] = document.documentID;
+    return m;
+  }
+
+  /// Reads and returns all documents inside the collection at [collectionPath]
   static Future<List<Map<String, dynamic>>> readDocumentsAtCollection(String collectionPath) async {
-    Query query = _firestore.collection(collectionPath).limit(1);
+    QuerySnapshot snapshot = await _firestore.collection(collectionPath).getDocuments();
+    List<DocumentSnapshot> documents = snapshot.documents;
+    List<Map<String, dynamic>> data = documents.map((document) => _documentToMap(document)).toList();
+    return Future.value(data);
+  }
+
+  /// Reads a maximum of [limit] documents from the collection at [collectionPath]
+  static Future<List<Map<String, dynamic>>> readDocumentsAtCollectionWithLimit(String collectionPath, int limit) async {
+    Query query = _firestore.collection(collectionPath).limit(limit);
     QuerySnapshot snapshot = await query.getDocuments();
     List<DocumentSnapshot> documents = snapshot.documents;
-    List<Map<String, dynamic>> data = documents.map((document) => document.data).toList();
+    List<Map<String, dynamic>> data = documents.map((document) => _documentToMap(document)).toList();
+    return Future.value(data);
+  }
+
+  /// Reads a maximum of [limit] documents from the collection at [collectionPath] and orders them by
+  /// their [timestamp] descending.
+  static Future<List<Map<String, dynamic>>> readDocumentsAtCollectionWithLimitByTimestampDescending(String collectionPath, int limit) async {
+    Query query = _firestore.collection(collectionPath).limit(limit);
+    query = query.orderBy('timestamp', descending: true);
+    QuerySnapshot snapshot = await query.getDocuments();
+    List<DocumentSnapshot> documents = snapshot.documents;
+    List<Map<String, dynamic>> data = documents.map((document) => _documentToMap(document)).toList();
     return Future.value(data);
   }
 }
