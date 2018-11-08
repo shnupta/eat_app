@@ -13,4 +13,13 @@ class NewsArticle extends Article {
   NewsArticle({@required title, @required body, @required timestamp, @required this.author})
   : super(title: title, body: body, timestamp: timestamp);
 
+  factory NewsArticle.fromMap(Map<String, dynamic> map) {
+    return NewsArticle(
+      title: map['title'],
+      body: map['body'],
+      timestamp: map['timestamp'],
+      author: map['author'],
+    );
+  }
+
 }

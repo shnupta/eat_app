@@ -26,4 +26,12 @@ class Database {
   static void mergeDocumentWithIDAtCollection(String collectionPath, String documentID, Map<String, dynamic> data) {
     _firestore.collection(collectionPath).document(documentID).setData(data, merge: true);
   }
+
+  static Future<List<Map<String, dynamic>>> readDocumentsAtCollection(String collectionPath) async {
+    Query query = _firestore.collection(collectionPath).limit(1);
+    QuerySnapshot snapshot = await query.getDocuments();
+    List<DocumentSnapshot> documents = snapshot.documents;
+    List<Map<String, dynamic>> data = documents.map((document) => document.data).toList();
+    return Future.value(data);
+  }
 }

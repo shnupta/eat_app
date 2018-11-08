@@ -4,11 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:eat_app/pages/home/home_page.dart';
 import 'package:eat_app/pages/settings/settings.dart';
 
+import 'package:eat_app/blocs/news.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 // This page will be responsible for initialising the blocs that will be needed by child pages.
 // It will also act as a kind of container around all the other pages that can be visited when
 // a user is logged in.
 
 class HomeContainerPage extends StatelessWidget {
+
+  final NewsBloc newsBloc = NewsBloc();
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -16,7 +23,7 @@ class HomeContainerPage extends StatelessWidget {
       child: Scaffold(
         body: TabBarView(
           children: <Widget>[
-            HomePage(),
+            BlocProvider(bloc: newsBloc, child: HomePage(),),
             Container(),
             Container(),
             SettingsPage(),
