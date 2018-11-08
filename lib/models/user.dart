@@ -23,6 +23,9 @@ class User {
   /// Path to the users collection in Firestore
   static String _usersCollectionPath = 'users';
 
+  /// The field name of the lastLogin timestamp field.
+  static String _userLastLoginFieldName = 'lastLogin';
+
   User({@required this.id, @required this.fullName, @required this.email, this.firebaseUser});
 
   /// Create a [User] from a FirebaseUser [user]. Typically from the result of a signup or login event.
@@ -47,9 +50,13 @@ class User {
   Map<String, dynamic> toMap() {
     return 
     {
-      'id': this.id,
       'fullName': this.fullName,
       'email': this.email,
     };
+  }
+
+  /// Set the user's lastLogin field to now.
+  void updateLastLoginTime() {
+    Database.setDocumentTimestampNowWithIDAtCollection(_usersCollectionPath, this.id, _userLastLoginFieldName);
   }
 }

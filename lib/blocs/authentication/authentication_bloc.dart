@@ -47,8 +47,11 @@ class AuthenticationBloc
         if (_user != null) {
           if (!_user.isEmailVerified) // if they haven't verified their email yet they can't login
             yield AuthenticationState.information('Please verify your email.');
-          else
-            yield AuthenticationState.authenticated(User.fromFirebaseUser(_user)); // change to the logged in state
+          else {
+            User u = User.fromFirebaseUser(_user);
+            u.updateLastLoginTime();
+            yield AuthenticationState.authenticated(u); // change to the logged in state
+          }
         } else yield AuthenticationState.unauthenticated(); // for some reason didn't authenticate with no error
       } catch (error) {
         yield AuthenticationState.failure(error.message);

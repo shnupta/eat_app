@@ -62,4 +62,12 @@ class Database {
     List<Map<String, dynamic>> data = documents.map((document) => _documentToMap(document)).toList();
     return Future.value(data);
   }
+
+  /// Sets the timestamp field [timestampFieldName] of the document with [documentID] in the collection 
+  /// at [collectionPath] to update to now.
+  static void setDocumentTimestampNowWithIDAtCollection(String collectionPath, String documentID, String timestampFieldName) {
+    _firestore.collection(collectionPath).document(documentID).setData({
+      timestampFieldName: Timestamp.now(),
+    }, merge: true);
+  }
 }
