@@ -29,7 +29,7 @@ class FindARestaurantPage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5.0),
                     child: IconButton(
-                      splashColor: Colors.lightBlueAccent,
+                      splashColor: Colors.redAccent,
                       padding: EdgeInsets.all(0.0),
                       icon: Icon(Icons.filter_list,),
                       onPressed: () => null,
