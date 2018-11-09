@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:eat_app/pages/home/home_page.dart';
-import 'package:eat_app/pages/settings/settings.dart';
+import 'package:eat_app/pages/home.dart';
+import 'package:eat_app/pages/settings.dart';
+import 'package:eat_app/pages/find_a_restaurant.dart';
 
 import 'package:eat_app/blocs/news.dart';
 
@@ -24,7 +25,7 @@ class HomeContainerPage extends StatelessWidget {
         body: TabBarView(
           children: <Widget>[
             BlocProvider(bloc: newsBloc, child: HomePage(),),
-            Container(),
+            FindARestaurantPage(),
             Container(),
             SettingsPage(),
           ],

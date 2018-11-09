@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/pages/auth/auth.dart';
-import 'package:eat_app/pages/home/home.dart';
+import 'package:eat_app/pages/auth.dart';
+import 'package:eat_app/pages/home_container.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
