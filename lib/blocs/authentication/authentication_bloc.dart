@@ -35,7 +35,6 @@ class AuthenticationBloc
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationState authState, AuthenticationEvent event) async* {
-    
     if (event is LoginEvent) {
       // tell the app to react and show something to the user to indicate we are doing some work
       yield AuthenticationState.loading();
@@ -45,14 +44,18 @@ class AuthenticationBloc
 
         // check that the login succeeded
         if (_user != null) {
-          if (!_user.isEmailVerified) // if they haven't verified their email yet they can't login
+          if (!_user
+              .isEmailVerified) // if they haven't verified their email yet they can't login
             yield AuthenticationState.information('Please verify your email.');
           else {
             User u = User.fromFirebaseUser(_user);
             u.updateLastLoginTime();
-            yield AuthenticationState.authenticated(u); // change to the logged in state
+            yield AuthenticationState.authenticated(
+                u); // change to the logged in state
           }
-        } else yield AuthenticationState.unauthenticated(); // for some reason didn't authenticate with no error
+        } else
+          yield AuthenticationState
+              .unauthenticated(); // for some reason didn't authenticate with no error
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
@@ -62,7 +65,8 @@ class AuthenticationBloc
       try {
         final FirebaseUser _user = await _signup(event.fullName, event.email,
             event.password, event.passwordRepeated);
-        _user.sendEmailVerification(); // the user needs to verify their email before they can login
+        _user
+            .sendEmailVerification(); // the user needs to verify their email before they can login
 
         // we need to update this firebase user's name
         UserUpdateInfo updateInfo = UserUpdateInfo();
@@ -70,15 +74,17 @@ class AuthenticationBloc
         _user.updateProfile(updateInfo);
 
         // create my own user as this is what the database class uses to save to firebase
-        User saveUser = User.fromFirebaseUser(_user); 
+        User saveUser = User.fromFirebaseUser(_user);
         saveUser.fullName = event.fullName;
         saveUser.saveUserToDatabase();
 
-        yield AuthenticationState.information('Verify your email, then login.'); // not an error but information
+        yield AuthenticationState.information(
+            'Verify your email, then login.'); // not an error but information
       } catch (error) {
         yield AuthenticationState.failure(error.message);
       }
-    } else if (event is AutoLoginEvent) { // occurs on intialisation so the user doesn't have to login every time
+    } else if (event is AutoLoginEvent) {
+      // occurs on intialisation so the user doesn't have to login every time
       yield AuthenticationState.loading();
 
       try {
@@ -87,11 +93,10 @@ class AuthenticationBloc
           if (!_user.isEmailVerified) // same as with normal login
             yield AuthenticationState.information('Please verify your email.');
           else {
-	    User _u = User.fromFirebaseUser(_user);
-	    _u.updateLastLoginTime();
+            User _u = User.fromFirebaseUser(_user);
+            _u.updateLastLoginTime();
             yield AuthenticationState.authenticated(_u);
-
-	  }
+          }
         } else
           yield AuthenticationState.unauthenticated();
       } catch (error) {

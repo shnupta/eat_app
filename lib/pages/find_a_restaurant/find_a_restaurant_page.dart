@@ -31,7 +31,9 @@ class FindARestaurantPage extends StatelessWidget {
                     child: IconButton(
                       splashColor: Colors.redAccent,
                       padding: EdgeInsets.all(0.0),
-                      icon: Icon(Icons.filter_list,),
+                      icon: Icon(
+                        Icons.filter_list,
+                      ),
                       onPressed: () => null,
                     ),
                   ),
