@@ -16,7 +16,7 @@ exports.addAllRestaurantsToAlgolia = functions.https.onRequest((req, res) => {
 
     admin.firestore().collection('restaurants').get().then((docs) => {
         docs.forEach((doc) => {
-            var restaurant = doc.data;
+            var restaurant = doc.data();
             restaurant.objectID = doc.id;
 
             items.push(restaurant);
@@ -27,6 +27,8 @@ exports.addAllRestaurantsToAlgolia = functions.https.onRequest((req, res) => {
         index.saveObjects(items, function(err, content) {
             res.status(200).send(content);
         });
+    }).catch((err) => {
+	console.log('Error = ' + err);	    
     });
 });
 
