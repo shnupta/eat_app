@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:eat_app/widgets.dart';
 
+import 'package:eat_app/algolia/algolia_api.dart';
+
 class FindARestaurantPage extends StatelessWidget {
   final TextEditingController _searchInputTextEditingController =
       TextEditingController();
@@ -34,7 +36,11 @@ class FindARestaurantPage extends StatelessWidget {
                       icon: Icon(
                         Icons.filter_list,
                       ),
-                      onPressed: () => null,
+                      onPressed: () {
+												AlgoliaClient client = AlgoliaClient(appID: '1JUPZEJV71', searchKey: 'fdba16a946692e6ff2c30fc5d672203b');
+												AlgoliaIndex index = client.initIndex('restaurants_search');
+												index.search(_searchInputTextEditingController.text);
+											},
                     ),
                   ),
                 )
