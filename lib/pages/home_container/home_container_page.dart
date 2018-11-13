@@ -6,6 +6,7 @@ import 'package:eat_app/pages/settings.dart';
 import 'package:eat_app/pages/find_a_restaurant.dart';
 
 import 'package:eat_app/blocs/news.dart';
+import 'package:eat_app/blocs/find_a_restaurant.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomeContainerPage extends StatelessWidget {
 
   final NewsBloc newsBloc = NewsBloc();
+	final FindARestaurantBloc findARestaurantBloc = FindARestaurantBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class HomeContainerPage extends StatelessWidget {
         body: TabBarView(
           children: <Widget>[
             BlocProvider(bloc: newsBloc, child: HomePage(),),
-            FindARestaurantPage(),
+            BlocProvider(bloc: findARestaurantBloc, child: FindARestaurantPage()),
             Container(),
             SettingsPage(),
           ],

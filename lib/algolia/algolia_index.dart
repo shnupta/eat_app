@@ -17,7 +17,7 @@ class AlgoliaIndex {
 		appID = appID,
 		searchKey = searchKey,
 		indexName = indexName,
-		url = 'https://${appID}-dsn.algolia.net/1/indexes/${indexName}/query',
+		url = 'https://$appID-dsn.algolia.net/1/indexes/$indexName/query',
 		headers = {
 			'X-Algolia-API-Key': searchKey,
 			'X-Algolia-Application-Id': appID
@@ -26,14 +26,11 @@ class AlgoliaIndex {
 
 	// So all the requests are going to be made to the Algolia REST API
 	// These will return a JSON object if the HTTP response is 200 OK
-	void search(String query) {
+	Future<AlgoliaResponse> search(String query) async {
 		Map<String, String> body = {
 			'params': 'query=$query'
 		};
-		http.post(url, headers: headers, body: json.encode(body))
-				.then((response) {
-					print('Response status code: ${response.statusCode}');
-					print('Response body: ${response.body}');	
-				});
+		final response = await http.post(url, headers: headers, body: json.encode(body));
+		return Future.value(AlgoliaResponse.fromResponse(response));
 	}
 }

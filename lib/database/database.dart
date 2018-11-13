@@ -43,6 +43,7 @@ class Database {
     return Future.value(data);
   }
 
+
   /// Reads a maximum of [limit] documents from the collection at [collectionPath]
   static Future<List<Map<String, dynamic>>> readDocumentsAtCollectionWithLimit(String collectionPath, int limit) async {
     Query query = _firestore.collection(collectionPath).limit(limit);
