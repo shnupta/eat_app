@@ -8,7 +8,19 @@ class Restaurant {
   final String name;
   /// Typically a long text written by the restaurant to describe/advertise themself.
   final String description;
+	/// ID of the object in firebase
+	final String id;
   
 
-  Restaurant({@required this.name, @required this.description});
+  Restaurant({@required this.id, @required this.name, @required this.description});
+
+
+	/// Constructs a [Restaurant] object from a hit object of an Algolia search response
+	factory Restaurant.fromAlgoliaMap(Map<String, dynamic> map) {
+		return Restaurant(
+				id: map['objectID'],
+				name: map['name'],
+				description: map['description'],
+		);
+	}
 }

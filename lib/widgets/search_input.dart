@@ -11,6 +11,7 @@ class SearchInput extends StatefulWidget {
   final TextEditingController textEditingController;
   final TextCapitalization textCapitalization;
   final EdgeInsets margin;
+	final Function onChanged;
 
   SearchInput(
       {
@@ -18,6 +19,7 @@ class SearchInput extends StatefulWidget {
       @required this.textEditingController,
       this.textCapitalization = TextCapitalization.none,
       this.margin = const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+			this.onChanged,
       });
 
   @override
@@ -57,6 +59,7 @@ class _SearchInputState extends State<SearchInput> {
                 flex: 10,
                 child: TextField(
                   textCapitalization: widget.textCapitalization,
+									onChanged: (text) => widget.onChanged(text),
                   controller: widget.textEditingController,
                   textAlign: TextAlign.left,
                   decoration: InputDecoration(

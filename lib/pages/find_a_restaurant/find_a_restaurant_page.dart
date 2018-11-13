@@ -23,13 +23,8 @@ class FindARestaurantPage extends StatelessWidget {
           return Container();
         }
 
-        if (state.isLoading) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
         return Scaffold(
+          resizeToAvoidBottomPadding: false,
           body: Container(
             child: Column(
               children: <Widget>[
@@ -39,6 +34,11 @@ class FindARestaurantPage extends StatelessWidget {
                       flex: 7,
                       child: Container(
                         child: SearchInput(
+                          onChanged: (text) { 
+														if(!text.isEmpty) findARestaurantBloc
+                              .search(_searchInputTextEditingController.text);
+														else findARestaurantBloc.clearResults();
+													},
                           margin: EdgeInsets.only(top: 10.0, left: 10.0),
                           textEditingController:
                               _searchInputTextEditingController,
@@ -56,16 +56,17 @@ class FindARestaurantPage extends StatelessWidget {
                           icon: Icon(
                             Icons.filter_list,
                           ),
-                          onPressed: () => findARestaurantBloc
-                              .search(_searchInputTextEditingController.text),
+                          onPressed: () => null,
                         ),
                       ),
                     )
                   ],
                 ),
-                Container(
-                  child: _buildResultsView(state),
-									),
+                Expanded(
+                  child: Container(
+                    child: _buildResultsView(state),
+                  ),
+                ),
               ],
             ),
           ),
@@ -74,20 +75,24 @@ class FindARestaurantPage extends StatelessWidget {
     );
   }
 
-	Widget _buildResultsView(FindARestaurantState state) {
-		if(state.results != null) {
-			return ListView(
-                    children: state.results
-                        .map((result) => ListTile(
-                              title: Text(result.name),
-                            ))
-                        .toList(),
-                  );
-
-		} else {
-			return Center(
-					child: Text('No results'),
-			);
-		}
-	}
+  Widget _buildResultsView(FindARestaurantState state) {
+    if (state.results != null) {
+			if(state.results.length == 0) return Center(child: Text('No matches'));
+      return ListView(
+        children: state.results
+            .map((result) => ListTile(
+                  title: Text(result.name),
+                ))
+            .toList(),
+      );
+    } else if (state.isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return Center(
+        child: Text('Search for a restaurant above!'),
+      );
+    }
+  }
 }

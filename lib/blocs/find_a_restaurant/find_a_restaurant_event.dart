@@ -13,3 +13,5 @@ class SearchEvent extends FindARestaurantEvent {
 
 	SearchEvent({@required this.query});
 }
+
+class ClearResultsEvent extends FindARestaurantEvent {}

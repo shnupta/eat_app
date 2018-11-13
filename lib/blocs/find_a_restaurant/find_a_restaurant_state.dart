@@ -61,7 +61,7 @@ class FindARestaurantState {
 				isLoading: isLoading ?? this.isLoading,
 				isInitialising: isInitialising ?? this.isInitialising,
 				error: error ?? this.error,
-				results: results ?? this.results,
+				results: results,
 		);
 	}
 }
