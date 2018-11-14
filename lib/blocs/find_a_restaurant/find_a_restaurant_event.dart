@@ -14,4 +14,9 @@ class SearchEvent extends FindARestaurantEvent {
 	SearchEvent({@required this.query});
 }
 
+/// Dispatch this event when the search query is empty, it will clear the array of
+/// results inside the bloc.
 class ClearResultsEvent extends FindARestaurantEvent {}
+
+/// Dispatch this event when the user clicks on the button to expand the filter menu.
+class ToggleFilterMenuEvent extends FindARestaurantEvent {}

@@ -2,12 +2,9 @@ import 'package:eat_app/blocs/find_a_restaurant/find_a_restaurant_event.dart';
 import 'package:eat_app/blocs/find_a_restaurant/find_a_restaurant_state.dart';
 
 import 'package:eat_app/models.dart';
-import 'package:eat_app/database.dart';
 import 'package:eat_app/algolia/algolia_api.dart';
 
 import 'package:bloc/bloc.dart';
-
-import 'dart:convert';
 
 
 class FindARestaurantBloc extends Bloc<FindARestaurantEvent, FindARestaurantState> {
@@ -51,6 +48,11 @@ class FindARestaurantBloc extends Bloc<FindARestaurantEvent, FindARestaurantStat
 			yield FindARestaurantState.displaying(null);
 		} else if(event is ClearResultsEvent) {
 			yield state.copyWith(results: null); 
+		} else if(event is ToggleFilterMenuEvent) {
+			if(state.filterMenuOpen == null) 
+				yield state.copyWith(filterMenuOpen: true);
+			else 
+				yield state.copyWith(filterMenuOpen: !state.filterMenuOpen);
 		}
 	}
 
@@ -68,6 +70,11 @@ class FindARestaurantBloc extends Bloc<FindARestaurantEvent, FindARestaurantStat
 	/// Dispatch a ClearResultsEvent to wipe the results list
 	void clearResults() {
 		dispatch(ClearResultsEvent());
+	}
+
+	/// Dispatches an ToggleFilterMenuEvent
+	void toggleFilterMenu() {
+		dispatch(ToggleFilterMenuEvent());
 	}
 
 }

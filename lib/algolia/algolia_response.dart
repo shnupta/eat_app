@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'dart:convert';
 
 
@@ -23,7 +21,5 @@ class AlgoliaResponse {
 			else {
 				return AlgoliaResponse(hasError: true, body: json.decode(response.body), error: response.message);
 			}
-
-		return AlgoliaResponse(body: {});
 	}
 }

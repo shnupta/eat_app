@@ -11,12 +11,15 @@ class FindARestaurantState {
 	final String error;
 	/// A list of restaurants that are returned as matching the search criteria by Algolia
 	final List<Restaurant> results;
+	/// Indicates whether the filter menu should be open
+	final bool filterMenuOpen;
 
 	FindARestaurantState({
 		@required this.isLoading,
 		@required this.isInitialising,
 		@required this.error,
 		@required this.results,
+		this.filterMenuOpen,
 	});
 
 
@@ -56,12 +59,13 @@ class FindARestaurantState {
 		);
 	}
 
-	FindARestaurantState copyWith({bool isLoading, bool isInitialising, String error, List<Restaurant> results}) {
+	FindARestaurantState copyWith({bool isLoading, bool isInitialising, String error, List<Restaurant> results, bool filterMenuOpen}) {
 		return FindARestaurantState(
 				isLoading: isLoading ?? this.isLoading,
 				isInitialising: isInitialising ?? this.isInitialising,
 				error: error ?? this.error,
 				results: results,
+				filterMenuOpen: filterMenuOpen ?? this.filterMenuOpen,
 		);
 	}
 }
