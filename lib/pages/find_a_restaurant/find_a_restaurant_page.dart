@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:eat_app/widgets.dart';
+import 'package:eat_app/pages/find_a_restaurant/filter_menu.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -105,78 +106,7 @@ class FindARestaurantPage extends StatelessWidget {
   /// Builds the expanded filter menu if the state says it should be open, else
   /// returns an empty container.
   Widget _buildFilterMenu(FindARestaurantState state, BuildContext context) {
-    if (state.filterMenuOpen == null) return Container();
-    if (state.filterMenuOpen) {
-      return Container(
-        child: Column(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(left: 20.0, top: 20.0),
-                  child: Text(
-                    'Category',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Container(
-										margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  height: 70.0,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      Container(
-                        width: 50.0,
-                        color: Colors.red,
-                      ),
-                      Container(
-                        width: 50.0,
-                        color: Colors.orange,
-                      ),
-                      Container(
-                        width: 50.0,
-                        color: Colors.green,
-                      ),
-                      Container(
-                        width: 50.0,
-                        color: Colors.red,
-                      ),
-                      Container(
-                        width: 50.0,
-                        color: Colors.orange,
-                      ),
-                      Container(
-                        width: 50.0,
-                        color: Colors.green,
-                      ),
-                      Container(
-                        width: 50.0,
-                        color: Colors.red,
-                      ),
-                      Container(
-                        width: 50.0,
-                        color: Colors.orange,
-                      ),
-                      Container(
-                        width: 50.0,
-                        color: Colors.green,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Row(),
-            Row(),
-            Row(),
-          ],
-        ),
-      );
+    if (state.filterMenuOpen != null && state.filterMenuOpen == true) {
     }
   }
 }
