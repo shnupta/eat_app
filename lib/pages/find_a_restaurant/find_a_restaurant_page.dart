@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 
 import 'package:eat_app/widgets.dart';
+import 'package:eat_app/pages/find_a_restaurant/filter_menu.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:eat_app/blocs/find_a_restaurant.dart';
 
 class FindARestaurantPage extends StatefulWidget {
-
-	createState() => _FindARestaurantPageState();
-
+  createState() => _FindARestaurantPageState();
 }
-class _FindARestaurantPageState extends State<FindARestaurantPage> with TickerProviderStateMixin {
+
+class _FindARestaurantPageState extends State<FindARestaurantPage>
+    with TickerProviderStateMixin {
   final TextEditingController _searchInputTextEditingController =
       TextEditingController();
 
-	double minimizedHeight = 0.0;
+  double minimizedHeight = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +79,7 @@ class _FindARestaurantPageState extends State<FindARestaurantPage> with TickerPr
                 Expanded(
                   flex: 8,
                   child: Container(
-											margin: EdgeInsets.only(top: 10.0),
+                    margin: EdgeInsets.only(top: 5.0),
                     child: _buildResultsView(state),
                   ),
                 ),
@@ -95,14 +96,31 @@ class _FindARestaurantPageState extends State<FindARestaurantPage> with TickerPr
   Widget _buildResultsView(FindARestaurantState state) {
     if (state.results != null) {
       if (state.results.length == 0) return Center(child: Text('No matches'));
-      return ListView(
-        children: state.results
-            .map((result) => ListTile(
-                  title: Text(result.name),
-                  subtitle: Text(result.description),
-                ))
-            .toList(),
-      );
+      if (state.isLoading) {
+        return Stack(
+						alignment: Alignment.center,
+          children: <Widget>[
+            ListView(
+              children: state.results
+                  .map((result) => ListTile(
+                        title: Text(result.name),
+                        subtitle: Text(result.description),
+                      ))
+                  .toList(),
+            ),
+            CircularProgressIndicator(),
+          ],
+        );
+      } else {
+        return ListView(
+          children: state.results
+              .map((result) => ListTile(
+                    title: Text(result.name),
+                    subtitle: Text(result.description),
+                  ))
+              .toList(),
+        );
+      }
     } else if (!state.isLoading) {
       return Center(
         child: Text('Search for a restaurant above!'),
@@ -113,82 +131,21 @@ class _FindARestaurantPageState extends State<FindARestaurantPage> with TickerPr
   /// Builds the expanded filter menu if the state says it should be open, else
   /// returns an empty container.
   Widget _buildFilterMenu(FindARestaurantState state, BuildContext context) {
-      return AnimatedSize(
-				curve: Curves.easeOut,
-				duration: Duration(milliseconds: 400),
-				vsync: this,
-					child: Container(
-							height: (state.filterMenuOpen != null && state.filterMenuOpen) ? null : minimizedHeight,
-        child: Column(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(left: 20.0, top: 20.0),
-                  child: Text(
-                    'Category',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-								Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  height: 70.0,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      Container(
-                        width: 75.0,
-                        color: Colors.red,
-                      ),
-                      Container(
-                        width: 75.0,
-                        color: Colors.orange,
-                      ),
-                      Container(
-                        width: 75.0,
-                        color: Colors.green,
-                      ),
-                      Container(
-                        width: 75.0,
-                        color: Colors.red,
-                      ),
-                      Container(
-                        width: 75.0,
-                        color: Colors.orange,
-                      ),
-                      Container(
-                        width: 75.0,
-                        color: Colors.green,
-                      ),
-                      Container(
-                        width: 75.0,
-                        color: Colors.red,
-                      ),
-                      Container(
-                        width: 75.0,
-                        color: Colors.orange,
-                      ),
-                      Container(
-                        width: 75.0,
-                        color: Colors.green,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Row(),
-            Row(),
-            Row(),
-          ],
+    return AnimatedSize(
+      curve: Curves.easeOut,
+      duration: Duration(milliseconds: 400),
+      vsync: this,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 10.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30.0),
+          color: Colors.grey[100],
         ),
-
-      ),);
-    }
+        height: (state.filterMenuOpen != null && state.filterMenuOpen)
+            ? null
+            : minimizedHeight,
+        child: FilterMenu(),
+      ),
+    );
+  }
 }

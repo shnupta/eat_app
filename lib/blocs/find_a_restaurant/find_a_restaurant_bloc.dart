@@ -29,7 +29,7 @@ class FindARestaurantBloc extends Bloc<FindARestaurantEvent, FindARestaurantStat
 	@override
 	Stream<FindARestaurantState> mapEventToState(FindARestaurantState state, FindARestaurantEvent event) async* {
 		if(event is SearchEvent) {
-			yield FindARestaurantState.loading();
+			yield state.copyWith(isLoading: true, results: _results);
 
 			try {
 				final response = await _index.search(event.query);
