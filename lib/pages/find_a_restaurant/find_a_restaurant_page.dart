@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
 import 'package:eat_app/widgets.dart';
-import 'package:eat_app/pages/find_a_restaurant/filter_menu.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:eat_app/blocs/find_a_restaurant.dart';
 
-class FindARestaurantPage extends StatelessWidget {
+class FindARestaurantPage extends StatefulWidget {
+
+	createState() => _FindARestaurantPageState();
+
+}
+class _FindARestaurantPageState extends State<FindARestaurantPage> with TickerProviderStateMixin {
   final TextEditingController _searchInputTextEditingController =
       TextEditingController();
+
+	double minimizedHeight = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +112,83 @@ class FindARestaurantPage extends StatelessWidget {
   /// Builds the expanded filter menu if the state says it should be open, else
   /// returns an empty container.
   Widget _buildFilterMenu(FindARestaurantState state, BuildContext context) {
-    if (state.filterMenuOpen != null && state.filterMenuOpen == true) {
+		print('rebuilding');
+      return AnimatedSize(
+				curve: Curves.easeOut,
+				duration: Duration(milliseconds: 400),
+				vsync: this,
+					child: Container(
+							height: (state.filterMenuOpen != null && state.filterMenuOpen) ? null : minimizedHeight,
+        child: Column(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.only(left: 20.0, top: 20.0),
+                  child: Text(
+                    'Category',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+								Container(
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  height: 70.0,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: <Widget>[
+                      Container(
+                        width: 75.0,
+                        color: Colors.red,
+                      ),
+                      Container(
+                        width: 75.0,
+                        color: Colors.orange,
+                      ),
+                      Container(
+                        width: 75.0,
+                        color: Colors.green,
+                      ),
+                      Container(
+                        width: 75.0,
+                        color: Colors.red,
+                      ),
+                      Container(
+                        width: 75.0,
+                        color: Colors.orange,
+                      ),
+                      Container(
+                        width: 75.0,
+                        color: Colors.green,
+                      ),
+                      Container(
+                        width: 75.0,
+                        color: Colors.red,
+                      ),
+                      Container(
+                        width: 75.0,
+                        color: Colors.orange,
+                      ),
+                      Container(
+                        width: 75.0,
+                        color: Colors.green,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Row(),
+            Row(),
+            Row(),
+          ],
+        ),
+
+      ),);
     }
-  }
 }
