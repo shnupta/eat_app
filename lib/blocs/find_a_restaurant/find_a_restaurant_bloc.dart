@@ -50,9 +50,9 @@ class FindARestaurantBloc extends Bloc<FindARestaurantEvent, FindARestaurantStat
 			yield state.copyWith(results: null); 
 		} else if(event is ToggleFilterMenuEvent) {
 			if(state.filterMenuOpen == null) 
-				yield state.copyWith(filterMenuOpen: true);
+				yield state.copyWith(filterMenuOpen: true, results: _results);
 			else 
-				yield state.copyWith(filterMenuOpen: !state.filterMenuOpen);
+				yield state.copyWith(filterMenuOpen: !state.filterMenuOpen, results: _results);
 		}
 	}
 

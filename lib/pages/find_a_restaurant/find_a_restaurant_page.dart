@@ -78,6 +78,7 @@ class _FindARestaurantPageState extends State<FindARestaurantPage> with TickerPr
                 Expanded(
                   flex: 8,
                   child: Container(
+											margin: EdgeInsets.only(top: 10.0),
                     child: _buildResultsView(state),
                   ),
                 ),
@@ -112,7 +113,6 @@ class _FindARestaurantPageState extends State<FindARestaurantPage> with TickerPr
   /// Builds the expanded filter menu if the state says it should be open, else
   /// returns an empty container.
   Widget _buildFilterMenu(FindARestaurantState state, BuildContext context) {
-		print('rebuilding');
       return AnimatedSize(
 				curve: Curves.easeOut,
 				duration: Duration(milliseconds: 400),
