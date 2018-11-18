@@ -4,22 +4,27 @@ import 'package:eat_app/blocs/find_a_restaurant/find_a_restaurant_state.dart';
 import 'package:eat_app/models.dart';
 import 'package:eat_app/algolia/algolia_api.dart';
 
+import 'package:eat_app/database.dart';
+
 import 'package:bloc/bloc.dart';
 
 
 class FindARestaurantBloc extends Bloc<FindARestaurantEvent, FindARestaurantState> {
 	List<Restaurant> _results;
+	Map<String, List<dynamic>> _filterOptions;
 	AlgoliaClient _client; 	
 	AlgoliaIndex _index; 
 
 
 	FindARestaurantState get initialState {
-		if(_results != null) {
+		// Load the filter options on initialState unless they've already been loaded
+		if(_results != null && _filterOptions != null) {
 			return FindARestaurantState(
 					results: _results,
 					isLoading: false,
 					isInitialising: false,
 					error: '',
+					filterOptions: _filterOptions,
 			);
 		}	else {
 			return FindARestaurantState.initialising();
@@ -45,14 +50,24 @@ class FindARestaurantBloc extends Bloc<FindARestaurantEvent, FindARestaurantStat
 			_client = AlgoliaClient(appID: '1JUPZEJV71', searchKey: 'fdba16a946692e6ff2c30fc5d672203b');
 			_index = _client.initIndex('restaurants_search');
 
-			yield FindARestaurantState.displaying(null);
+			List<Map<String,dynamic>> cats = await Database.readDocumentsAtCollection('categories');
+			_filterOptions = {
+				'categories': cats
+			};
+
+			yield FindARestaurantState(
+				isLoading: false,
+				isInitialising: false,
+				error: '',
+				results: null,
+				filterOptions: _filterOptions,
+			);
 		} else if(event is ClearResultsEvent) {
 			yield state.copyWith(results: null); 
 		} else if(event is ToggleFilterMenuEvent) {
 			if(state.filterMenuOpen == null) 
-				yield state.copyWith(filterMenuOpen: true, results: _results);
-			else 
-				yield state.copyWith(filterMenuOpen: !state.filterMenuOpen, results: _results);
+				yield state.copyWith(filterMenuOpen: true, results: _results, filterOptions: _filterOptions);
+				else yield state.copyWith(filterMenuOpen: !state.filterMenuOpen, results: _results, filterOptions: _filterOptions);
 		}
 	}
 

@@ -13,6 +13,8 @@ class FindARestaurantState {
 	final List<Restaurant> results;
 	/// Indicates whether the filter menu should be open
 	final bool filterMenuOpen;
+	/// A Map of the filter options available
+	final Map<String, List<dynamic>> filterOptions;
 
 	FindARestaurantState({
 		@required this.isLoading,
@@ -20,6 +22,7 @@ class FindARestaurantState {
 		@required this.error,
 		@required this.results,
 		this.filterMenuOpen,
+		this.filterOptions,
 	});
 
 
@@ -59,13 +62,14 @@ class FindARestaurantState {
 		);
 	}
 
-	FindARestaurantState copyWith({bool isLoading, bool isInitialising, String error, List<Restaurant> results, bool filterMenuOpen}) {
+	FindARestaurantState copyWith({bool isLoading, bool isInitialising, String error, @required List<Restaurant> results, bool filterMenuOpen, Map<String, List<dynamic>> filterOptions}) {
 		return FindARestaurantState(
 				isLoading: isLoading ?? this.isLoading,
 				isInitialising: isInitialising ?? this.isInitialising,
 				error: error ?? this.error,
 				results: results,
 				filterMenuOpen: filterMenuOpen ?? this.filterMenuOpen,
+				filterOptions: filterOptions ?? this.filterOptions,
 		);
 	}
 }
