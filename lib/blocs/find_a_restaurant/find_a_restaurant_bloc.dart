@@ -14,6 +14,8 @@ class FindARestaurantBloc
   Map<String, List<dynamic>> _filterOptions;
   AlgoliaClient _client;
   AlgoliaIndex _index;
+  String _searchQuery;
+  bool _filterMenuOpen;
 
   FindARestaurantState get initialState {
     // Load the filter options on initialState unless they've already been loaded
@@ -24,6 +26,7 @@ class FindARestaurantBloc
         isInitialising: false,
         error: '',
         filterOptions: _filterOptions,
+        filterMenuOpen: _filterMenuOpen,
       );
     } else {
       return FindARestaurantState.initialising();
@@ -34,16 +37,17 @@ class FindARestaurantBloc
   Stream<FindARestaurantState> mapEventToState(
       FindARestaurantState state, FindARestaurantEvent event) async* {
     if (event is SearchEvent) {
-      yield state.copyWith(isLoading: true, results: _results);
+      yield state.copyWith(isLoading: true, results: _results, filterMenuOpen: state.filterMenuOpen, filterOptions: _filterOptions);
 
       try {
+        _searchQuery = event.query;
         final response = await _index.search(event.query);
         if (!response.hasError) {
           _results = response.hits
               .map((hit) => Restaurant.fromAlgoliaMap(hit))
               .toList();
 
-          yield FindARestaurantState.displaying(_results);
+          yield FindARestaurantState.displaying(_results, state.filterMenuOpen, state.filterOptions);
         }
       } catch (e) {
         yield FindARestaurantState.failure(e.message);
@@ -69,18 +73,23 @@ class FindARestaurantBloc
         filterOptions: _filterOptions,
       );
     } else if (event is ClearResultsEvent) {
+      _searchQuery = '';
       yield state.copyWith(results: null);
     } else if (event is ToggleFilterMenuEvent) {
-      if (state.filterMenuOpen == null)
+      if (state.filterMenuOpen == null) {
+        _filterMenuOpen = true;
         yield state.copyWith(
             filterMenuOpen: true,
             results: _results,
             filterOptions: _filterOptions);
-      else
+      }
+      else {
+        _filterMenuOpen = !_filterMenuOpen;
         yield state.copyWith(
             filterMenuOpen: !state.filterMenuOpen,
             results: _results,
             filterOptions: _filterOptions);
+      }
     } else if (event is FilterItemSelectedEvent) {
       _filterOptions[event.type][event.index]['selected'] =
           !_filterOptions[event.type][event.index]['selected'];
@@ -88,6 +97,10 @@ class FindARestaurantBloc
           filterMenuOpen: true,
           results: _results,
           filterOptions: _filterOptions);
+
+      if(_searchQuery != null) {
+        dispatch(SearchEvent(query: _searchQuery));
+      }
     }
   }
 

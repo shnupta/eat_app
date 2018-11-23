@@ -44,12 +44,14 @@ class FindARestaurantState {
 		);
 	}
 
-	factory FindARestaurantState.displaying(List<Restaurant> restaurants) {
+	factory FindARestaurantState.displaying(List<Restaurant> restaurants, bool filterMenuOpen, Map<String, List<dynamic>> filterOptions) {
 		return FindARestaurantState(
 				isLoading: false,
 				isInitialising: false,
 				error: '',
 				results: restaurants,
+        filterMenuOpen: filterMenuOpen,
+        filterOptions: filterOptions,
 		);
 	}
 
