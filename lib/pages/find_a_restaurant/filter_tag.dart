@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class FilterTag extends StatelessWidget {
 	final EdgeInsets margin;
 	final String title;
+  final bool selected;
 
-	FilterTag({@required this.title, this.margin = const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0)});
+	FilterTag({@required this.title, this.margin = const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0), this.selected = false});
 	
 
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class FilterTag extends StatelessWidget {
       width: 100.0,
       margin: margin,
 			decoration: BoxDecoration(
-        color: Colors.grey[400],
+        color: this.selected ? Colors.redAccent : Colors.grey[400],
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: Center(

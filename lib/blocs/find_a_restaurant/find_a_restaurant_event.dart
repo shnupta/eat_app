@@ -20,3 +20,11 @@ class ClearResultsEvent extends FindARestaurantEvent {}
 
 /// Dispatch this event when the user clicks on the button to expand the filter menu.
 class ToggleFilterMenuEvent extends FindARestaurantEvent {}
+
+/// Dispatch this event when a user selects a filter option
+class FilterItemSelectedEvent extends FindARestaurantEvent {
+  final String type;
+  final int index;
+
+  FilterItemSelectedEvent({@required this.type, @required this.index});
+}

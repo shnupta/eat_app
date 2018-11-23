@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter/rendering.dart';
+
 import 'package:eat_app/pages/auth.dart';
 import 'package:eat_app/pages/home_container.dart';
 
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]); // Only allow the device to be in portrait mode
     //SystemChrome.setEnabledSystemUIOverlays([]); // Hide notificaiton and navigation bars
+	//debugPaintPointersEnabled = true;
 
     return BlocProvider( 
       // The BlocProvider, provides my authentication bloc to all children of this build context so that they

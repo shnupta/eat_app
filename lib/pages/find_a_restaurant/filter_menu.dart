@@ -41,26 +41,35 @@ class FilterMenu extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
                       if (index == 0)
-                        return FilterTag(
+                        return GestureDetector(
+														onTap: () => findARestaurantBloc.filterOptionSelected('categories', index),
+														child: FilterTag(
+                              selected: state.filterOptions['categories'][index]['selected'],
                           title:
                               '${state.filterOptions['categories'][index]['name']}',
                           margin: EdgeInsets.only(
                               top: 10.0, right: 10.0, bottom: 10.0),
-                        );
+                        ),);
                       else if (index ==
                           state.filterOptions['categories'].length - 1)
-                        return FilterTag(
+                        return GestureDetector(
+														onTap: () => findARestaurantBloc.filterOptionSelected('categories', index),
+														child: FilterTag(
+                              selected: state.filterOptions['categories'][index]['selected'],
                           title:
                               '${state.filterOptions['categories'][index]['name']}',
                           margin: EdgeInsets.only(
                               left: 10.0, top: 10.0, bottom: 10.0),
-                        );
+                        ),);
                       else
-                        return FilterTag(
+                        return GestureDetector(
+														onTap: () => findARestaurantBloc.filterOptionSelected('categories', index),
+														child: FilterTag(
+                              selected: state.filterOptions['categories'][index]['selected'],
 														margin: EdgeInsets.all(10.0),
                           title:
                               '${state.filterOptions['categories'][index]['name']}',
-                        );
+                        ),);
                     },
                   ),
                 ),
