@@ -26,10 +26,14 @@ class AlgoliaIndex {
 
 	// So all the requests are going to be made to the Algolia REST API
 	// These will return a JSON object if the HTTP response is 200 OK
-	Future<AlgoliaResponse> search(String query) async {
-		Map<String, String> body = {
+	Future<AlgoliaResponse> search(String query, [List<String> facetFilters]) async {
+		Map<String, dynamic> body = {
 			'params': 'query=$query'
 		};
+    if(facetFilters != null) {
+      body['facets'] = ['*'];
+      body['facetFilters'] = facetFilters;
+    }
 		final response = await http.post(url, headers: headers, body: json.encode(body));
 		return Future.value(AlgoliaResponse.fromResponse(response));
 	}

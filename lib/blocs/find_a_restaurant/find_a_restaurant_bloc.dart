@@ -12,6 +12,7 @@ class FindARestaurantBloc
     extends Bloc<FindARestaurantEvent, FindARestaurantState> {
   List<Restaurant> _results;
   Map<String, List<dynamic>> _filterOptions;
+  List<String> _facetFilters;
   AlgoliaClient _client;
   AlgoliaIndex _index;
   String _searchQuery;
@@ -41,8 +42,15 @@ class FindARestaurantBloc
 
       try {
         _searchQuery = event.query;
-        final response = await _index.search(event.query);
-        if (!response.hasError) {
+        AlgoliaResponse response;
+        if(_facetFilters.length > 0 && event.query.isNotEmpty)
+          response = await _index.search(event.query, _facetFilters);
+        else if(event.query.isNotEmpty)
+          response = await _index.search(event.query);
+        else 
+          _results = List();
+
+        if (response != null && !response.hasError) {
           _results = response.hits
               .map((hit) => Restaurant.fromAlgoliaMap(hit))
               .toList();
@@ -58,12 +66,14 @@ class FindARestaurantBloc
       _index = _client.initIndex('restaurants_search');
 
       List<Map<String, dynamic>> cats =
-          await Database.readDocumentsAtCollection('categories');
+          await Database.readDocumentsAtCollection('category');
       _filterOptions = {
-        'categories': cats.map((c) {
+        'category': cats.map((c) {
           return {'name': c['name'], 'selected': false};
         }).toList()
       };
+
+      _facetFilters = List();
 
       yield FindARestaurantState(
         isLoading: false,
@@ -74,6 +84,7 @@ class FindARestaurantBloc
       );
     } else if (event is ClearResultsEvent) {
       _searchQuery = '';
+      _results = null;
       yield state.copyWith(results: null);
     } else if (event is ToggleFilterMenuEvent) {
       if (state.filterMenuOpen == null) {
@@ -93,6 +104,13 @@ class FindARestaurantBloc
     } else if (event is FilterItemSelectedEvent) {
       _filterOptions[event.type][event.index]['selected'] =
           !_filterOptions[event.type][event.index]['selected'];
+
+      if(_filterOptions[event.type][event.index]['selected']) {
+        _facetFilters.add('${event.type}:${_filterOptions[event.type][event.index]['name']}');
+      } else { 
+        _facetFilters.remove('${event.type}:${_filterOptions[event.type][event.index]['name']}');
+      }
+
       yield state.copyWith(
           filterMenuOpen: true,
           results: _results,

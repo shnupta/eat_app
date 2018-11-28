@@ -37,38 +37,38 @@ class FilterMenu extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   alignment: Alignment.center,
                   child: ListView.builder(
-                    itemCount: state.filterOptions['categories'].length,
+                    itemCount: state.filterOptions['category'].length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
                       if (index == 0)
                         return GestureDetector(
-														onTap: () => findARestaurantBloc.filterOptionSelected('categories', index),
+														onTap: () => findARestaurantBloc.filterOptionSelected('category', index),
 														child: FilterTag(
-                              selected: state.filterOptions['categories'][index]['selected'],
+                              selected: state.filterOptions['category'][index]['selected'],
                           title:
-                              '${state.filterOptions['categories'][index]['name']}',
+                              '${state.filterOptions['category'][index]['name']}',
                           margin: EdgeInsets.only(
                               top: 10.0, right: 10.0, bottom: 10.0),
                         ),);
                       else if (index ==
-                          state.filterOptions['categories'].length - 1)
+                          state.filterOptions['category'].length - 1)
                         return GestureDetector(
-														onTap: () => findARestaurantBloc.filterOptionSelected('categories', index),
+														onTap: () => findARestaurantBloc.filterOptionSelected('category', index),
 														child: FilterTag(
-                              selected: state.filterOptions['categories'][index]['selected'],
+                              selected: state.filterOptions['category'][index]['selected'],
                           title:
-                              '${state.filterOptions['categories'][index]['name']}',
+                              '${state.filterOptions['category'][index]['name']}',
                           margin: EdgeInsets.only(
                               left: 10.0, top: 10.0, bottom: 10.0),
                         ),);
                       else
                         return GestureDetector(
-														onTap: () => findARestaurantBloc.filterOptionSelected('categories', index),
+														onTap: () => findARestaurantBloc.filterOptionSelected('category', index),
 														child: FilterTag(
-                              selected: state.filterOptions['categories'][index]['selected'],
+                              selected: state.filterOptions['category'][index]['selected'],
 														margin: EdgeInsets.all(10.0),
                           title:
-                              '${state.filterOptions['categories'][index]['name']}',
+                              '${state.filterOptions['category'][index]['name']}',
                         ),);
                     },
                   ),
