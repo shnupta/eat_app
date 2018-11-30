@@ -32,8 +32,11 @@ class AlgoliaIndex {
 		};
     if(facetFilters != null) {
       body['facets'] = ['*'];
-      body['facetFilters'] = facetFilters;
+      body['facetFilters'] = [facetFilters];
     }
+
+    var temp = json.encode(body);
+
 		final response = await http.post(url, headers: headers, body: json.encode(body));
 		return Future.value(AlgoliaResponse.fromResponse(response));
 	}

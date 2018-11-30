@@ -52,7 +52,7 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
                           margin: EdgeInsets.only(top: 10.0, left: 10.0),
                           textEditingController:
                               _searchInputTextEditingController,
-                          hintText: 'Search for a restaurant...',
+                          hintText: 'Restaurant, location or food type...',
                         ),
                       ),
                     ),
@@ -123,7 +123,7 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
       }
     } else if (!state.isLoading) {
       return Center(
-        child: Text('Search for a restaurant above!'),
+        child: Text('Search above!'),
       );
     }
   }

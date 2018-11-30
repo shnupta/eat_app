@@ -67,9 +67,14 @@ class FindARestaurantBloc
 
       List<Map<String, dynamic>> cats =
           await Database.readDocumentsAtCollection('category');
+      List<Map<String, dynamic>> locs =
+          await Database.readDocumentsAtCollection('location');
       _filterOptions = {
         'category': cats.map((c) {
           return {'name': c['name'], 'selected': false};
+        }).toList(),
+        'location': locs.map((l) {
+          return {'name': l['name'], 'selected': false};
         }).toList()
       };
 
