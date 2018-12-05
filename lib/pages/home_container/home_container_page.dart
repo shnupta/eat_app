@@ -10,11 +10,15 @@ import 'package:eat_app/blocs/find_a_restaurant.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 // This page will be responsible for initialising the blocs that will be needed by child pages.
 // It will also act as a kind of container around all the other pages that can be visited when
 // a user is logged in.
 
 class HomeContainerPage extends StatelessWidget {
+
+  GoogleMapController _googleMapController;
 
   final NewsBloc newsBloc = NewsBloc();
 	final FindARestaurantBloc findARestaurantBloc = FindARestaurantBloc();
@@ -28,7 +32,11 @@ class HomeContainerPage extends StatelessWidget {
           children: <Widget>[
             BlocProvider(bloc: newsBloc, child: HomePage(),),
             BlocProvider(bloc: findARestaurantBloc, child: FindARestaurantPage()),
-            Container(),
+            Container(
+              child: GoogleMap(
+                onMapCreated: (GoogleMapController controller) => null,
+              ),
+            ),
             SettingsPage(),
           ],
         ),

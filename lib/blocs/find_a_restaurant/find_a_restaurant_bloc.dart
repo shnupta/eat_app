@@ -12,7 +12,7 @@ class FindARestaurantBloc
     extends Bloc<FindARestaurantEvent, FindARestaurantState> {
   List<Restaurant> _results;
   Map<String, List<dynamic>> _filterOptions;
-  List<String> _facetFilters;
+  Map<String, List<String>> _facetFilters;
   AlgoliaClient _client;
   AlgoliaIndex _index;
   String _searchQuery;
@@ -78,7 +78,7 @@ class FindARestaurantBloc
         }).toList()
       };
 
-      _facetFilters = List();
+      _facetFilters = Map();
 
       yield FindARestaurantState(
         isLoading: false,
@@ -111,9 +111,10 @@ class FindARestaurantBloc
           !_filterOptions[event.type][event.index]['selected'];
 
       if(_filterOptions[event.type][event.index]['selected']) {
-        _facetFilters.add('${event.type}:${_filterOptions[event.type][event.index]['name']}');
+        if(_facetFilters['${event.type}'] == null) _facetFilters['${event.type}'] = List<String>();
+        _facetFilters['${event.type}'].add('${_filterOptions[event.type][event.index]['name']}');
       } else { 
-        _facetFilters.remove('${event.type}:${_filterOptions[event.type][event.index]['name']}');
+        _facetFilters['${event.type}'].remove('${_filterOptions[event.type][event.index]['name']}');
       }
 
       yield state.copyWith(

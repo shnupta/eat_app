@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter/scheduler.dart';
+
 import 'package:eat_app/widgets.dart';
 import 'package:eat_app/pages/find_a_restaurant/filter_menu.dart';
 
@@ -29,6 +31,19 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
         if (state.isInitialising) {
           findARestaurantBloc.initialise();
           return Container();
+        }
+
+        if (state.error.isNotEmpty) {
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return Dialog(
+                  child: Text(state.error),
+                );
+              },
+            );
+          });
         }
 
         return Scaffold(
@@ -98,7 +113,7 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
       if (state.results.length == 0) return Center(child: Text('No matches'));
       if (state.isLoading) {
         return Stack(
-						alignment: Alignment.center,
+          alignment: Alignment.center,
           children: <Widget>[
             ListView(
               children: state.results
