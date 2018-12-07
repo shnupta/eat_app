@@ -18,8 +18,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomeContainerPage extends StatelessWidget {
 
-  GoogleMapController _googleMapController;
-
   final NewsBloc newsBloc = NewsBloc();
 	final FindARestaurantBloc findARestaurantBloc = FindARestaurantBloc();
 
@@ -33,9 +31,6 @@ class HomeContainerPage extends StatelessWidget {
             BlocProvider(bloc: newsBloc, child: HomePage(),),
             BlocProvider(bloc: findARestaurantBloc, child: FindARestaurantPage()),
             Container(
-              child: GoogleMap(
-                onMapCreated: (GoogleMapController controller) => null,
-              ),
             ),
             SettingsPage(),
           ],

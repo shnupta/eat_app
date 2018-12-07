@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:eat_app/models.dart';
 
+import 'package:eat_app/algolia/algolia_api.dart';
+
 class FindARestaurantState {
 	/// Indicates whether a search is being performed
 	final bool isLoading;
@@ -15,14 +17,22 @@ class FindARestaurantState {
 	final bool filterMenuOpen;
 	/// A Map of the filter options available
 	final Map<String, List<dynamic>> filterOptions;
+  final Map<String, List<String>> facetFilters;
+  final AlgoliaClient client;
+  final AlgoliaIndex index;
+  final String query;
 
 	FindARestaurantState({
-		@required this.isLoading,
-		@required this.isInitialising,
-		@required this.error,
-		@required this.results,
+		this.isLoading,
+		this.isInitialising,
+		this.error,
+		this.results,
 		this.filterMenuOpen,
 		this.filterOptions,
+    this.client,
+    this.facetFilters,
+    this.index,
+    this.query,
 	});
 
 
@@ -64,14 +74,20 @@ class FindARestaurantState {
 		);
 	}
 
-	FindARestaurantState copyWith({bool isLoading, bool isInitialising, String error, @required List<Restaurant> results, bool filterMenuOpen, Map<String, List<dynamic>> filterOptions}) {
+	FindARestaurantState copyWith({bool isLoading, bool isInitialising, String error, 
+  List<Restaurant> results, bool filterMenuOpen, Map<String, List<dynamic>> filterOptions,
+  AlgoliaClient client, AlgoliaIndex index, Map<String, List<String>> facetFilters, String query}) {
 		return FindARestaurantState(
 				isLoading: isLoading ?? this.isLoading,
 				isInitialising: isInitialising ?? this.isInitialising,
 				error: error ?? this.error,
-				results: results,
+				results: results ?? this.results,
 				filterMenuOpen: filterMenuOpen ?? this.filterMenuOpen,
 				filterOptions: filterOptions ?? this.filterOptions,
+        facetFilters: facetFilters ?? this.facetFilters,
+        index: index ?? this.index,
+        client: client ?? this.client,
+        query: query ?? this.query,
 		);
 	}
 }

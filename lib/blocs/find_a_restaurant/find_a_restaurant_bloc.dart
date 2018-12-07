@@ -10,66 +10,48 @@ import 'package:bloc/bloc.dart';
 
 class FindARestaurantBloc
     extends Bloc<FindARestaurantEvent, FindARestaurantState> {
-  List<Restaurant> _results;
-  Map<String, List<dynamic>> _filterOptions;
-  Map<String, List<String>> _facetFilters;
-  AlgoliaClient _client;
-  AlgoliaIndex _index;
-  String _searchQuery;
-  bool _filterMenuOpen;
 
   FindARestaurantState get initialState {
     // Load the filter options on initialState unless they've already been loaded
-    if (_results != null && _filterOptions != null) {
-      return FindARestaurantState(
-        results: _results,
-        isLoading: false,
-        isInitialising: false,
-        error: '',
-        filterOptions: _filterOptions,
-        filterMenuOpen: _filterMenuOpen,
-      );
-    } else {
       return FindARestaurantState.initialising();
-    }
   }
 
   @override
   Stream<FindARestaurantState> mapEventToState(
       FindARestaurantState state, FindARestaurantEvent event) async* {
     if (event is SearchEvent) {
-      yield state.copyWith(isLoading: true, results: _results, filterMenuOpen: state.filterMenuOpen, filterOptions: _filterOptions);
+      yield state.copyWith(isLoading: true, query: event.query);
 
       try {
-        _searchQuery = event.query;
+        String _searchQuery = event.query ?? "";
         AlgoliaResponse response;
-        if(_facetFilters.length > 0 && event.query.isNotEmpty)
-          response = await _index.search(event.query, _facetFilters);
-        else if(event.query.isNotEmpty)
-          response = await _index.search(event.query);
-        else 
-          _results = List();
+        if(state.facetFilters.length > 0 /*&& event.query.isNotEmpty*/)
+          response = await state.index.search(event.query, state.facetFilters);
+        else //if(event.query.isNotEmpty)
+          response = await state.index.search(_searchQuery);
+        //else 
+        //  _results = List();
 
         if (response != null && !response.hasError) {
-          _results = response.hits
+          List<Restaurant> results = response.hits
               .map((hit) => Restaurant.fromAlgoliaMap(hit))
               .toList();
 
-          yield FindARestaurantState.displaying(_results, state.filterMenuOpen, state.filterOptions);
+          yield state.copyWith(results: results, query: event.query);
         }
       } catch (e) {
         yield FindARestaurantState.failure(e.message);
       }
     } else if (event is InitialiseEvent) {
-      _client = AlgoliaClient(
+      AlgoliaClient client = AlgoliaClient(
           appID: '1JUPZEJV71', searchKey: 'fdba16a946692e6ff2c30fc5d672203b');
-      _index = _client.initIndex('restaurants_search');
+      AlgoliaIndex index = client.initIndex('restaurants_search');
 
       List<Map<String, dynamic>> cats =
           await Database.readDocumentsAtCollection('category');
       List<Map<String, dynamic>> locs =
           await Database.readDocumentsAtCollection('location');
-      _filterOptions = {
+      Map<String, List<dynamic>> filterOptions = {
         'category': cats.map((c) {
           return {'name': c['name'], 'selected': false};
         }).toList(),
@@ -78,35 +60,35 @@ class FindARestaurantBloc
         }).toList()
       };
 
-      _facetFilters = Map();
+      Map<String, List<String>> facetFilters = Map();
 
-      yield FindARestaurantState(
+      yield state.copyWith(
         isLoading: false,
         isInitialising: false,
         error: '',
         results: null,
-        filterOptions: _filterOptions,
+        filterOptions: filterOptions,
+        facetFilters: facetFilters,
+        index: index,
+        client: client,
       );
+
     } else if (event is ClearResultsEvent) {
-      _searchQuery = '';
-      _results = null;
-      yield state.copyWith(results: null);
+      yield state.copyWith(results: [], query: "");
     } else if (event is ToggleFilterMenuEvent) {
       if (state.filterMenuOpen == null) {
-        _filterMenuOpen = true;
         yield state.copyWith(
-            filterMenuOpen: true,
-            results: _results,
-            filterOptions: _filterOptions);
+            filterMenuOpen: true);
       }
       else {
-        _filterMenuOpen = !_filterMenuOpen;
         yield state.copyWith(
-            filterMenuOpen: !state.filterMenuOpen,
-            results: _results,
-            filterOptions: _filterOptions);
+            filterMenuOpen: !state.filterMenuOpen,);
       }
     } else if (event is FilterItemSelectedEvent) {
+
+      var _filterOptions = state.filterOptions;
+      var _facetFilters = state.facetFilters;
+
       _filterOptions[event.type][event.index]['selected'] =
           !_filterOptions[event.type][event.index]['selected'];
 
@@ -119,11 +101,11 @@ class FindARestaurantBloc
 
       yield state.copyWith(
           filterMenuOpen: true,
-          results: _results,
-          filterOptions: _filterOptions);
+          filterOptions: _filterOptions,
+          facetFilters: _facetFilters);
 
-      if(_searchQuery != null) {
-        dispatch(SearchEvent(query: _searchQuery));
+      if(state.query != null) {
+        search(state.query);
       }
     }
   }

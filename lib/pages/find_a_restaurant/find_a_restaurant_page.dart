@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:eat_app/widgets.dart';
 import 'package:eat_app/pages/find_a_restaurant/filter_menu.dart';
+import 'package:eat_app/pages/restaurant_profile.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -58,11 +59,11 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
                       child: Container(
                         child: SearchInput(
                           onChanged: (text) {
-                            if (!text.isEmpty)
-                              findARestaurantBloc.search(
-                                  _searchInputTextEditingController.text);
-                            else
-                              findARestaurantBloc.clearResults();
+                            //if (!text.isEmpty)
+                            findARestaurantBloc
+                                .search(_searchInputTextEditingController.text);
+                            //else
+                            //  findARestaurantBloc.clearResults();
                           },
                           margin: EdgeInsets.only(top: 10.0, left: 10.0),
                           textEditingController:
@@ -129,9 +130,16 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
       } else {
         return ListView(
           children: state.results
-              .map((result) => ListTile(
-                    title: Text(result.name),
-                    subtitle: Text(result.description),
+              .map((result) => GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => RestaurantProfilePage(name: result.name),
+                  )
+                ),
+                    child: ListTile(
+                      title: Text(result.name),
+                      subtitle: Text(result.description),
+                    ),
                   ))
               .toList(),
         );
