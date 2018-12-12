@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/scheduler.dart';
 
-import 'package:eat_app/widgets.dart';
-import 'package:eat_app/pages/find_a_restaurant/filter_menu.dart';
-import 'package:eat_app/pages/restaurant_profile.dart';
+import 'package:snacc/widgets.dart';
+import 'package:snacc/pages/find_a_restaurant/filter_menu.dart';
+import 'package:snacc/pages/restaurant_profile.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:eat_app/blocs/find_a_restaurant.dart';
+import 'package:snacc/blocs/find_a_restaurant.dart';
 
 class FindARestaurantPage extends StatefulWidget {
   createState() => _FindARestaurantPageState();
@@ -133,7 +133,7 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
               .map((result) => GestureDetector(
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (BuildContext context) => RestaurantProfilePage(name: result.name),
+                    builder: (BuildContext context) => RestaurantProfilePage(restaurant: result),
                   )
                 ),
                     child: ListTile(

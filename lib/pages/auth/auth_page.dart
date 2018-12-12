@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/pages/auth/login_page.dart';
-import 'package:eat_app/pages/auth/signup_page.dart';
-import 'package:eat_app/pages/auth/auth_home_page.dart';
+import 'package:snacc/pages/auth/login_page.dart';
+import 'package:snacc/pages/auth/signup_page.dart';
+import 'package:snacc/pages/auth/auth_home_page.dart';
 
 /// The AuthPage class is a page that will display three screens. A
 /// auth page landing, a login page and a signup page. It is a

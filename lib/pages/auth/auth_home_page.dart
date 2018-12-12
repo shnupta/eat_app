@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/widgets.dart';
+import 'package:snacc/widgets.dart';
 
 
 /// The centre page of the 3 page auth system. Contains the app name and logo and the two buttons to navigate
@@ -31,21 +31,21 @@ class AuthHomePage extends StatelessWidget {
                   SizedBox(height: 60.0),
                   Container(
                     child: Text(
-                      'EAT',
+                      'snacc',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 80.0,
                       ),
                     ),
                   ),
-                  Container(
-                    child: Text(
-                      'app',
-                      style: TextStyle(
-                        fontSize: 50.0,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   child: Text(
+                  //     'app',
+                  //     style: TextStyle(
+                  //       fontSize: 50.0,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

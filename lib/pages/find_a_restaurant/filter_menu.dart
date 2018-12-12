@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:eat_app/blocs/find_a_restaurant.dart';
+import 'package:snacc/blocs/find_a_restaurant.dart';
 
-import 'package:eat_app/pages/find_a_restaurant/filter_tag.dart';
+import 'package:snacc/pages/find_a_restaurant/filter_tag.dart';
 
 class FilterMenu extends StatelessWidget {
   Widget build(BuildContext context) {

@@ -1,8 +1,8 @@
-import 'package:eat_app/blocs/news/news_event.dart';
-import 'package:eat_app/blocs/news/news_state.dart';
+import 'package:snacc/blocs/news/news_event.dart';
+import 'package:snacc/blocs/news/news_state.dart';
 
-import 'package:eat_app/models.dart';
-import 'package:eat_app/database.dart';
+import 'package:snacc/models.dart';
+import 'package:snacc/database.dart';
 
 import 'package:bloc/bloc.dart';
 

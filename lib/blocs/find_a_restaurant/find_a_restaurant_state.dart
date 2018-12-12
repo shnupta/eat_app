@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/models.dart';
+import 'package:snacc/models.dart';
 
-import 'package:eat_app/algolia/algolia_api.dart';
+import 'package:snacc/algolia/algolia_api.dart';
 
 class FindARestaurantState {
 	/// Indicates whether a search is being performed

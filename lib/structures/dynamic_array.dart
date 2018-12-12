@@ -1,4 +1,4 @@
-import 'package:eat_app/structures/exceptions.dart';
+import 'package:snacc/structures/exceptions.dart';
 
 import 'dart:collection';
 

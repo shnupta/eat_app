@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/models.dart';
+import 'package:snacc/models.dart';
 
 /// An [Offer] is a type of [Article] that represents a current deal that a restaurant or the app has
 /// available.

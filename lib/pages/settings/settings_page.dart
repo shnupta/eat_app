@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:eat_app/blocs/authentication.dart';
+import 'package:snacc/blocs/authentication.dart';
 
-import 'package:eat_app/widgets.dart';
+import 'package:snacc/widgets.dart';
 
 class SettingsPage extends StatelessWidget {
   @override

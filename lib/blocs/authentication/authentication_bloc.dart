@@ -4,10 +4,10 @@ import 'package:bloc/bloc.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:eat_app/blocs/authentication/authentication_state.dart';
-import 'package:eat_app/blocs/authentication/authentication_event.dart';
+import 'package:snacc/blocs/authentication/authentication_state.dart';
+import 'package:snacc/blocs/authentication/authentication_event.dart';
 
-import 'package:eat_app/models.dart';
+import 'package:snacc/models.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 

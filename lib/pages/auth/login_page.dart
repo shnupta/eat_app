@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/blocs/authentication.dart';
+import 'package:snacc/blocs/authentication.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:eat_app/widgets.dart';
+import 'package:snacc/widgets.dart';
 
 /// The login page contains the email and password text inputs and the login button.
 class LoginPage extends StatefulWidget {

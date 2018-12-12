@@ -10,9 +10,11 @@ class Restaurant {
   final String description;
 	/// ID of the object in firebase
 	final String id;
+  /// URL of the restaurant's logo image
+  final String logoUrl;
   
 
-  Restaurant({@required this.id, @required this.name, @required this.description});
+  Restaurant({@required this.id, @required this.name, @required this.description, @required this.logoUrl});
 
 
 	/// Constructs a [Restaurant] object from a hit object of an Algolia search response
@@ -21,6 +23,7 @@ class Restaurant {
 				id: map['objectID'],
 				name: map['name'],
 				description: map['description'],
+        logoUrl: map['logoUrl'] ?? "https://firebasestorage.googleapis.com/v0/b/eat-app-d60bf.appspot.com/o/restaurant_logos%2Fzizi%20logo.png?alt=media&token=48874367-a048-4e2a-9ba7-6fc347fcc62b"
 		);
 	}
 }

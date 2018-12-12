@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/algolia/algolia_index.dart';
+import 'package:snacc/algolia/algolia_index.dart';
 
 /// Acts as the base for the communication with your Algolia application and your app.
 /// Requires IDs and keys to connect with the Algolia REST API

@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'package:eat_app/algolia/algolia_response.dart';
+import 'package:snacc/algolia/algolia_response.dart';
 
 class AlgoliaIndex {
 	final String indexName;

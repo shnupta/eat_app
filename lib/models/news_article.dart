@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/models.dart';
+import 'package:snacc/models.dart';
 
 /// A [NewsArticle] is a type of article that is typically an update from the app to users.
 /// However, it could be a notice from a restaurant.

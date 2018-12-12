@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/blocs/news.dart';
+import 'package:snacc/blocs/news.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 

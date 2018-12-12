@@ -1,10 +1,10 @@
-import 'package:eat_app/blocs/find_a_restaurant/find_a_restaurant_event.dart';
-import 'package:eat_app/blocs/find_a_restaurant/find_a_restaurant_state.dart';
+import 'package:snacc/blocs/find_a_restaurant/find_a_restaurant_event.dart';
+import 'package:snacc/blocs/find_a_restaurant/find_a_restaurant_state.dart';
 
-import 'package:eat_app/models.dart';
-import 'package:eat_app/algolia/algolia_api.dart';
+import 'package:snacc/models.dart';
+import 'package:snacc/algolia/algolia_api.dart';
 
-import 'package:eat_app/database.dart';
+import 'package:snacc/database.dart';
 
 import 'package:bloc/bloc.dart';
 
@@ -72,7 +72,7 @@ class FindARestaurantBloc
         index: index,
         client: client,
       );
-
+      search("");
     } else if (event is ClearResultsEvent) {
       yield state.copyWith(results: [], query: "");
     } else if (event is ToggleFilterMenuEvent) {

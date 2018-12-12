@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:eat_app/models.dart';
+import 'package:snacc/models.dart';
 
 class NewsState {
   final bool isLoading;

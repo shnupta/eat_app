@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/rendering.dart';
 
-import 'package:eat_app/pages/auth.dart';
-import 'package:eat_app/pages/home_container.dart';
+import 'package:snacc/pages/auth.dart';
+import 'package:snacc/pages/home_container.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:eat_app/blocs/authentication.dart';
+import 'package:snacc/blocs/authentication.dart';
 
 import 'package:flutter/services.dart';
 
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       child: new MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: _createTheme(),
-        title: 'eat_app',
+        title: 'snacc',
         home: _rootPage(),
       ),
     );
@@ -80,7 +80,10 @@ class MyApp extends StatelessWidget {
   ThemeData _createTheme() {
     return ThemeData(
       fontFamily: 'K2D',
-      primaryColor: Colors.redAccent,
+      primaryColor: Color(0xFFFF5252),
+      accentColor: Color(0xFFe1e6e1),
+      cursorColor: Color(0xFF2274a5),
+      primaryColorDark: Color(0xFF0d0106),
     );
   }
 

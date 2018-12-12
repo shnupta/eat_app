@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:eat_app/models/user.dart';
+import 'package:snacc/models/user.dart';
 
 /// AuthenticationState has a few different statuses and properties that can be used within the app:
 /// isLoading: this will be true when a login is occuring
