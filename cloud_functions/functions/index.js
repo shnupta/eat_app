@@ -40,3 +40,12 @@ exports.onRestaurantCreated = functions.firestore.document('restaurants/{restaur
     const index = client.initIndex(ALGOLIA_INDEX_NAME);
     return index.saveObject(document);
 });
+
+exports.onRestaurantUpdated = functions.firestore.document('restaurants/{restaurant_id}').onUpdate((snapshot, context) => {
+    const document = snapshot.after.data();
+
+    document.objectID = context.params.restaurant_id;
+
+    const index = client.initIndex(ALGOLIA_INDEX_NAME);
+    return index.saveObject(document);
+});

@@ -23,7 +23,7 @@ class Restaurant {
 				id: map['objectID'],
 				name: map['name'],
 				description: map['description'],
-        logoUrl: map['logoUrl'] ?? "https://firebasestorage.googleapis.com/v0/b/eat-app-d60bf.appspot.com/o/restaurant_logos%2Fzizi%20logo.png?alt=media&token=48874367-a048-4e2a-9ba7-6fc347fcc62b"
+        logoUrl: map['logoUrl'] ?? "https://firebasestorage.googleapis.com/v0/b/eat-app-d60bf.appspot.com/o/no-logo.png?alt=media&token=61db48f4-27f7-4862-82de-40980649fd17"
 		);
 	}
 }

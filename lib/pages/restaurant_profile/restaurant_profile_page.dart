@@ -13,7 +13,7 @@ class RestaurantProfilePage extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           title: Text(this.restaurant.name),
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         body: Center(
           child: Container(
