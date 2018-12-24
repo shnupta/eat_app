@@ -12,7 +12,7 @@ class StandardFilledButton extends StatelessWidget {
   StandardFilledButton({
     @required this.text,
     @required this.onPressed,
-    this.backgroundColor = Colors.redAccent,
+    this.backgroundColor = const Color(0xFFFF5757),
     this.splashColor = Colors.white,
     this.margin = const EdgeInsets.all(8.0),
   });

@@ -28,3 +28,15 @@ class FilterItemSelectedEvent extends FindARestaurantEvent {
 
   FilterItemSelectedEvent({@required this.type, @required this.index});
 }
+
+class AvailbleToSelectedEvent extends FindARestaurantEvent {
+  final String time;
+
+  AvailbleToSelectedEvent({@required this.time});
+}
+
+class AvailbleFromSelectedEvent extends FindARestaurantEvent {
+  final String time;
+
+  AvailbleFromSelectedEvent({@required this.time});
+}

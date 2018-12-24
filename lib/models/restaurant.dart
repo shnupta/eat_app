@@ -12,9 +12,12 @@ class Restaurant {
 	final String id;
   /// URL of the restaurant's logo image
   final String logoUrl;
+  /// Map of the availability of booking data for a restaurant
+  final Map<String, dynamic> availability;
   
 
-  Restaurant({@required this.id, @required this.name, @required this.description, @required this.logoUrl});
+  Restaurant({@required this.id, @required this.name, @required this.description, @required this.logoUrl,
+  @required this.availability});
 
 
 	/// Constructs a [Restaurant] object from a hit object of an Algolia search response
@@ -23,7 +26,8 @@ class Restaurant {
 				id: map['objectID'],
 				name: map['name'],
 				description: map['description'],
-        logoUrl: map['logoUrl'] ?? "https://firebasestorage.googleapis.com/v0/b/eat-app-d60bf.appspot.com/o/no-logo.png?alt=media&token=61db48f4-27f7-4862-82de-40980649fd17"
+        logoUrl: map['logoUrl'] ?? "https://firebasestorage.googleapis.com/v0/b/eat-app-d60bf.appspot.com/o/no-logo.png?alt=media&token=61db48f4-27f7-4862-82de-40980649fd17",
+        availability: map['availability'] ?? Map()
 		);
 	}
 }

@@ -80,8 +80,8 @@ class MyApp extends StatelessWidget {
   ThemeData _createTheme() {
     return ThemeData(
       fontFamily: 'K2D',
-      primaryColor: Color(0xFFFF5252),
-      accentColor: Color(0xFFFF5252), //Color(0xFFe1e6e1),
+      primaryColor: Color(0xFFFEAA2B),
+      accentColor: Color(0xFFFF5757), //Color(0xFFe1e6e1),
       cursorColor: Color(0xFF2274a5),
       primaryColorDark: Color(0xFF0d0106),
     );

@@ -45,7 +45,7 @@ class _NormalTextInputState extends State<NormalTextInput> {
                   widget.title,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.redAccent,
+                    color: Theme.of(context).accentColor,
                     fontSize: 15.0,
                   ),
                 ),
@@ -60,7 +60,7 @@ class _NormalTextInputState extends State<NormalTextInput> {
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                  color: Colors.redAccent,
+                  color: Theme.of(context).accentColor,
                   width: 0.5,
                   style: BorderStyle.solid),
             ),

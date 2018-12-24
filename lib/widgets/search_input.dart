@@ -53,7 +53,7 @@ class _SearchInputState extends State<SearchInput> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Expanded(
-                child: Icon(Icons.search, color: Colors.redAccent),
+                child: Icon(Icons.search, color: Theme.of(context).accentColor),
               ),
               Expanded(
                 flex: 10,

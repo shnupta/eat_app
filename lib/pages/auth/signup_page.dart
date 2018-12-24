@@ -65,7 +65,7 @@ class _SignupPageState extends State<SignupPage> {
                   child: Center(
                     child: Icon(
                       Icons.open_in_browser,
-                      color: Colors.redAccent,
+                      color: Theme.of(context).accentColor,
                       size: 50.0,
                     ),
                   ),

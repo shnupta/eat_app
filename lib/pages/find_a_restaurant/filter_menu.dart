@@ -7,7 +7,18 @@ import 'package:snacc/blocs/find_a_restaurant.dart';
 import 'package:snacc/pages/find_a_restaurant/filter_tag.dart';
 
 class FilterMenu extends StatelessWidget {
+
   Widget build(BuildContext context) {
+    List<String> _times = List.generate(
+        48,
+        (int increment) =>
+            ((increment * 30) / 60).floor().toString() +
+            ":" +
+            ((increment % 2 == 0) ? "00" : "30"));
+
+    String _availableFrom = _times[0];
+    String _availableTo = _times[0];
+
     FindARestaurantBloc findARestaurantBloc =
         BlocProvider.of<FindARestaurantBloc>(context);
 
@@ -112,6 +123,7 @@ class FilterMenu extends StatelessWidget {
                           onTap: () => findARestaurantBloc.filterOptionSelected(
                               'location', index),
                           child: FilterTag(
+                            selectedColor: Theme.of(context).primaryColor,
                             selected: state.filterOptions['location'][index]
                                 ['selected'],
                             title:
@@ -126,6 +138,7 @@ class FilterMenu extends StatelessWidget {
                           onTap: () => findARestaurantBloc.filterOptionSelected(
                               'location', index),
                           child: FilterTag(
+                            selectedColor: Theme.of(context).primaryColor,
                             selected: state.filterOptions['location'][index]
                                 ['selected'],
                             title:
@@ -139,6 +152,7 @@ class FilterMenu extends StatelessWidget {
                           onTap: () => findARestaurantBloc.filterOptionSelected(
                               'location', index),
                           child: FilterTag(
+                            selectedColor: Theme.of(context).primaryColor,
                             selected: state.filterOptions['location'][index]
                                 ['selected'],
                             margin: EdgeInsets.all(10.0),
@@ -173,17 +187,39 @@ class FilterMenu extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          color: Colors.blue,
+                          alignment: Alignment.center,
+                          child: DropdownButton(
+                            value: state.availableFrom,
+                            onChanged: (dynamic time) => findARestaurantBloc.setAvailableFrom(time),
+                            items: _times
+                                .map(
+                                  (time) => DropdownMenuItem(child: Text(time), value: time,),
+                                )
+                                .toList(),
+                          ),
                         ),
                       ),
                       Expanded(
                         child: Container(
-                          color: Colors.pink,
+                          alignment: Alignment.center,
+                          child: Text(
+                            'to',
+                            style: TextStyle(fontSize: 16),
+                          ),
                         ),
                       ),
                       Expanded(
                         child: Container(
-                          color: Colors.purple,
+                          alignment: Alignment.center,
+                          child: DropdownButton(
+                            value: state.availableTo,
+                            onChanged: (dynamic time) => findARestaurantBloc.setAvailableTo(time),
+                            items: _times
+                                .map(
+                                  (time) => DropdownMenuItem(child: Text(time), value: time),
+                                )
+                                .toList(),
+                          ),
                         ),
                       ),
                     ],

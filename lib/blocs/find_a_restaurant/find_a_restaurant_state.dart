@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'package:snacc/models.dart';
 
 import 'package:snacc/algolia/algolia_api.dart';
@@ -21,6 +19,8 @@ class FindARestaurantState {
   final AlgoliaClient client;
   final AlgoliaIndex index;
   final String query;
+  final String availableFrom;
+  final String availableTo;
 
 	FindARestaurantState({
 		this.isLoading,
@@ -33,6 +33,8 @@ class FindARestaurantState {
     this.facetFilters,
     this.index,
     this.query,
+    this.availableFrom,
+    this.availableTo,
 	});
 
 
@@ -76,7 +78,8 @@ class FindARestaurantState {
 
 	FindARestaurantState copyWith({bool isLoading, bool isInitialising, String error, 
   List<Restaurant> results, bool filterMenuOpen, Map<String, List<dynamic>> filterOptions,
-  AlgoliaClient client, AlgoliaIndex index, Map<String, List<String>> facetFilters, String query}) {
+  AlgoliaClient client, AlgoliaIndex index, Map<String, List<String>> facetFilters, String query,
+  String availableTo, String availableFrom}) {
 		return FindARestaurantState(
 				isLoading: isLoading ?? this.isLoading,
 				isInitialising: isInitialising ?? this.isInitialising,
@@ -88,6 +91,8 @@ class FindARestaurantState {
         index: index ?? this.index,
         client: client ?? this.client,
         query: query ?? this.query,
+        availableFrom: availableFrom ?? this.availableFrom,
+        availableTo: availableTo ?? this.availableTo,
 		);
 	}
 }

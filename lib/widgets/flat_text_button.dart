@@ -18,7 +18,7 @@ class FlatTextButton extends StatelessWidget {
           text,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.redAccent,
+            color: Theme.of(context).accentColor,
             fontSize: 15.0,
           ),
           textAlign: TextAlign.end,

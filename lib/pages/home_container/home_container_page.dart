@@ -10,8 +10,6 @@ import 'package:snacc/blocs/find_a_restaurant.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 // This page will be responsible for initialising the blocs that will be needed by child pages.
 // It will also act as a kind of container around all the other pages that can be visited when
 // a user is logged in.
@@ -48,8 +46,8 @@ class _HomeContainerPageState extends State<HomeContainerPage> {
           title: TabBar(
             indicatorWeight: 4.0,
             indicatorSize: TabBarIndicatorSize.label,
-            indicatorColor: Colors.redAccent,
-            labelColor: Colors.redAccent,
+            indicatorColor: Theme.of(context).accentColor,
+            labelColor: Theme.of(context).accentColor,
             unselectedLabelColor: Colors.blueGrey[300],
             tabs: <Widget>[
               Tab(

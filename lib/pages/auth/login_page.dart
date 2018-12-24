@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Center(
                   child: Icon(
                     Icons.fastfood,
-                    color: Colors.redAccent,
+                    color: Theme.of(context).accentColor,
                     size: 50.0,
                   ),
                 ),

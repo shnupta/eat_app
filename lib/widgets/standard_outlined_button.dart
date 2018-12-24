@@ -14,7 +14,7 @@ class StandardOutlinedButton extends StatelessWidget {
     @required this.onPressed,
     this.borderColor = Colors.grey,
     this.backgroundColor = Colors.white,
-    this.splashColor = Colors.redAccent,
+    this.splashColor = const Color(0xFFFF5757),
     this.margin = const EdgeInsets.all(8.0),
   });
 

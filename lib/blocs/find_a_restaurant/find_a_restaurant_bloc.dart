@@ -107,6 +107,10 @@ class FindARestaurantBloc
       if(state.query != null) {
         search(state.query);
       }
+    } else if(event is AvailbleFromSelectedEvent) {
+      yield state.copyWith(availableFrom: event.time);
+    } else if(event is AvailbleToSelectedEvent) {
+      yield state.copyWith(availableTo: event.time);
     }
   }
 
@@ -132,5 +136,13 @@ class FindARestaurantBloc
 
   void filterOptionSelected(String type, int index) {
     dispatch(FilterItemSelectedEvent(type: type, index: index));
+  }
+
+  void setAvailableFrom(String time) {
+    dispatch(AvailbleFromSelectedEvent(time: time));
+  }
+
+  void setAvailableTo(String time) {
+    dispatch(AvailbleToSelectedEvent(time: time));
   }
 }

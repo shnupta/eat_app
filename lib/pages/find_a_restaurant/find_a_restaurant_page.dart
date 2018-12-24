@@ -77,7 +77,7 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
                       child: Padding(
                         padding: const EdgeInsets.only(top: 5.0),
                         child: IconButton(
-                          splashColor: Colors.redAccent,
+                          splashColor: Theme.of(context).accentColor,
                           padding: EdgeInsets.all(0.0),
                           icon: Icon(
                             Icons.filter_list,
