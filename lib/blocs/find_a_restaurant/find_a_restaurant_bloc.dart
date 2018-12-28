@@ -37,6 +37,10 @@ class FindARestaurantBloc
               .map((hit) => Restaurant.fromAlgoliaMap(hit))
               .toList();
 
+          if(state.filterByAvailability) {
+            results = results.where((restaurant) => isInsideAvailability(restaurant, state.availableFrom, state.availableTo, state.availableFilterDays)).toList();
+          }
+
           yield state.copyWith(results: results, query: event.query);
         }
       } catch (e) {
@@ -59,6 +63,15 @@ class FindARestaurantBloc
           return {'name': l['name'], 'selected': false};
         }).toList()
       };
+      Map<int, bool> availableDaysFilters = {
+        0: false,
+        1: false,
+        2: false,
+        3: false,
+        4: false,
+        5: false,
+        6: false
+      };
 
       Map<String, List<String>> facetFilters = Map();
 
@@ -71,6 +84,10 @@ class FindARestaurantBloc
         facetFilters: facetFilters,
         index: index,
         client: client,
+        filterByAvailability: false,
+        availableFrom: "0:00",
+        availableTo: "0:00",
+        availableFilterDays: availableDaysFilters,
       );
       search("");
     } else if (event is ClearResultsEvent) {
@@ -109,8 +126,18 @@ class FindARestaurantBloc
       }
     } else if(event is AvailbleFromSelectedEvent) {
       yield state.copyWith(availableFrom: event.time);
+      search(state.query);
     } else if(event is AvailbleToSelectedEvent) {
       yield state.copyWith(availableTo: event.time);
+      search(state.query);
+    } else if(event is ToggleFilterByAvailabilityEvent) {
+      yield state.copyWith(filterByAvailability: !state.filterByAvailability);
+      search(state.query);
+    } else if(event is AvailableDaySelectedEvent) {
+      Map<int, bool> days = state.availableFilterDays;
+      days[event.index] = !days[event.index];
+      yield state.copyWith(availableFilterDays: days);
+      search(state.query);
     }
   }
 
@@ -129,20 +156,82 @@ class FindARestaurantBloc
     dispatch(ClearResultsEvent());
   }
 
-  /// Dispatches an ToggleFilterMenuEvent
+  /// Dispatch a ToggleFilterMenuEvent
   void toggleFilterMenu() {
     dispatch(ToggleFilterMenuEvent());
   }
 
+  /// Dispatch a FilterItemSelectedEvent
   void filterOptionSelected(String type, int index) {
     dispatch(FilterItemSelectedEvent(type: type, index: index));
   }
 
+  /// Dispatch an AvailableFromSelectedEvent
   void setAvailableFrom(String time) {
     dispatch(AvailbleFromSelectedEvent(time: time));
   }
 
+  /// Dispatch an AvailableToSelectedEvent
   void setAvailableTo(String time) {
     dispatch(AvailbleToSelectedEvent(time: time));
+  }
+
+  /// Dispatch a ToggleFilterByAvailabilityEvent
+  void toggleFilterByAvailability() {
+    dispatch(ToggleFilterByAvailabilityEvent());
+  }
+
+  /// Dispatch an AvailableDaySelectedEvent
+  void availableDaySelected(int index) {
+    dispatch(AvailableDaySelectedEvent(index: index));
+  }
+
+  /// Determines whether the filter by availability settings from [availableFrom], [availableTo]
+  /// and [availableDaysFilter] overlap with any restaurants' availability settings. 
+  bool isInsideAvailability(Restaurant restaurant, String availableFrom, String availableTo, Map<int, bool> availableDaysFilter) {
+    String availableFromHour = availableFrom.split(":")[0];
+    String availableFromMin = availableFrom.split(":")[1];
+    String availableToHour = availableTo.split(":")[0];
+    String availableToMin = availableTo.split(":")[1];
+    List<String> _days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+
+    DateTime now = DateTime.now();
+    DateTime availableFromDate = DateTime.utc(now.year, now.month, now.day, int.parse(availableFromHour), int.parse(availableFromMin));
+    DateTime availableToDate = DateTime.utc(now.year, now.month, now.day, int.parse(availableToHour), int.parse(availableToMin));
+
+    bool ret = false;
+    
+    for(int dayIndex in availableDaysFilter.keys.where((day) => availableDaysFilter[day]).toList()) {
+      String day = _days[dayIndex];
+      if(restaurant.availability[day] == null) continue;
+      for(String interval in restaurant.availability[day].keys) {
+        if(restaurant.availability[day][interval]['max'] == restaurant.availability[day][interval]['booked']) continue;
+        String startHour = interval.split("-")[0].split(":")[0];
+        String startMin = interval.split("-")[0].split(":")[1];
+        String endHour = interval.split("-")[1].split(":")[0];
+        String endMin = interval.split("-")[1].split(":")[1];
+        
+        DateTime start = DateTime.utc(now.year, now.month, now.day, int.parse(startHour), int.parse(startMin));
+        DateTime end = DateTime.utc(now.year, now.month, now.day, int.parse(endHour), int.parse(endMin));
+
+        if(isBeforeOrEqual(availableFromDate, start)) {
+          if(availableToDate.isAfter(start)) return true;
+        } else if(start.isBefore(availableFromDate) && end.isAfter(availableFromDate)) {
+          if(availableToDate.isAfter(availableFromDate)) return true;
+        }
+      }
+    }
+
+    return ret;
+  }
+
+  /// Determines if a DateTime is before or equal to another.
+  bool isBeforeOrEqual(DateTime first, DateTime second) {
+    return first.isBefore(second) || first.isAtSameMomentAs(second);
+  }
+
+  /// Determines if a DateTime is after or equal to another.
+  bool isAfterOrEqual(DateTime first, DateTime second) {
+    return first.isAfter(second) || first.isAtSameMomentAs(second);
   }
 }

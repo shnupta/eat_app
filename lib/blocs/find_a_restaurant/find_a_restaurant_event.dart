@@ -29,14 +29,27 @@ class FilterItemSelectedEvent extends FindARestaurantEvent {
   FilterItemSelectedEvent({@required this.type, @required this.index});
 }
 
+/// Dispatch this event when the user changes the availability 'to' date
 class AvailbleToSelectedEvent extends FindARestaurantEvent {
   final String time;
 
   AvailbleToSelectedEvent({@required this.time});
 }
 
+/// Dispatch this event when the user changes the availability 'from' date
 class AvailbleFromSelectedEvent extends FindARestaurantEvent {
   final String time;
 
   AvailbleFromSelectedEvent({@required this.time});
+}
+
+/// Dispatch this event when the user toggles the checkbox to indicate they would like to filter by availability
+class ToggleFilterByAvailabilityEvent extends FindARestaurantEvent {}
+
+/// Dispatch this event when the user selected or deselects a day of the week from the availability filter
+/// section.
+class AvailableDaySelectedEvent extends FindARestaurantEvent {
+  final int index;
+
+  AvailableDaySelectedEvent({@required this.index});
 }

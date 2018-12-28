@@ -15,12 +15,22 @@ class FindARestaurantState {
 	final bool filterMenuOpen;
 	/// A Map of the filter options available
 	final Map<String, List<dynamic>> filterOptions;
+  /// A Map of the filters to be used by the Algolia client
   final Map<String, List<String>> facetFilters;
+  /// The Algolia search client
   final AlgoliaClient client;
+  /// The Algolia index (of restaurants in this bloc's case)
   final AlgoliaIndex index;
+  /// The current search query
   final String query;
+  /// The currently selected available from time string
   final String availableFrom;
+  /// The currently selected available to time string
   final String availableTo;
+  /// Indicates whether to filter the restaurants based on the availability criteria
+  final bool filterByAvailability;
+  /// A Map of the selected days for the availability filter
+  final Map<int, bool> availableFilterDays;
 
 	FindARestaurantState({
 		this.isLoading,
@@ -35,6 +45,8 @@ class FindARestaurantState {
     this.query,
     this.availableFrom,
     this.availableTo,
+    this.filterByAvailability,
+    this.availableFilterDays,
 	});
 
 
@@ -79,7 +91,7 @@ class FindARestaurantState {
 	FindARestaurantState copyWith({bool isLoading, bool isInitialising, String error, 
   List<Restaurant> results, bool filterMenuOpen, Map<String, List<dynamic>> filterOptions,
   AlgoliaClient client, AlgoliaIndex index, Map<String, List<String>> facetFilters, String query,
-  String availableTo, String availableFrom}) {
+  String availableTo, String availableFrom, bool filterByAvailability, Map<int, bool> availableFilterDays}) {
 		return FindARestaurantState(
 				isLoading: isLoading ?? this.isLoading,
 				isInitialising: isInitialising ?? this.isInitialising,
@@ -93,6 +105,8 @@ class FindARestaurantState {
         query: query ?? this.query,
         availableFrom: availableFrom ?? this.availableFrom,
         availableTo: availableTo ?? this.availableTo,
+        filterByAvailability: filterByAvailability ?? this.filterByAvailability,
+        availableFilterDays: availableFilterDays ?? this.availableFilterDays,
 		);
 	}
 }

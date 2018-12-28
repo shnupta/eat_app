@@ -7,7 +7,6 @@ import 'package:snacc/blocs/find_a_restaurant.dart';
 import 'package:snacc/pages/find_a_restaurant/filter_tag.dart';
 
 class FilterMenu extends StatelessWidget {
-
   Widget build(BuildContext context) {
     List<String> _times = List.generate(
         48,
@@ -15,9 +14,7 @@ class FilterMenu extends StatelessWidget {
             ((increment * 30) / 60).floor().toString() +
             ":" +
             ((increment % 2 == 0) ? "00" : "30"));
-
-    String _availableFrom = _times[0];
-    String _availableTo = _times[0];
+    List<String> _days = ["M", "T", "W", "T", "F", "S", "S"];
 
     FindARestaurantBloc findARestaurantBloc =
         BlocProvider.of<FindARestaurantBloc>(context);
@@ -179,21 +176,25 @@ class FilterMenu extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  margin: EdgeInsets.only(right: 10.0, top: 10.0),
                   height: 60.0,
                   width: MediaQuery.of(context).size.width,
                   child: Row(
                     children: <Widget>[
                       Expanded(
+                        flex: 3,
                         child: Container(
                           alignment: Alignment.center,
                           child: DropdownButton(
                             value: state.availableFrom,
-                            onChanged: (dynamic time) => findARestaurantBloc.setAvailableFrom(time),
+                            onChanged: (dynamic time) =>
+                                findARestaurantBloc.setAvailableFrom(time),
                             items: _times
                                 .map(
-                                  (time) => DropdownMenuItem(child: Text(time), value: time,),
+                                  (time) => DropdownMenuItem(
+                                        child: Text(time),
+                                        value: time,
+                                      ),
                                 )
                                 .toList(),
                           ),
@@ -209,20 +210,55 @@ class FilterMenu extends StatelessWidget {
                         ),
                       ),
                       Expanded(
+                        flex: 3,
                         child: Container(
                           alignment: Alignment.center,
                           child: DropdownButton(
                             value: state.availableTo,
-                            onChanged: (dynamic time) => findARestaurantBloc.setAvailableTo(time),
+                            onChanged: (dynamic time) =>
+                                findARestaurantBloc.setAvailableTo(time),
                             items: _times
                                 .map(
-                                  (time) => DropdownMenuItem(child: Text(time), value: time),
+                                  (time) => DropdownMenuItem(
+                                      child: Text(time), value: time),
                                 )
                                 .toList(),
                           ),
                         ),
                       ),
+                      Expanded(
+                        child: Container(
+                          child: Checkbox(
+                            value: state.filterByAvailability,
+                            onChanged: (bool val) => findARestaurantBloc
+                                .toggleFilterByAvailability(),
+                          ),
+                        ),
+                      ),
                     ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                  height: 60.0,
+                  width: MediaQuery.of(context).size.width,
+                  alignment: Alignment.center,
+                  child: ListView.builder(
+                    itemCount: _days.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () => findARestaurantBloc.availableDaySelected(index),
+                        child: FilterTag(
+                          selectedColor: Theme.of(context).primaryColorDark,
+                          width: 40,
+                          height: 20,
+                          selected: state.availableFilterDays[index],
+                          title: '${_days[index]}',
+                          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
