@@ -53,3 +53,9 @@ class AvailableDaySelectedEvent extends FindARestaurantEvent {
 
   AvailableDaySelectedEvent({@required this.index});
 }
+
+class OrderBySelectedEvent extends FindARestaurantEvent {
+  final String type;
+
+  OrderBySelectedEvent({@required this.type});
+}

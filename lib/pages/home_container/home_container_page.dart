@@ -21,15 +21,14 @@ import 'package:square_in_app_payments/in_app_payments.dart';
 
 class HomeContainerPage extends StatefulWidget {
   @override
-    State<StatefulWidget> createState() {
-      return _HomeContainerPageState();
-    }
+  State<StatefulWidget> createState() {
+    return _HomeContainerPageState();
+  }
 }
 
 class _HomeContainerPageState extends State<HomeContainerPage> {
-
   NewsBloc newsBloc = NewsBloc();
-	FindARestaurantBloc findARestaurantBloc = FindARestaurantBloc();
+  FindARestaurantBloc findARestaurantBloc = FindARestaurantBloc();
 
   Future<void> _initSquarePayment() async {
     await InAppPayments.setSquareApplicationId('sq0idp-dM3l69cCh00A0bdqtMEPOw');
@@ -79,13 +78,18 @@ class _HomeContainerPageState extends State<HomeContainerPage> {
   @override
   Widget build(BuildContext context) {
     _initSquarePayment();
+
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         body: TabBarView(
           children: <Widget>[
-            BlocProvider(bloc: newsBloc, child: HomePage(),),
-            BlocProvider(bloc: findARestaurantBloc, child: FindARestaurantPage()),
+            BlocProvider(
+              bloc: newsBloc,
+              child: HomePage(),
+            ),
+            BlocProvider(
+                bloc: findARestaurantBloc, child: FindARestaurantPage()),
             Container(
               child: Center(
                 child: StandardFilledButton(

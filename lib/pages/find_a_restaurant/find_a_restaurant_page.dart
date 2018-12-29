@@ -131,11 +131,10 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
         return ListView(
           children: state.results
               .map((result) => GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => RestaurantProfilePage(restaurant: result),
-                  )
-                ),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              RestaurantProfilePage(restaurant: result),
+                        )),
                     child: ListTile(
                       title: Text(result.name),
                       subtitle: Text(result.description),
@@ -159,7 +158,7 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
       duration: Duration(milliseconds: 400),
       vsync: this,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 10.0),
+        margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30.0),
           color: Colors.grey[100],

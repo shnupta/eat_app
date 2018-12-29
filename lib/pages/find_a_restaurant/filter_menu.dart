@@ -248,17 +248,71 @@ class FilterMenu extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
-                        onTap: () => findARestaurantBloc.availableDaySelected(index),
+                        onTap: () =>
+                            findARestaurantBloc.availableDaySelected(index),
                         child: FilterTag(
                           selectedColor: Theme.of(context).primaryColorDark,
                           width: 40,
                           height: 20,
                           selected: state.availableFilterDays[index],
                           title: '${_days[index]}',
-                          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
+                          margin: EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 5.0),
                         ),
                       );
                     },
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.only(left: 20.0, top: 20.0),
+                  child: Text(
+                    'Order by',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  height: 60.0,
+                  width: MediaQuery.of(context).size.width,
+                  alignment: Alignment.center,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => findARestaurantBloc.orderBySelected('relevance'),
+                          child: FilterTag(
+                            selected: state.orderBy['relevance'],
+                            selectedColor: Theme.of(context).cursorColor,
+                            title: 'Relevance',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => findARestaurantBloc.orderBySelected('popularity'),
+                          child: FilterTag(
+                            selected: state.orderBy['popularity'],
+                            selectedColor: Theme.of(context).cursorColor,
+                            title: 'Popularity',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => findARestaurantBloc.orderBySelected('distance'),
+                          child: FilterTag(
+                            selected: state.orderBy['distance'],
+                            selectedColor: Theme.of(context).cursorColor,
+                            title: 'Distance',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

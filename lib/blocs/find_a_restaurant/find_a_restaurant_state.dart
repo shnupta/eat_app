@@ -31,6 +31,8 @@ class FindARestaurantState {
   final bool filterByAvailability;
   /// A Map of the selected days for the availability filter
   final Map<int, bool> availableFilterDays;
+  /// A map of the 3 possible order by choices and whether they are selected
+  final Map<String, bool> orderBy;
 
 	FindARestaurantState({
 		this.isLoading,
@@ -47,6 +49,7 @@ class FindARestaurantState {
     this.availableTo,
     this.filterByAvailability,
     this.availableFilterDays,
+    this.orderBy,
 	});
 
 
@@ -91,7 +94,8 @@ class FindARestaurantState {
 	FindARestaurantState copyWith({bool isLoading, bool isInitialising, String error, 
   List<Restaurant> results, bool filterMenuOpen, Map<String, List<dynamic>> filterOptions,
   AlgoliaClient client, AlgoliaIndex index, Map<String, List<String>> facetFilters, String query,
-  String availableTo, String availableFrom, bool filterByAvailability, Map<int, bool> availableFilterDays}) {
+  String availableTo, String availableFrom, bool filterByAvailability, Map<int, bool> availableFilterDays,
+  Map<String, bool> orderBy}) {
 		return FindARestaurantState(
 				isLoading: isLoading ?? this.isLoading,
 				isInitialising: isInitialising ?? this.isInitialising,
@@ -107,6 +111,7 @@ class FindARestaurantState {
         availableTo: availableTo ?? this.availableTo,
         filterByAvailability: filterByAvailability ?? this.filterByAvailability,
         availableFilterDays: availableFilterDays ?? this.availableFilterDays,
+        orderBy: orderBy ?? this.orderBy,
 		);
 	}
 }

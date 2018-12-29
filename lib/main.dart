@@ -15,6 +15,7 @@ void main() {
   // This is the authentication bloc that will persist throughout my whole app, it will be used
   // to perform authentication actions such as reauthenticate the user, login and logout in different parts of
   // the app.
+
   AuthenticationBloc authBloc = AuthenticationBloc();
   runApp(new MyApp(authBloc));
 }
