@@ -3,31 +3,50 @@ import 'package:flutter/material.dart';
 import 'package:snacc/models.dart';
 
 class RestaurantProfilePage extends StatelessWidget {
-
   final Restaurant restaurant;
 
   RestaurantProfilePage({@required this.restaurant});
 
   @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(this.restaurant.name),
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
-        body: Center(
-          child: Container(
-            height: 100.0,
-            width: 100.0,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(restaurant.logoUrl),
-                fit: BoxFit.cover,
-              ),
-              borderRadius: BorderRadius.circular(50.0),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: Text(restaurant.name),
+          ),
+          SliverFillRemaining(
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        height: 100,
+                        color: Colors.green,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: CircleAvatar(
+                        minRadius: 50,
+                        maxRadius: 50,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: NetworkImage(restaurant.logoUrl),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-        ),
-      );
-    }
+        ],
+      ),
+    );
+  }
 }

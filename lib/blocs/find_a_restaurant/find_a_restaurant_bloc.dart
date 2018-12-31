@@ -42,7 +42,7 @@ class FindARestaurantBloc
               .map((hit) => Restaurant.fromAlgoliaMap(hit))
               .toList();
 
-          if (!results.isEmpty) {
+          if (results.isNotEmpty) {
             if (state.filterByAvailability) {
               results = results
                   .where((restaurant) => isInsideAvailability(

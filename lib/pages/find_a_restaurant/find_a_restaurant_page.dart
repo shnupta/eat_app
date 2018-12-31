@@ -5,7 +5,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:snacc/widgets.dart';
 import 'package:snacc/pages/find_a_restaurant/filter_menu.dart';
 import 'package:snacc/pages/find_a_restaurant/result_tile.dart';
-import 'package:snacc/pages/restaurant_profile.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 

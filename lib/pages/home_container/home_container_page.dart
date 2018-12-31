@@ -40,17 +40,17 @@ class _HomeContainerPageState extends State<HomeContainerPage> {
         onCardEntryCancel: _onCancelCardEntryFlow);
   }
 
-  /**
-  * Callback when card entry is cancelled and UI is closed
-  */
+  ///
+  /// Callback when card entry is cancelled and UI is closed
+  ///
   void _onCancelCardEntryFlow() {
     // Handle the cancel callback
   }
 
-  /**
-  * Callback when successfully get the card nonce details for processig
-  * card entry is still open and waiting for processing card nonce details
-  */
+  ///
+  /// Callback when successfully get the card nonce details for processig
+  /// card entry is still open and waiting for processing card nonce details
+  ///
   void _onCardEntryCardNonceRequestSuccess(CardDetails result) async {
     try {
       // take payment with the card nonce details
@@ -68,9 +68,9 @@ class _HomeContainerPageState extends State<HomeContainerPage> {
     }
   }
 
-  /**
-  * Callback when the card entry is closed after call 'completeCardEntry'
-  */
+  ///
+  /// Callback when the card entry is closed after call 'completeCardEntry'
+  ///
   void _onCardEntryComplete() {
     // Update UI to notify user that the payment flow is finished successfully
   }
