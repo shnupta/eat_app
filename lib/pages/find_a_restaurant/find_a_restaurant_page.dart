@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:snacc/widgets.dart';
 import 'package:snacc/pages/find_a_restaurant/filter_menu.dart';
+import 'package:snacc/pages/find_a_restaurant/result_tile.dart';
 import 'package:snacc/pages/restaurant_profile.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -117,12 +118,8 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
           alignment: Alignment.center,
           children: <Widget>[
             ListView(
-              children: state.results
-                  .map((result) => ListTile(
-                        title: Text(result.name),
-                        subtitle: Text(result.description),
-                      ))
-                  .toList(),
+              children:
+                  state.results.map((result) => ResultTile(result)).toList(),
             ),
             CircularProgressIndicator(),
           ],
@@ -130,16 +127,9 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
       } else {
         return ListView(
           children: state.results
-              .map((result) => GestureDetector(
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              RestaurantProfilePage(restaurant: result),
-                        )),
-                    child: ListTile(
-                      title: Text(result.name),
-                      subtitle: Text(result.description),
-                    ),
-                  ))
+              .map(
+                (result) => ResultTile(result),
+              )
               .toList(),
         );
       }
@@ -147,7 +137,8 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
       return Center(
         child: Text('Search above!'),
       );
-    }
+    } else
+      return Center(child: Text('Initialising...'));
   }
 
   /// Builds the expanded filter menu if the state says it should be open, else

@@ -42,36 +42,39 @@ class FindARestaurantBloc
               .map((hit) => Restaurant.fromAlgoliaMap(hit))
               .toList();
 
-          if (state.filterByAvailability) {
-            results = results
-                .where((restaurant) => isInsideAvailability(
-                    restaurant,
-                    state.availableFrom,
-                    state.availableTo,
-                    state.availableFilterDays))
-                .toList();
-          }
-
-          if (state.orderBy['distance']) {
-            // Get user's location
-            Location userLocation = new Location();
-            Map<String, double> loc = Map();
-            try {
-              loc = await userLocation.getLocation();
-            } catch (e) {
-              print('error');
+          if (!results.isEmpty) {
+            if (state.filterByAvailability) {
+              results = results
+                  .where((restaurant) => isInsideAvailability(
+                      restaurant,
+                      state.availableFrom,
+                      state.availableTo,
+                      state.availableFilterDays))
+                  .toList();
             }
 
-            List<Tuple2> distances = List();
-            results.forEach((restaurant) {
-              double dist = distanceInMiles(
-                  loc['latitude'],
-                  loc['longitude'],
-                  restaurant.latLong['latitude'],
-                  restaurant.latLong['longitude']);
-              distances.add(Tuple2(restaurant, dist));
-            });
-            results = sortByDistance(distances); // order the results in ascending distance order
+            if (state.orderBy['distance']) {
+              // Get user's location
+              Location userLocation = new Location();
+              Map<String, double> loc = Map();
+              try {
+                loc = await userLocation.getLocation();
+              } catch (e) {
+                print('error');
+              }
+
+              List<Tuple2> distances = List();
+              results.forEach((restaurant) {
+                double dist = distanceInMiles(
+                    loc['latitude'],
+                    loc['longitude'],
+                    restaurant.latLong['latitude'],
+                    restaurant.latLong['longitude']);
+                distances.add(Tuple2(restaurant, dist));
+              });
+              results = sortByDistance(
+                  distances); // order the results in ascending distance order
+            }
           }
 
           yield state.copyWith(results: results, query: event.query);
@@ -288,7 +291,7 @@ class FindARestaurantBloc
         DateTime end = DateTime.utc(now.year, now.month, now.day,
             int.parse(endHour), int.parse(endMin));
 
-        // Compare user search times and interval times to see if there is any overlap, if so - include 
+        // Compare user search times and interval times to see if there is any overlap, if so - include
         // the restaurant in the results
         if (isBeforeOrEqual(availableFromDate, start)) {
           if (availableToDate.isAfter(start)) return true;
@@ -337,7 +340,11 @@ class FindARestaurantBloc
   /// Uses a merge sort method.
   List<Restaurant> sortByDistance(List<Tuple2> distances) {
     List<Tuple2> sorted = mergeSort(distances, 0, distances.length - 1);
-    return sorted.map((tup) => tup.item1).toList().cast<Restaurant>();
+    List<Restaurant> res =
+        sorted.map((tup) => tup.item1).toList().cast<Restaurant>();
+    res.forEach((restaurant) =>
+        restaurant.setDistance(sorted[res.indexOf(restaurant)].item2));
+    return res;
   }
 
   // Merge sort two list of restaurant-distance pairs

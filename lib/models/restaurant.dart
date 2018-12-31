@@ -14,11 +14,21 @@ class Restaurant {
   final String logoUrl;
   /// Map of the availability of booking data for a restaurant
   final Map<String, dynamic> availability;
+  /// Map of the GPS coordinates of the restaurant
   final Map<String, dynamic> latLong;
+  /// Location of the restaurant
+  final String location;
+  /// The main type of food that the restaurant serves
+  final String category;
+  /// The distance in miles from the user, can be set later
+  double distanceFromUser;
   
 
   Restaurant({@required this.id, @required this.name, @required this.description, @required this.logoUrl,
-  @required this.availability, @required this.latLong});
+  @required this.availability, @required this.latLong, @required this.location, @required this.category,
+  this.distanceFromUser});
+
+  void setDistance(double dist) => distanceFromUser = dist;
 
 
 	/// Constructs a [Restaurant] object from a hit object of an Algolia search response
@@ -30,6 +40,8 @@ class Restaurant {
         logoUrl: map['logoUrl'] ?? "https://firebasestorage.googleapis.com/v0/b/eat-app-d60bf.appspot.com/o/no-logo.png?alt=media&token=61db48f4-27f7-4862-82de-40980649fd17",
         availability: map['availability'] ?? Map(),
         latLong: map['lat_long'] != null ? {"latitude": map['lat_long']['_latitude'], "longitude": map['lat_long']['_longitude']} : Map(),
+        location: map['location'],
+        category: map['category'],
 		);
 	}
 }
