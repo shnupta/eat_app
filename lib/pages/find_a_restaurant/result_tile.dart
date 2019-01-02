@@ -58,7 +58,12 @@ class ResultTile extends StatelessWidget {
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('${result.category} | ${result.location}'),
+                        Text(
+                          '${result.category} | ${result.location}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w200,
+                          ),  
+                        ),
                       ],
                     ),
               leading: CircleAvatar(

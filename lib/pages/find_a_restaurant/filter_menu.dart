@@ -253,11 +253,14 @@ class FilterMenu extends StatelessWidget {
                         child: FilterTag(
                           selectedColor: Theme.of(context).primaryColorDark,
                           width: 40,
-                          height: 20,
+                          height: 40,
                           selected: state.availableFilterDays[index],
                           title: '${_days[index]}',
                           margin: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 5.0),
+                              vertical: 10.0, horizontal: ((MediaQuery.of(context).size.width - 335) / 14)),
+                              // This is calculated by adding all of the other margins that surround this ListView
+                              // Then divide by 14 for the 7 days and as there is a margin eitherside, and it should always
+                              // fit perfectly.
                         ),
                       );
                     },

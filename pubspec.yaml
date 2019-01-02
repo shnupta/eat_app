@@ -76,6 +76,12 @@ flutter:
           style: italic
         - asset: fonts/K2D/K2D-Bold.ttf
           weight: 700
+        - asset: fonts/K2D/K2D-Thin.ttf
+          weight: 100
+        - asset: fonts/K2D/K2D-ExtraLight.ttf
+          weight: 200
+        - asset: fonts/K2D/K2D-Light.ttf
+          weight: 300
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
