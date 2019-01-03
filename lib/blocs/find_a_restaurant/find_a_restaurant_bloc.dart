@@ -45,8 +45,7 @@ class FindARestaurantBloc
           if (results.isNotEmpty) {
             if (state.filterByAvailability) {
               results = results
-                  .where((restaurant) => isInsideAvailability(
-                      restaurant,
+                  .where((restaurant) => restaurant.isInsideAvailability(
                       state.availableFrom,
                       state.availableTo,
                       state.availableFilterDays))
@@ -239,80 +238,6 @@ class FindARestaurantBloc
   /// Dispatch an OrderBySelectedEvent
   void orderBySelected(String type) {
     dispatch(OrderBySelectedEvent(type: type));
-  }
-
-  /// Determines whether the filter by availability settings from [availableFrom], [availableTo]
-  /// and [availableDaysFilter] overlap with any restaurants' availability settings.
-  bool isInsideAvailability(Restaurant restaurant, String availableFrom,
-      String availableTo, Map<int, bool> availableDaysFilter) {
-    // Separate out components of times
-    String availableFromHour = availableFrom.split(":")[0];
-    String availableFromMin = availableFrom.split(":")[1];
-    String availableToHour = availableTo.split(":")[0];
-    String availableToMin = availableTo.split(":")[1];
-
-    List<String> _days = [
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-      "sunday"
-    ];
-
-    DateTime now = DateTime.now();
-    DateTime availableFromDate = DateTime.utc(now.year, now.month, now.day,
-        int.parse(availableFromHour), int.parse(availableFromMin));
-    DateTime availableToDate = DateTime.utc(now.year, now.month, now.day,
-        int.parse(availableToHour), int.parse(availableToMin));
-
-    bool ret = false;
-
-    // Iterate only through the days that the user has selected
-    for (int dayIndex in availableDaysFilter.keys
-        .where((day) => availableDaysFilter[day])
-        .toList()) {
-      String day = _days[dayIndex];
-      // If the restaurant doesn't have this day in their availability map then it's not available!
-      if (restaurant.availability[day] == null) continue;
-      for (String interval in restaurant.availability[day].keys) {
-        // Check it's not fully booked
-        if (restaurant.availability[day][interval]['max'] ==
-            restaurant.availability[day][interval]['booked']) continue;
-        // Separate the components of this time interval
-        String startHour = interval.split("-")[0].split(":")[0];
-        String startMin = interval.split("-")[0].split(":")[1];
-        String endHour = interval.split("-")[1].split(":")[0];
-        String endMin = interval.split("-")[1].split(":")[1];
-
-        DateTime start = DateTime.utc(now.year, now.month, now.day,
-            int.parse(startHour), int.parse(startMin));
-        DateTime end = DateTime.utc(now.year, now.month, now.day,
-            int.parse(endHour), int.parse(endMin));
-
-        // Compare user search times and interval times to see if there is any overlap, if so - include
-        // the restaurant in the results
-        if (isBeforeOrEqual(availableFromDate, start)) {
-          if (availableToDate.isAfter(start)) return true;
-        } else if (start.isBefore(availableFromDate) &&
-            end.isAfter(availableFromDate)) {
-          if (availableToDate.isAfter(availableFromDate)) return true;
-        }
-      }
-    }
-
-    return ret;
-  }
-
-  /// Determines if a DateTime is before or equal to another.
-  bool isBeforeOrEqual(DateTime first, DateTime second) {
-    return first.isBefore(second) || first.isAtSameMomentAs(second);
-  }
-
-  /// Determines if a DateTime is after or equal to another.
-  bool isAfterOrEqual(DateTime first, DateTime second) {
-    return first.isAfter(second) || first.isAtSameMomentAs(second);
   }
 
   /// Converts degrees to radians
