@@ -32,8 +32,8 @@ class RestaurantProfilePage extends StatelessWidget {
     List<String> _days = ["M", "T", "W", "T", "F", "S", "S"];
     DateTime now = DateTime.now();
 
-    _days = shiftDays(_days, (now.weekday - 1));
-    _fullDays = shiftDays(_fullDays, (now.weekday - 1));
+    _days = _shiftDays(_days, (now.weekday - 1));
+    _fullDays = _shiftDays(_fullDays, (now.weekday - 1));
 
     return Scaffold(
       body: CustomScrollView(
@@ -57,7 +57,11 @@ class RestaurantProfilePage extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return BookingDialog();
+                        return BookingDialog(
+                          restaurant: restaurant,
+                          date: _findNextDateOfDay(state.selectedDay, _fullDays),
+                          day: state.selectedDay,
+                        );
                       },
                     );
                   });
@@ -178,7 +182,7 @@ class RestaurantProfilePage extends StatelessWidget {
 
   /// [cur] is the current order of the days of the week
   /// [index] is the index of the current day (which should be first in the list)
-  List<String> shiftDays(List<String> cur, int index) {
+  List<String> _shiftDays(List<String> cur, int index) {
     List<String> ret = List(cur.length);
     int pos =
         index; // The position in the cur array of the day we wish to add to the ret array
@@ -188,5 +192,9 @@ class RestaurantProfilePage extends StatelessWidget {
     }
 
     return ret;
+  }
+
+  DateTime _findNextDateOfDay(String day, List<String> fullDays) {
+    return DateTime.now().add(Duration(days: fullDays.indexOf(day)));
   }
 }
