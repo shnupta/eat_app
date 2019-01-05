@@ -19,6 +19,7 @@ class User {
   /// For certain cases it may be useful to store the [FirebaseUser] object to save retrieving it from 
   /// auth every time.
   FirebaseUser firebaseUser;
+  Map<String, dynamic> cards;
 
   /// Path to the users collection in Firestore
   static String _usersCollectionPath = 'users';
@@ -26,7 +27,7 @@ class User {
   /// The field name of the lastLogin timestamp field.
   static String _userLastLoginFieldName = 'lastLogin';
 
-  User({@required this.id, @required this.fullName, @required this.email, this.firebaseUser});
+  User({@required this.id, @required this.fullName, @required this.email, this.firebaseUser, this.cards});
 
   /// Create a [User] from a FirebaseUser [user]. Typically from the result of a signup or login event.
   factory User.fromFirebaseUser(FirebaseUser user) {
@@ -59,4 +60,6 @@ class User {
   void updateLastLoginTime() {
     Database.setDocumentTimestampNowWithIDAtCollection(_usersCollectionPath, this.id, _userLastLoginFieldName);
   }
+
+  bool get hasCardDetailsSaved => this.cards != null && this.cards.keys.length > 0;
 }

@@ -99,10 +99,10 @@ class Restaurant {
         // Compare user search times and interval times to see if there is any overlap, if so - include
         // the restaurant in the results
         if (_isBeforeOrEqual(availableFromDate, start)) {
-          if (availableToDate.isAfter(start)) return true;
-        } else if (start.isBefore(availableFromDate) &&
-            end.isAfter(availableFromDate)) {
-          if (availableToDate.isAfter(availableFromDate)) return true;
+          if (_isAfterOrEqual(availableToDate, start)) return true;
+        } else if (_isBeforeOrEqual(start, availableFromDate) &&
+            _isAfterOrEqual(end, availableFromDate)) {
+          if (_isAfterOrEqual(availableToDate, availableFromDate)) return true;
         }
       }
     }
@@ -113,6 +113,10 @@ class Restaurant {
   /// Determines if a DateTime is before or equal to another.
   bool _isBeforeOrEqual(DateTime first, DateTime second) {
     return first.isBefore(second) || first.isAtSameMomentAs(second);
+  }
+
+  bool _isAfterOrEqual(DateTime first, DateTime second) {
+    return first.isAfter(second) || first.isAtSameMomentAs(second);
   }
 
   /// Indicated whether a restaurant is closed on a certain day of the current week

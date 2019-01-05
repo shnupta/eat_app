@@ -10,8 +10,11 @@ class Database {
   static Firestore _firestore = Firestore.instance;
 
   /// Creates a new document in the path specified by [collectionPath]
-  static void createDocumentAtCollection(String collectionPath, Map<String, dynamic> data) {
-    _firestore.collection(collectionPath).document().setData(data);
+  /// Returns the ID of the newly created document
+  static String createDocumentAtCollection(String collectionPath, Map<String, dynamic> data) {
+    DocumentReference doc = _firestore.collection(collectionPath).document();
+    doc.setData(data);
+    return doc.documentID;
   }
 
   /// Creates a new document with the provided [documentID] at the [collectionPath]

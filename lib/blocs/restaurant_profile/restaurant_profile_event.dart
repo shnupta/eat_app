@@ -15,3 +15,5 @@ class DaySelectedEvent extends RestaurantProfileEvent {
 
   DaySelectedEvent({@required this.day});
 }
+
+class ClosePopupEvent extends RestaurantProfileEvent {}

@@ -247,7 +247,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "6676ef80da6bafe44cfe10afb53640c7425e5d30"
+      resolved-ref: c34a5bac2c50f7a7558ca8e88b8f99de641d587b
       url: "https://github.com/square/in-app-payments-flutter-plugin.git"
     source: git
     version: "1.0.0"

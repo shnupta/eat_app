@@ -16,6 +16,8 @@ class RestaurantProfileBloc
       yield RestaurantProfileState(restaurant: event.restaurant, isInitialising: false);
     } else if(event is DaySelectedEvent) {
       yield state.copyWith(showDayBookingPopup: true, selectedDay: event.day);
+    } else if(event is ClosePopupEvent) {
+      yield state.copyWith(showDayBookingPopup: false, selectedDay: null);
     }
   }
 
@@ -27,5 +29,9 @@ class RestaurantProfileBloc
   /// Dispatches a [DaySelectedEvent]
   void selectDay(String day) {
     dispatch(DaySelectedEvent(day: day));
+  }
+
+  void closePopup() {
+    dispatch(ClosePopupEvent());
   }
 }

@@ -36,42 +36,31 @@ class RestaurantProfilePage extends StatelessWidget {
     _fullDays = _shiftDays(_fullDays, (now.weekday - 1));
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            backgroundColor: Colors.transparent,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-          BlocBuilder(
-              bloc: restaurantProfileBloc,
-              builder: (BuildContext context, RestaurantProfileState state) {
-                if (state.isInitialising) {
-                  restaurantProfileBloc.initialise(restaurant);
-                }
+      body: BlocBuilder(
+          bloc: restaurantProfileBloc,
+          builder: (BuildContext context, RestaurantProfileState state) {
+            List<Widget> items = [];
+            items.add(_buildMainPage(
+                context, _days, _fullDays, now, restaurantProfileBloc));
 
-                if(state.showDayBookingPopup != null && state.showDayBookingPopup) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return BookingDialog(
-                          restaurant: restaurant,
-                          date: _findNextDateOfDay(state.selectedDay, _fullDays),
-                          day: state.selectedDay,
-                        );
-                      },
-                    );
-                  });
-                }
-
-                return _buildBody(
-                    context, _days, _fullDays, now, restaurantProfileBloc);
-              }),
-        ],
-      ),
+            if (state.showDayBookingPopup != null &&
+                state.showDayBookingPopup) {
+              items.add(GestureDetector(
+                  onTap: () => restaurantProfileBloc.closePopup(),
+                  child: Container(
+                    color: Colors.black.withAlpha(170),
+                  )));
+              items.add(BookingDialog(
+                restaurant: restaurant,
+                date: _findNextDateOfDay(state.selectedDay, _fullDays),
+                day: state.selectedDay,
+                restaurantProfileBloc: restaurantProfileBloc,
+              ));
+            }
+            return Stack(
+              children: items,
+            );
+          }),
     );
   }
 
@@ -81,102 +70,124 @@ class RestaurantProfilePage extends StatelessWidget {
       List<String> _fullDays,
       DateTime now,
       RestaurantProfileBloc restaurantProfileBloc) {
-    return SliverFillRemaining(
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          child: Text(
-                            restaurant.name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                            ),
+    return Column(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        child: Text(
+                          restaurant.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
                           ),
                         ),
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                child: Text(
-                                  '${restaurant.category} | ${restaurant.location}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w200,
-                                  ),
+                      ),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                '${restaurant.category} | ${restaurant.location}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w200,
                                 ),
                               ),
-                              Container(
-                                child: Icon(Icons.star),
-                              ),
-                            ],
-                          ),
+                            ),
+                            Container(
+                              child: Icon(Icons.star),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                CircleAvatar(
-                  minRadius: 60,
-                  backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage(restaurant.logoUrl),
-                ),
-              ],
-            ),
+              ),
+              CircleAvatar(
+                minRadius: 60,
+                backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage(restaurant.logoUrl),
+              ),
+            ],
           ),
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            width: MediaQuery.of(context).size.width,
-            height: 60,
-            child: ListView.builder(
-              itemCount: _days.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  splashColor: (restaurant.isClosed(_fullDays[index]) ||
+        ),
+        Container(
+          alignment: Alignment.center,
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          width: MediaQuery.of(context).size.width,
+          height: 60,
+          child: ListView.builder(
+            itemCount: _days.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (BuildContext context, int index) {
+              return InkWell(
+                splashColor: (restaurant.isClosed(_fullDays[index]) ||
+                        restaurant.isFullyBooked(_fullDays[index]))
+                    ? Colors.grey
+                    : Theme.of(context).accentColor,
+                borderRadius: BorderRadius.circular(30),
+                onTap: () {
+                  return (restaurant.isClosed(_fullDays[index]) ||
                           restaurant.isFullyBooked(_fullDays[index]))
-                      ? Colors.grey
-                      : Theme.of(context).accentColor,
-                  borderRadius: BorderRadius.circular(30),
-                  onTap: () {
-                    return (restaurant.isClosed(_fullDays[index]) ||
-                            restaurant.isFullyBooked(_fullDays[index]))
-                        ? null
-                        : restaurantProfileBloc.selectDay(_fullDays[index]);
-                  }, // Conditional on whether it is closed or fully booked, if not allow them to press
-                  child: DayTag(
-                    borderColour: Colors.grey,
-                    textColour: Theme.of(context).primaryColorDark,
-                    width: 40,
-                    height: 40,
-                    closed: restaurant.isClosed(_fullDays[index]),
-                    fullyBooked: restaurant.isFullyBooked(_fullDays[index]),
-                    day: '${_days[index]}',
-                    date: du.Utils.isLastDayOfMonth(
-                            now.add(Duration(days: index)))
-                        ? du.Utils.lastDayOfMonth(now).day
-                        : (now.day + index) % du.Utils.lastDayOfMonth(now).day,
-                    margin: EdgeInsets.symmetric(
-                        vertical: 9.0,
-                        horizontal:
-                            ((MediaQuery.of(context).size.width - 300) / 14)),
-                  ),
-                );
-              },
-            ),
+                      ? null
+                      : restaurantProfileBloc.selectDay(_fullDays[index]);
+                }, // Conditional on whether it is closed or fully booked, if not allow them to press
+                child: DayTag(
+                  borderColour: Colors.grey,
+                  textColour: Theme.of(context).primaryColorDark,
+                  width: 40,
+                  height: 40,
+                  closed: restaurant.isClosed(_fullDays[index]),
+                  fullyBooked: restaurant.isFullyBooked(_fullDays[index]),
+                  day: '${_days[index]}',
+                  date:
+                      du.Utils.isLastDayOfMonth(now.add(Duration(days: index)))
+                          ? du.Utils.lastDayOfMonth(now).day
+                          : (now.day + index) %
+                              du.Utils.lastDayOfMonth(now).day,
+                  margin: EdgeInsets.symmetric(
+                      vertical: 9.0,
+                      horizontal:
+                          ((MediaQuery.of(context).size.width - 300) / 14)),
+                ),
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMainPage(
+      BuildContext context,
+      List<String> _days,
+      List<String> _fullDays,
+      DateTime now,
+      RestaurantProfileBloc restaurantProfileBloc) {
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverAppBar(
+          backgroundColor: Colors.transparent,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        SliverFillRemaining(
+          child:
+              _buildBody(context, _days, _fullDays, now, restaurantProfileBloc),
+        ),
+      ],
     );
   }
 
