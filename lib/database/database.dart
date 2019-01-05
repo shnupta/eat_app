@@ -74,4 +74,8 @@ class Database {
       timestampFieldName: Timestamp.now(),
     }, merge: true);
   }
+
+  static Stream<DocumentSnapshot> listenToDocumentAtCollection(String collectionPath, String documentID) {
+    return _firestore.collection(collectionPath).document(documentID).snapshots();
+  }
 }

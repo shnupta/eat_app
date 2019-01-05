@@ -49,3 +49,14 @@ exports.onRestaurantUpdated = functions.firestore.document('restaurants/{restaur
     const index = client.initIndex(ALGOLIA_INDEX_NAME);
     return index.saveObject(document);
 });
+
+exports.onVoucherCreated = functions.firestore.document('vouchers/{voucher_id}').onCreate((snapshot, context) => {
+    const document = snapshot.data();
+
+    snapshot.ref.set({
+        status: 'transaction_complete'
+    }, {merge: true});
+});
+
+// Need to write some more voucher stuff so that it will actually use the Square transactions API to charge
+// the card. Then it will write the voucher objects to the user and restaurant areas too.

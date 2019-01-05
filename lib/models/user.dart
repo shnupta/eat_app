@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:snacc/database.dart';
+import 'package:snacc/models.dart';
 
 
 /// Represents a user of the app.

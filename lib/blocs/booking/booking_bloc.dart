@@ -60,6 +60,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     } else if (event is StopLoadingEvent) {
       yield state.copyWith(isLoading: false);
     } else if (event is CardDetailsEnteredEvent) {
+      yield state.copyWith(isLoading: false, showConfirmation: true, cardDetails: event.cardDetails);
+    } else if(event is TransactionCompleteEvent) {
+      yield state.copyWith(isLoading: false, showReceipt: true, showConfirmation: false);
+    } else if(event is OrderConfirmedEvent) {
+      yield state.copyWith(isLoading: true);
       int selectedHour = int.parse(state.selectedTime.split(':')[0]);
       int selectedMin = int.parse(state.selectedTime.split(':')[1]);
 
@@ -69,12 +74,18 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         datetime: DateTime.utc(state.date.year, state.date.month,
             state.date.day, selectedHour, selectedMin),
         user: state.user,
-        cardNonce: event.cardDetails.nonce,
+        cardNonce: state.cardDetails.nonce,
       );
       voucher.createAndSaveToFirebase();
+      Database.listenToDocumentAtCollection('vouchers', voucher.id).listen((change) {
+        if(change.data['status'] != null) {
+          if(change.data['status'] == 'transaction_complete') {
+            transactionComplete(voucher);
+          }
+        }
+      });
 
-      print(voucher.id);
-      yield state.copyWith(isLoading: false, finished: true);
+      yield state.copyWith(voucher: voucher);
     }
   }
 
@@ -108,6 +119,14 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
 
   void cardDetailsEntered(CardDetails cardDetails) {
     dispatch(CardDetailsEnteredEvent(cardDetails: cardDetails));
+  }
+
+  void transactionComplete(Voucher voucher) {
+    dispatch(TransactionCompleteEvent(voucher: voucher));
+  }
+
+  void orderConfirmed() {
+    dispatch(OrderConfirmedEvent());
   }
 
   Future<void> _initSquarePayment() async {

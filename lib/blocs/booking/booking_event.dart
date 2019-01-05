@@ -45,3 +45,11 @@ class CardDetailsEnteredEvent extends BookingEvent {
 
   CardDetailsEnteredEvent({@required this.cardDetails});
 }
+
+class TransactionCompleteEvent extends BookingEvent {
+  Voucher voucher;
+
+  TransactionCompleteEvent({@required this.voucher});
+}
+
+class OrderConfirmedEvent extends BookingEvent {}

@@ -10,6 +10,8 @@ class Voucher {
   int numberOfPeople;
   DateTime datetime;
   String cardNonce;
+  String status;
+  
 
   Voucher({
     this.id,
@@ -18,6 +20,7 @@ class Voucher {
     @required this.numberOfPeople,
     @required this.datetime,
     @required this.cardNonce,
+    this.status = 'created',
   });
 
   Map<String, dynamic> toMap() {
@@ -27,6 +30,7 @@ class Voucher {
       'numberOfPeople': numberOfPeople,
       'datetime': datetime,
       'cardNonce': cardNonce,
+      'status': status,
     };
   }
 

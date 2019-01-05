@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:snacc/models.dart';
+import 'package:snacc/database.dart';
+
 /// The [Restaurant] class will be widely used throughout the app. It contains information that will
 /// be used to display info about the restaurant on pages such as the find a restaurant page, map view,
 /// restaurant profile page etc.
