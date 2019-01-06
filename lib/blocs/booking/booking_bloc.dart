@@ -60,10 +60,17 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     } else if (event is StopLoadingEvent) {
       yield state.copyWith(isLoading: false);
     } else if (event is CardDetailsEnteredEvent) {
-      yield state.copyWith(isLoading: false, showConfirmation: true, cardDetails: event.cardDetails);
-    } else if(event is TransactionCompleteEvent) {
-      yield state.copyWith(isLoading: false, showReceipt: true, showConfirmation: false);
-    } else if(event is OrderConfirmedEvent) {
+      yield state.copyWith(
+          isLoading: false,
+          showConfirmation: true,
+          cardDetails: event.cardDetails);
+    } else if (event is TransactionCompleteEvent) {
+      yield state.copyWith(
+          isLoading: false,
+          showReceipt: true,
+          showConfirmation: false,
+          voucher: event.voucher);
+    } else if (event is OrderConfirmedEvent) {
       yield state.copyWith(isLoading: true);
       int selectedHour = int.parse(state.selectedTime.split(':')[0]);
       int selectedMin = int.parse(state.selectedTime.split(':')[1]);
@@ -71,22 +78,30 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       Voucher voucher = Voucher(
         restaurant: state.restaurant,
         numberOfPeople: state.numberOfPeople,
-        datetime: DateTime.utc(state.date.year, state.date.month,
+        bookingTime: DateTime.utc(state.date.year, state.date.month,
             state.date.day, selectedHour, selectedMin),
         user: state.user,
         cardNonce: state.cardDetails.nonce,
+        status: Voucher.STATUS_CREATED,
+        createdAt: DateTime.now(),
       );
       voucher.createAndSaveToFirebase();
-      Database.listenToDocumentAtCollection('vouchers', voucher.id).listen((change) {
-        if(change.data['status'] != null) {
-          if(change.data['status'] == 'transaction_complete') {
-            transactionComplete(voucher);
+      Database.listenToDocumentAtCollection('vouchers', voucher.id)
+          .listen((change) {
+        if (change.data['status'] != null) {
+          switch (change.data['status']) {
+            case Voucher.STATUS_TRANSACTION_COMPLETE:
+              change.data['id'] = change.documentID;
+              Voucher.fromFirebase(change.data)
+                  .then((newVoucher) => transactionComplete(newVoucher));
+              break;
+            case Voucher.STATUS_TRANSACTION_FAILED:
+              transactionFailed(change.data['error']);
+              break;
           }
         }
       });
-
-      yield state.copyWith(voucher: voucher);
-    }
+    } else if (event is TransactionFailedEvent) {}
   }
 
   void initialise(Restaurant restaurant, DateTime date, String day) {
@@ -123,6 +138,10 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
 
   void transactionComplete(Voucher voucher) {
     dispatch(TransactionCompleteEvent(voucher: voucher));
+  }
+
+  void transactionFailed(String error) {
+    dispatch(TransactionFailedEvent(error: error));
   }
 
   void orderConfirmed() {

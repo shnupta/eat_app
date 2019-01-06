@@ -78,4 +78,10 @@ class Database {
   static Stream<DocumentSnapshot> listenToDocumentAtCollection(String collectionPath, String documentID) {
     return _firestore.collection(collectionPath).document(documentID).snapshots();
   }
+
+  static Future<Map<String, dynamic>> readDocumentAtCollectionWithId(String collectionPath, String documentID) async {
+    DocumentSnapshot doc = await _firestore.collection(collectionPath).document(documentID).get();
+    doc.data['id'] = documentID;
+    return Future.value(doc.data);
+  }
 }

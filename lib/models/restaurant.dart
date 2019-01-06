@@ -3,55 +3,95 @@ import 'package:flutter/material.dart';
 import 'package:snacc/models.dart';
 import 'package:snacc/database.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 /// The [Restaurant] class will be widely used throughout the app. It contains information that will
 /// be used to display info about the restaurant on pages such as the find a restaurant page, map view,
 /// restaurant profile page etc.
 class Restaurant {
   /// Main display name of the restaurant.
   final String name;
+
   /// Typically a long text written by the restaurant to describe/advertise themself.
   final String description;
-	/// ID of the object in firebase
-	final String id;
+
+  /// ID of the object in firebase
+  final String id;
+
   /// URL of the restaurant's logo image
   final String logoUrl;
+
   /// Map of the availability of booking data for a restaurant
   final Map<String, dynamic> availability;
+
   /// Map of the GPS coordinates of the restaurant
   final Map<String, dynamic> latLong;
+
   /// Location of the restaurant
   final String location;
+
   /// The main type of food that the restaurant serves
   final String category;
+
   /// The distance in miles from the user, can be set later
   double distanceFromUser;
-  
 
-  Restaurant({@required this.id, @required this.name, @required this.description, @required this.logoUrl,
-  @required this.availability, @required this.latLong, @required this.location, @required this.category,
-  this.distanceFromUser});
+  Restaurant(
+      {@required this.id,
+      @required this.name,
+      @required this.description,
+      @required this.logoUrl,
+      @required this.availability,
+      @required this.latLong,
+      @required this.location,
+      @required this.category,
+      this.distanceFromUser});
 
   void setDistance(double dist) => distanceFromUser = dist;
 
+  /// Constructs a [Restaurant] object from a hit object of an Algolia search response
+  factory Restaurant.fromAlgoliaMap(Map<String, dynamic> map) {
+    return Restaurant(
+      id: map['objectID'],
+      name: map['name'],
+      description: map['description'],
+      logoUrl: map['logoUrl'] ??
+          "https://firebasestorage.googleapis.com/v0/b/eat-app-d60bf.appspot.com/o/no-logo.png?alt=media&token=61db48f4-27f7-4862-82de-40980649fd17",
+      availability: map['availability'] ?? Map(),
+      latLong: map['lat_long'] != null
+          ? {
+              "latitude": map['lat_long']['_latitude'],
+              "longitude": map['lat_long']['_longitude']
+            }
+          : Map(),
+      location: map['location'],
+      category: map['category'],
+    );
+  }
 
-	/// Constructs a [Restaurant] object from a hit object of an Algolia search response
-	factory Restaurant.fromAlgoliaMap(Map<String, dynamic> map) {
-		return Restaurant(
-				id: map['objectID'],
-				name: map['name'],
-				description: map['description'],
-        logoUrl: map['logoUrl'] ?? "https://firebasestorage.googleapis.com/v0/b/eat-app-d60bf.appspot.com/o/no-logo.png?alt=media&token=61db48f4-27f7-4862-82de-40980649fd17",
-        availability: map['availability'] ?? Map(),
-        latLong: map['lat_long'] != null ? {"latitude": map['lat_long']['_latitude'], "longitude": map['lat_long']['_longitude']} : Map(),
-        location: map['location'],
-        category: map['category'],
-		);
-	}
+  static Future<Restaurant> fromId(String id) async {
+    Map<String, dynamic> data =
+        await Database.readDocumentAtCollectionWithId('restaurants', id);
+    return Future.value(Restaurant(
+        id: data['id'],
+        name: data['name'],
+        description: data['description'],
+        logoUrl: data['logoUrl'],
+        availability: Map<String, dynamic>.from(data['availability']) ?? Map(),
+        latLong: data['lat_long'] != null
+            ? {
+                "latitude": data['lat_long'].latitude,
+                "longitude": data['lat_long'].longitude,
+              }
+            : Map(),
+        location: data['location'],
+        category: data['category']));
+  }
 
   /// Determines whether the filter by availability settings from [availableFrom], [availableTo]
   /// and [availableDaysFilter] overlap with any restaurants' availability settings.
-  bool isInsideAvailability(String availableFrom,
-      String availableTo, Map<int, bool> availableDaysFilter) {
+  bool isInsideAvailability(String availableFrom, String availableTo,
+      Map<int, bool> availableDaysFilter) {
     // Separate out components of times
     String availableFromHour = availableFrom.split(":")[0];
     String availableFromMin = availableFrom.split(":")[1];
@@ -84,7 +124,7 @@ class Restaurant {
       // If the restaurant doesn't have this day in their availability map then it's not available!
       if (this.availability[day] == null) continue;
       for (String interval in this.availability[day].keys) {
-        if(interval == 'closed') continue;
+        if (interval == 'closed') continue;
         // Check it's not fully booked
         if (this.availability[day][interval]['max'] ==
             this.availability[day][interval]['booked']) continue;
@@ -124,17 +164,18 @@ class Restaurant {
 
   /// Indicated whether a restaurant is closed on a certain day of the current week
   bool isClosed(String day) {
-    if(this.availability[day] == null) return true;
+    if (this.availability[day] == null) return true;
     return (this.availability[day]['closed'] ?? true);
   }
 
   /// Determines if a restaurant is fully booked on a certain day of the current week
   bool isFullyBooked(String day) {
     bool ret = true;
-    if(this.availability[day] == null) return true;
-    for(String interval in this.availability[day].keys) {
-      if(interval == 'closed') continue;
-      if(this.availability[day][interval]['booked'] < this.availability[day][interval]['max']) ret = false;
+    if (this.availability[day] == null) return true;
+    for (String interval in this.availability[day].keys) {
+      if (interval == 'closed') continue;
+      if (this.availability[day][interval]['booked'] <
+          this.availability[day][interval]['max']) ret = false;
     }
 
     return ret;

@@ -53,3 +53,9 @@ class TransactionCompleteEvent extends BookingEvent {
 }
 
 class OrderConfirmedEvent extends BookingEvent {}
+
+class TransactionFailedEvent extends BookingEvent {
+  String error;
+
+  TransactionFailedEvent({@required this.error});
+}

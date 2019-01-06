@@ -119,6 +119,7 @@ class _BookingDialogState extends State<BookingDialog> {
   Widget _buildReceiptBody(BookingState state, List<String> _months) {
     return Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
@@ -129,7 +130,12 @@ class _BookingDialogState extends State<BookingDialog> {
             ),
           ),
           SizedBox(height: 20),
-          Text('Some details of your purcahse go here...'),
+          Container(
+            alignment: Alignment.center,
+            child: Text(
+              'Transaction Id: ${state.voucher.transactionId}\nVoucher Id: ${state.voucher.id}\n\nThese details are also visible from your vouchers page',
+            ),
+          ),
           SizedBox(height: 20),
         ],
       ),
@@ -139,6 +145,7 @@ class _BookingDialogState extends State<BookingDialog> {
   Widget _buildOrderConfirmationBody(BookingState state, List<String> _months) {
     return Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           SizedBox(height: 10),

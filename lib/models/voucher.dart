@@ -8,9 +8,16 @@ class Voucher {
   User user;
   Restaurant restaurant;
   int numberOfPeople;
-  DateTime datetime;
+  DateTime bookingTime;
+  DateTime createdAt;
   String cardNonce;
   String status;
+  String transactionId;
+  DateTime transactionTime;
+
+  static const String STATUS_CREATED = 'created';
+  static const String STATUS_TRANSACTION_COMPLETE = 'transaction_complete';
+  static const String STATUS_TRANSACTION_FAILED = 'transaction_failed';
   
 
   Voucher({
@@ -18,9 +25,12 @@ class Voucher {
     @required this.user,
     @required this.restaurant,
     @required this.numberOfPeople,
-    @required this.datetime,
+    @required this.bookingTime,
+    @required this.createdAt,
     @required this.cardNonce,
-    this.status = 'created',
+    this.status = STATUS_CREATED,
+    this.transactionTime,
+    this.transactionId,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,10 +38,25 @@ class Voucher {
       'userId': user.id,
       'restaurantId': restaurant.id,
       'numberOfPeople': numberOfPeople,
-      'datetime': datetime,
+      'bookingTime': bookingTime,
       'cardNonce': cardNonce,
       'status': status,
+      'createdAt': createdAt,
     };
+  }
+
+  static Future<Voucher> fromFirebase(Map<String, dynamic> data) async {
+    return Future.value(
+      Voucher(
+      createdAt: data['createdAt'],
+      numberOfPeople: data['numberOfPeople'],
+      cardNonce: data['cardNonce'],
+      user: await User.fromId(data['userId']),
+      bookingTime: data['bookingTime'],
+      restaurant: await Restaurant.fromId(data['restaurantId']),
+      transactionId: data['transactionId'],
+      id: data['id'],
+    ));
   }
 
   void createAndSaveToFirebase() {
