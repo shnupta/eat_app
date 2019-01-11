@@ -10,7 +10,6 @@ import 'package:snacc/blocs/find_a_restaurant.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:snacc/widgets.dart';
 
 // This page will be responsible for initialising the blocs that will be needed by child pages.
 // It will also act as a kind of container around all the other pages that can be visited when

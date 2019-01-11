@@ -76,6 +76,7 @@ class _BookingDialogState extends State<BookingDialog> {
         bloc: bookingBloc,
         builder: (BuildContext context, BookingState state) {
           if (state.finished != null && state.finished) {
+            widget.restaurantProfileBloc.allowPopupClosing();
             widget.restaurantProfileBloc.closePopup();
           }
 
@@ -89,14 +90,16 @@ class _BookingDialogState extends State<BookingDialog> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                      title: Text(state.error),
+                      content: Text(state.error, textAlign: TextAlign.center,),
                     ),
               );
               bookingBloc.errorShown();
+              widget.restaurantProfileBloc.allowPopupClosing();
             });
           }
 
           if (state.isLoading != null && state.isLoading) {
+            widget.restaurantProfileBloc.preventPopupClosing();
             return Container(
               height: 100,
               width: 100,
@@ -105,10 +108,17 @@ class _BookingDialogState extends State<BookingDialog> {
           }
 
           if (state.showConfirmation != null && state.showConfirmation) {
+            widget.restaurantProfileBloc.allowPopupClosing();
             return _buildOrderConfirmationBody(state, _months);
           } else if (state.showReceipt != null && state.showReceipt) {
+            widget.restaurantProfileBloc.allowPopupClosing();
             return _buildReceiptBody(state, _months);
+          } else if (state.showTransactionError != null &&
+              state.showTransactionError) {
+                widget.restaurantProfileBloc.allowPopupClosing();
+            return _buildTransactionErrorBody(state);
           } else {
+            widget.restaurantProfileBloc.allowPopupClosing();
             return _buildStandardBody(state, _months, _validTimes);
           }
         },
@@ -130,11 +140,42 @@ class _BookingDialogState extends State<BookingDialog> {
             ),
           ),
           SizedBox(height: 20),
-          Container(
-            alignment: Alignment.center,
-            child: Text(
-              'Transaction Id: ${state.voucher.transactionId}\nVoucher Id: ${state.voucher.id}\n\nThese details are also visible from your vouchers page',
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Transaction Id: ',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '${state.voucher.transactionId}',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Voucher Id: ',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '${state.voucher.id}',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Text(
+            'These details are also visible from your vouchers page.',
+            textAlign: TextAlign.center,
           ),
           SizedBox(height: 20),
         ],
@@ -265,6 +306,19 @@ class _BookingDialogState extends State<BookingDialog> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTransactionErrorBody(BookingState state) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      child: Text(
+        'An error occured: ${state.transactionError}',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 16,
+        ),
       ),
     );
   }

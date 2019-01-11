@@ -84,6 +84,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         cardNonce: state.cardDetails.nonce,
         status: Voucher.STATUS_CREATED,
         createdAt: DateTime.now(),
+        bookingDay: state.day,
       );
       voucher.createAndSaveToFirebase();
       Database.listenToDocumentAtCollection('vouchers', voucher.id)
@@ -101,7 +102,9 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           }
         }
       });
-    } else if (event is TransactionFailedEvent) {}
+    } else if (event is TransactionFailedEvent) {
+      yield state.copyWith(isLoading: false, showReceipt: false, showConfirmation: false, showTransactionError: true, transactionError: event.error);
+    }
   }
 
   void initialise(Restaurant restaurant, DateTime date, String day) {

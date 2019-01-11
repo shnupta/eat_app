@@ -159,7 +159,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.0"
+    version: "0.12.0+1"
   http_parser:
     dependency: transitive
     description:
@@ -215,7 +215,7 @@ packages:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.1.0"
   quiver:
     dependency: transitive
     description:
@@ -247,10 +247,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: c34a5bac2c50f7a7558ca8e88b8f99de641d587b
+      resolved-ref: c0dc30ec1b1ee35456052db396577abfc2ec7f5e
       url: "https://github.com/square/in-app-payments-flutter-plugin.git"
     source: git
-    version: "1.0.0"
+    version: "1.0.1"
   stack_trace:
     dependency: transitive
     description:
@@ -313,7 +313,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.3"
+    version: "3.2.5"
   yaml:
     dependency: transitive
     description:

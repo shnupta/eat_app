@@ -17,3 +17,7 @@ class DaySelectedEvent extends RestaurantProfileEvent {
 }
 
 class ClosePopupEvent extends RestaurantProfileEvent {}
+
+class PreventPopupClosingEvent extends RestaurantProfileEvent {}
+
+class AllowPopupClosingEvent extends RestaurantProfileEvent {}

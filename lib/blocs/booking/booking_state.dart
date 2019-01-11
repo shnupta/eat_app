@@ -20,23 +20,28 @@ class BookingState {
   final CardDetails cardDetails;
   final bool showReceipt;
   final Voucher voucher;
+  final bool showTransactionError;
+  final String transactionError;
 
-  BookingState(
-      {@required this.restaurant,
-      @required this.date,
-      @required this.day,
-      this.isInitialising,
-      this.numberOfPeople,
-      this.selectedTime,
-      this.error,
-      this.isLoading,
-      this.user,
-      this.needsToEnterCardDetails,
-      this.finished,
-      this.showConfirmation,
-      this.cardDetails,
-      this.showReceipt,
-      this.voucher});
+  BookingState({
+    @required this.restaurant,
+    @required this.date,
+    @required this.day,
+    this.isInitialising,
+    this.numberOfPeople,
+    this.selectedTime,
+    this.error,
+    this.isLoading,
+    this.user,
+    this.needsToEnterCardDetails,
+    this.finished,
+    this.showConfirmation,
+    this.cardDetails,
+    this.showReceipt,
+    this.voucher,
+    this.showTransactionError,
+    this.transactionError,
+  });
 
   factory BookingState.initialising() => BookingState(
         restaurant: null,
@@ -46,25 +51,29 @@ class BookingState {
         isLoading: false,
         finished: false,
         showConfirmation: false,
-        showReceipt:  false,
+        showReceipt: false,
+        showTransactionError: false,
       );
 
-  BookingState copyWith(
-      {Restaurant restaurant,
-      DateTime date,
-      String day,
-      bool isInitialising,
-      int numberOfPeople,
-      String selectedTime,
-      String error,
-      bool isLoading,
-      User user,
-      bool needsToEnterCardDetails,
-      bool finished,
-      bool showConfirmation,
-      CardDetails cardDetails,
-      bool showReceipt,
-      Voucher voucher,}) {
+  BookingState copyWith({
+    Restaurant restaurant,
+    DateTime date,
+    String day,
+    bool isInitialising,
+    int numberOfPeople,
+    String selectedTime,
+    String error,
+    bool isLoading,
+    User user,
+    bool needsToEnterCardDetails,
+    bool finished,
+    bool showConfirmation,
+    CardDetails cardDetails,
+    bool showReceipt,
+    Voucher voucher,
+    bool showTransactionError,
+    String transactionError,
+  }) {
     return BookingState(
       restaurant: restaurant ?? this.restaurant,
       date: date ?? this.date,
@@ -82,6 +91,8 @@ class BookingState {
       cardDetails: cardDetails ?? this.cardDetails,
       showReceipt: showReceipt ?? this.showReceipt,
       voucher: voucher ?? this.voucher,
+      showTransactionError: showTransactionError ?? this.showTransactionError,
+      transactionError: transactionError ?? this.transactionError,
     );
   }
 }

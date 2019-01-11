@@ -10,6 +10,7 @@ class Voucher {
   int numberOfPeople;
   DateTime bookingTime;
   DateTime createdAt;
+  String bookingDay;
   String cardNonce;
   String status;
   String transactionId;
@@ -31,6 +32,7 @@ class Voucher {
     this.status = STATUS_CREATED,
     this.transactionTime,
     this.transactionId,
+    this.bookingDay,
   });
 
   Map<String, dynamic> toMap() {
@@ -42,6 +44,7 @@ class Voucher {
       'cardNonce': cardNonce,
       'status': status,
       'createdAt': createdAt,
+      'bookingDay': bookingDay,
     };
   }
 
@@ -56,6 +59,7 @@ class Voucher {
       restaurant: await Restaurant.fromId(data['restaurantId']),
       transactionId: data['transactionId'],
       id: data['id'],
+      bookingDay: data['bookingDay'],
     ));
   }
 

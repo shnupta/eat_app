@@ -17,7 +17,15 @@ class RestaurantProfileBloc
     } else if(event is DaySelectedEvent) {
       yield state.copyWith(showDayBookingPopup: true, selectedDay: event.day);
     } else if(event is ClosePopupEvent) {
-      yield state.copyWith(showDayBookingPopup: false, selectedDay: null);
+      if(state.canClosePopup) {
+        yield state.copyWith(showDayBookingPopup: false, selectedDay: null, canClosePopup: true);
+      } else {
+        yield state;
+      }
+    } else if(event is PreventPopupClosingEvent) {
+      yield state.copyWith(canClosePopup: false);
+    } else if(event is AllowPopupClosingEvent) {
+      yield state.copyWith(canClosePopup: true);
     }
   }
 
@@ -33,5 +41,13 @@ class RestaurantProfileBloc
 
   void closePopup() {
     dispatch(ClosePopupEvent());
+  }
+
+  void preventPopupClosing() {
+    dispatch(PreventPopupClosingEvent());
+  }
+
+  void allowPopupClosing() {
+    dispatch(AllowPopupClosingEvent());
   }
 }

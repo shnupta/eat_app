@@ -12,6 +12,7 @@ const ALGOLIA_INDEX_NAME = 'restaurants_search';
 const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
 
 admin.initializeApp(functions.config().firestore);
+const db = admin.firestore();
 
 var square_oauth2 = squareClient.authentications['oauth2'];
 square_oauth2.accessToken = "sq0atp-v-CQmt2pfhzcGP8mzxhPrQ";
@@ -60,32 +61,43 @@ exports.onRestaurantUpdated = functions.firestore.document('restaurants/{restaur
 
 exports.onVoucherCreated = functions.firestore.document('vouchers/{voucher_id}').onCreate((snapshot, context) => {
     const document = snapshot.data();
+    const batch = db.batch();
 
-    try {
-        var chargeBody = new squareConnect.ChargeRequest();
+    var restaurantRef = db.collection(`restaurants/${document.restaurantId}/vouchers`).doc(context.params.voucher_id);
+    var userRef = db.collection(`users/${document.userId}/vouchers`).doc(context.params.voucher_id);
+    var voucherRef = snapshot.ref;
 
-        var money = new squareConnect.Money();
-        money.amount = document.numberOfPeople * 100;
-        money.currency = "GBP";
+    var chargeBody = new squareConnect.ChargeRequest();
 
-        chargeBody.card_nonce = document.cardNonce;
-        chargeBody.idempotency_key = context.params.voucher_id;
-        chargeBody.amount_money = money;
+    var money = new squareConnect.Money();
+    money.amount = document.numberOfPeople * 100;
+    money.currency = "GBP";
 
-        return TransactionsAPI.charge(squareLocationID, chargeBody).then((data) => {
-            snapshot.ref.set({
-                transactionId: data.transaction.id,
-                status: 'transaction_complete'
-            }, { merge: true });
+    chargeBody.card_nonce = document.cardNonce;
+    chargeBody.idempotency_key = context.params.voucher_id;
+    chargeBody.amount_money = money;
 
-            // Now write to the user's area and the restaurant's area
-        }, function (error) {
-            throw error;
-        });
-    } catch (ex) {
+    return TransactionsAPI.charge(squareLocationID, chargeBody).then((value) => {
+        var newVoucher = snapshot.data();
+        newVoucher['transactionId'] = value.transaction.id;
+        newVoucher.status = 'transaction_complete';
+
+        batch.set(voucherRef, newVoucher, { merge: true });
+        batch.set(userRef, newVoucher);
+        batch.set(restaurantRef, newVoucher);
+
+        batch.commit();
+
+    }, (error) => {
         snapshot.ref.set({
             status: 'transaction_failed',
-            error: ex.message
+            error: JSON.parse(error.response.error.text).errors[0].detail,
         }, { merge: true });
-    }
+    });
+});
+
+exports.onRestaurantBookingReceived = functions.firestore.document('restaurants/{restaurant_id}/vouchers/{voucher_id}').onCreate((snapshot, context) => {
+    const document = snapshot.data();
+
+    // use document data to change availability field of document.bookingDay...
 });
