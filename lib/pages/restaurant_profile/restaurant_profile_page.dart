@@ -55,6 +55,7 @@ class RestaurantProfilePage extends StatelessWidget {
                 date: _findNextDateOfDay(state.selectedDay, _fullDays),
                 day: state.selectedDay,
                 restaurantProfileBloc: restaurantProfileBloc,
+                context: context
               ));
             }
             return Stack(

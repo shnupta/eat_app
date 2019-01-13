@@ -7,18 +7,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:snacc/models.dart';
 import 'package:snacc/database.dart';
+import 'package:snacc/config.dart';
 
 import 'package:square_in_app_payments/models.dart';
 import 'package:square_in_app_payments/in_app_payments.dart';
 
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
+
   BookingState get initialState => BookingState.initialising();
 
   @override
   Stream<BookingState> mapEventToState(
       BookingState state, BookingEvent event) async* {
     if (event is InitialiseEvent) {
-      _initSquarePayment();
+      _initSquarePayment(event.config);
 
       User user =
           User.fromFirebaseUser(await FirebaseAuth.instance.currentUser());
@@ -30,6 +32,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         isInitialising: false,
         numberOfPeople: 2,
         user: user,
+        config: event.config,
       );
     } else if (event is NumberOfPeopleSelectedEvent) {
       yield state.copyWith(numberOfPeople: event.numberOfPeople);
@@ -107,8 +110,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     }
   }
 
-  void initialise(Restaurant restaurant, DateTime date, String day) {
-    dispatch(InitialiseEvent(restaurant: restaurant, date: date, day: day));
+  void initialise(Restaurant restaurant, DateTime date, String day, Config config) {
+    dispatch(InitialiseEvent(restaurant: restaurant, date: date, day: day, config: config));
   }
 
   void numberOfPeopleSelected(int numberOfPeople) {
@@ -151,8 +154,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     dispatch(OrderConfirmedEvent());
   }
 
-  Future<void> _initSquarePayment() async {
-    await InAppPayments.setSquareApplicationId('sq0idp-dM3l69cCh00A0bdqtMEPOw');
+  Future<void> _initSquarePayment(Config config) async {
+    await InAppPayments.setSquareApplicationId(config['squareAppId']);
   }
 
   Future<void> _onStartCardEntryFlow() async {

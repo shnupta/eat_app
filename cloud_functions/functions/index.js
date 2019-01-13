@@ -15,10 +15,10 @@ admin.initializeApp(functions.config().firestore);
 const db = admin.firestore();
 
 var square_oauth2 = squareClient.authentications['oauth2'];
-square_oauth2.accessToken = "sq0atp-v-CQmt2pfhzcGP8mzxhPrQ";
+square_oauth2.accessToken = functions.config().square.access_token;
 
 var TransactionsAPI = new squareConnect.TransactionsApi();
-var squareLocationID = "TPN0CDMFTK4FY";
+var squareLocationID = functions.config().square.location_id;
 
 exports.addAllRestaurantsToAlgolia = functions.https.onRequest((req, res) => {
     var items = [];
@@ -100,4 +100,24 @@ exports.onRestaurantBookingReceived = functions.firestore.document('restaurants/
     const document = snapshot.data();
 
     // use document data to change availability field of document.bookingDay...
+    var restaurantRef = db.doc(`restaurants/${context.params.restaurant_id}`);
+    return restaurantRef.get().then((value) => {
+        var doc = value.data();
+        var availability = doc.availability[document.bookingDay];
+        for(var interval in availability) {
+            var bt = document.bookingTime.toDate();
+
+            var startTime = new Date(bt.getFullYear(), bt.getMonth(), bt.getDate(), parseInt(interval.split('-')[0]));
+            var endTime = new Date(bt.getFullYear(), bt.getMonth(), bt.getDate(), parseInt(interval.split('-')[1]));
+
+            if(startTime.getTime() <= bt.getTime() && bt.getTime() <= endTime.getTime()) {
+                availability[interval] = availability[inteval] - 1;
+                break;
+            }
+        }
+
+        restaurantRef.update({
+            availability: availability,
+        });
+    });
 });

@@ -10,6 +10,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:snacc/blocs/find_a_restaurant.dart';
 
+import 'package:snacc/config.dart';
+
 class FindARestaurantPage extends StatefulWidget {
   createState() => _FindARestaurantPageState();
 }
@@ -23,6 +25,8 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
 
   @override
   Widget build(BuildContext context) {
+    Config config = Config.of(context);
+
     FindARestaurantBloc findARestaurantBloc =
         BlocProvider.of<FindARestaurantBloc>(context);
 
@@ -30,7 +34,7 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
       bloc: findARestaurantBloc,
       builder: (BuildContext context, FindARestaurantState state) {
         if (state.isInitialising) {
-          findARestaurantBloc.initialise();
+          findARestaurantBloc.initialise(config);
           return Container();
         }
 

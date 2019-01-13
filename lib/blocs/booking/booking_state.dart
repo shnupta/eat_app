@@ -1,4 +1,5 @@
 import 'package:snacc/models.dart';
+import 'package:snacc/config.dart';
 
 import 'package:square_in_app_payments/models.dart';
 
@@ -22,11 +23,13 @@ class BookingState {
   final Voucher voucher;
   final bool showTransactionError;
   final String transactionError;
+  final Config config;
 
   BookingState({
     @required this.restaurant,
     @required this.date,
     @required this.day,
+    @required this.config,
     this.isInitialising,
     this.numberOfPeople,
     this.selectedTime,
@@ -53,6 +56,7 @@ class BookingState {
         showConfirmation: false,
         showReceipt: false,
         showTransactionError: false,
+        config: null,
       );
 
   BookingState copyWith({
@@ -73,6 +77,7 @@ class BookingState {
     Voucher voucher,
     bool showTransactionError,
     String transactionError,
+    Config config,
   }) {
     return BookingState(
       restaurant: restaurant ?? this.restaurant,
@@ -93,6 +98,7 @@ class BookingState {
       voucher: voucher ?? this.voucher,
       showTransactionError: showTransactionError ?? this.showTransactionError,
       transactionError: transactionError ?? this.transactionError,
+      config: config ?? this.config,
     );
   }
 }

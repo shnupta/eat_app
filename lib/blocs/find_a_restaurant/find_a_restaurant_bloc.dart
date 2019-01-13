@@ -5,6 +5,7 @@ import 'package:snacc/models.dart';
 import 'package:snacc/algolia/algolia_api.dart';
 
 import 'package:snacc/database.dart';
+import 'package:snacc/config.dart';
 
 import 'package:bloc/bloc.dart';
 
@@ -16,6 +17,7 @@ import 'package:tuple/tuple.dart';
 
 class FindARestaurantBloc
     extends Bloc<FindARestaurantEvent, FindARestaurantState> {
+
   FindARestaurantState get initialState {
     // Load the filter options on initialState unless they've already been loaded
     return FindARestaurantState.initialising();
@@ -79,11 +81,11 @@ class FindARestaurantBloc
           yield state.copyWith(results: results, query: event.query);
         }
       } catch (e) {
-        yield FindARestaurantState.failure(e.message);
+        yield state.copyWith(error: e.message);
       }
     } else if (event is InitialiseEvent) {
       AlgoliaClient client = AlgoliaClient(
-          appID: '1JUPZEJV71', searchKey: 'fdba16a946692e6ff2c30fc5d672203b');
+          appID: event.config['algoliaAppId'], searchKey: event.config['algoliaSearchKey']);
       AlgoliaIndex index = client.initIndex('restaurants_search');
 
       List<Map<String, dynamic>> cats =
@@ -130,6 +132,7 @@ class FindARestaurantBloc
         availableTo: "0:00",
         availableFilterDays: availableDaysFilters,
         orderBy: orderBy,
+        config: event.config,
       );
       search("");
     } else if (event is ClearResultsEvent) {
@@ -196,8 +199,8 @@ class FindARestaurantBloc
   }
 
   /// Dispatch an event to make the bloc initialise itself
-  void initialise() {
-    dispatch(InitialiseEvent());
+  void initialise(Config config) {
+    dispatch(InitialiseEvent(config: config));
   }
 
   /// Dispatch a ClearResultsEvent to wipe the results list

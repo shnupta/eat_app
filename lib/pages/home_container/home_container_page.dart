@@ -10,7 +10,6 @@ import 'package:snacc/blocs/find_a_restaurant.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 // This page will be responsible for initialising the blocs that will be needed by child pages.
 // It will also act as a kind of container around all the other pages that can be visited when
 // a user is logged in.
@@ -24,10 +23,12 @@ class HomeContainerPage extends StatefulWidget {
 
 class _HomeContainerPageState extends State<HomeContainerPage> {
   NewsBloc newsBloc = NewsBloc();
-  FindARestaurantBloc findARestaurantBloc = FindARestaurantBloc();
+    FindARestaurantBloc findARestaurantBloc = FindARestaurantBloc();
 
   @override
   Widget build(BuildContext context) {
+    
+    
     return DefaultTabController(
       length: 4,
       child: Scaffold(

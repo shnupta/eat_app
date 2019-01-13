@@ -1,6 +1,9 @@
 import 'package:snacc/models.dart';
+import 'package:snacc/config.dart';
 
 import 'package:snacc/algolia/algolia_api.dart';
+
+import 'package:flutter/material.dart';
 
 class FindARestaurantState {
 	/// Indicates whether a search is being performed
@@ -33,6 +36,7 @@ class FindARestaurantState {
   final Map<int, bool> availableFilterDays;
   /// A map of the 3 possible order by choices and whether they are selected
   final Map<String, bool> orderBy;
+  final Config config;
 
 	FindARestaurantState({
 		this.isLoading,
@@ -50,6 +54,7 @@ class FindARestaurantState {
     this.filterByAvailability,
     this.availableFilterDays,
     this.orderBy,
+    @required this.config,
 	});
 
 
@@ -59,43 +64,16 @@ class FindARestaurantState {
 				isInitialising: true,
 				error: '',
 				results: null,
+        config: null,
 		);
 	}
 
-	factory FindARestaurantState.loading() {
-		return FindARestaurantState(
-				isInitialising: false,
-				isLoading: true,
-				error: '',
-				results: null,
-		);
-	}
-
-	factory FindARestaurantState.displaying(List<Restaurant> restaurants, bool filterMenuOpen, Map<String, List<dynamic>> filterOptions) {
-		return FindARestaurantState(
-				isLoading: false,
-				isInitialising: false,
-				error: '',
-				results: restaurants,
-        filterMenuOpen: filterMenuOpen,
-        filterOptions: filterOptions,
-		);
-	}
-
-	factory FindARestaurantState.failure(String error) {
-		return FindARestaurantState(
-				isInitialising: false,
-				isLoading: false,
-				results: null,
-				error: error,
-		);
-	}
 
 	FindARestaurantState copyWith({bool isLoading, bool isInitialising, String error, 
   List<Restaurant> results, bool filterMenuOpen, Map<String, List<dynamic>> filterOptions,
   AlgoliaClient client, AlgoliaIndex index, Map<String, List<String>> facetFilters, String query,
   String availableTo, String availableFrom, bool filterByAvailability, Map<int, bool> availableFilterDays,
-  Map<String, bool> orderBy}) {
+  Map<String, bool> orderBy, Config config}) {
 		return FindARestaurantState(
 				isLoading: isLoading ?? this.isLoading,
 				isInitialising: isInitialising ?? this.isInitialising,
@@ -112,6 +90,7 @@ class FindARestaurantState {
         filterByAvailability: filterByAvailability ?? this.filterByAvailability,
         availableFilterDays: availableFilterDays ?? this.availableFilterDays,
         orderBy: orderBy ?? this.orderBy,
+        config: config ?? this.config,
 		);
 	}
 }

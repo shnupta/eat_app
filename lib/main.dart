@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 
 import 'package:snacc/pages/auth.dart';
 import 'package:snacc/pages/home_container.dart';
+import 'package:snacc/config.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,11 +29,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of my application.
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]); // Only allow the device to be in portrait mode
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp
+    ]); // Only allow the device to be in portrait mode
     //SystemChrome.setEnabledSystemUIOverlays([]); // Hide notificaiton and navigation bars
-	//debugPaintPointersEnabled = true;
+    //debugPaintPointersEnabled = true;
 
-    return BlocProvider( 
+    ConfigLoader configLoader = ConfigLoader();
+    configLoader.loadKeys();
+
+    return BlocProvider(
       // The BlocProvider, provides my authentication bloc to all children of this build context so that they
       // can inherit it and use it in their own methods
       bloc: authBloc,
@@ -40,13 +46,16 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: _createTheme(),
         title: 'snacc',
-        home: _rootPage(),
+        home: Config(
+          child: _rootPage(),
+          keys: configLoader.keys,
+        ),
       ),
     );
   }
 
   /// Determines which root page to show the user
-  /// 
+  ///
   /// It is possible that the user is already logged in, if so, Firebase will have this user info cached
   /// and I can just send the user to the logged in page already after an AutoLogin event has been dispatched
   /// and processed by the auth bloc. Else I need to set the root page as the login/signup page.
@@ -69,7 +78,7 @@ class MyApp extends StatelessWidget {
         if (authState.isLoading) {
           _widgets.add(_loadingIndicator());
         }
-        
+
         // A stack does what it says on the tin, stacks widgets (or in my case entire pages) on top of eachother.
         return Stack(
           children: _widgets,
@@ -88,7 +97,7 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  /// Shows a spinning, circular loading indicator with a slightly opaque grey background, over whatever is 
+  /// Shows a spinning, circular loading indicator with a slightly opaque grey background, over whatever is
   /// currently present on the screen
   Widget _loadingIndicator() {
     return Stack(
@@ -102,5 +111,5 @@ class MyApp extends StatelessWidget {
         ),
       ],
     );
-}
+  }
 }
