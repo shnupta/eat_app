@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:snacc/models.dart';
-import 'package:snacc/config.dart';
 
 import 'package:square_in_app_payments/models.dart';
 
@@ -11,9 +10,8 @@ class InitialiseEvent extends BookingEvent {
   final Restaurant restaurant;
   final DateTime date;
   final String day;
-  final Config config;
 
-  InitialiseEvent({@required this.restaurant, @required this.date, @required this.day, @required this.config});
+  InitialiseEvent({@required this.restaurant, @required this.date, @required this.day});
 }
 
 class NumberOfPeopleSelectedEvent extends BookingEvent {

@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:snacc/config.dart';
-
 
 abstract class FindARestaurantEvent {}
 
 /// This event is first sent to the bloc in order to initialise variables such as the connection to Algolia
-class InitialiseEvent extends FindARestaurantEvent {
-  final Config config;
-
-  InitialiseEvent({@required this.config});
-}
+class InitialiseEvent extends FindARestaurantEvent {}
 
 /// Dispatch this event when you want to search the Algolia index to return restaurants that match the search criteria
 class SearchEvent extends FindARestaurantEvent {
@@ -65,3 +59,5 @@ class OrderBySelectedEvent extends FindARestaurantEvent {
 
   OrderBySelectedEvent({@required this.type});
 }
+
+class ErrorShownEvent extends FindARestaurantEvent {}

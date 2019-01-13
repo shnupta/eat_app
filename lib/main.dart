@@ -46,10 +46,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: _createTheme(),
         title: 'snacc',
-        home: Config(
-          child: _rootPage(),
-          keys: configLoader.keys,
-        ),
+        home: _rootPage(),
       ),
     );
   }

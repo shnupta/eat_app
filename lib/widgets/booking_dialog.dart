@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:snacc/models.dart';
 import 'package:snacc/widgets.dart';
 import 'package:snacc/blocs/booking.dart';
-import 'package:snacc/config.dart';
 
 import 'package:snacc/blocs/restaurant_profile.dart';
 
@@ -35,8 +34,6 @@ class _BookingDialogState extends State<BookingDialog> {
 
   @override
   Widget build(BuildContext context) {
-
-    Config config = Config.of(widget.context); // TODO: For some reason config isn't in the widget ancestory of this build context
 
     List<String> _times = List.generate(
         48,
@@ -88,7 +85,7 @@ class _BookingDialogState extends State<BookingDialog> {
           }
 
           if (state.isInitialising == null || state.isInitialising) {
-            bookingBloc.initialise(widget.restaurant, widget.date, widget.day, config);
+            bookingBloc.initialise(widget.restaurant, widget.date, widget.day);
             return SizedBox();
           }
 

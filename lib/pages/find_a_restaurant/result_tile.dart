@@ -62,7 +62,7 @@ class ResultTile extends StatelessWidget {
                           '${result.category} | ${result.location}',
                           style: TextStyle(
                             fontWeight: FontWeight.w200,
-                          ),  
+                          ),
                         ),
                       ],
                     ),
@@ -103,7 +103,8 @@ class ResultTile extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[ // TODO: Make these buttons navigate to correct things
+            children: <Widget>[
+              // TODO: Make these buttons navigate to correct things
               RawMaterialButton(
                 constraints: BoxConstraints(
                   minWidth: 70,
@@ -113,6 +114,7 @@ class ResultTile extends StatelessWidget {
                 onPressed: () => null,
                 child: Text(
                   'View map',
+                  textAlign: TextAlign.center,
                 ),
               ),
               Container(
@@ -126,20 +128,10 @@ class ResultTile extends StatelessWidget {
                 ),
                 splashColor: Theme.of(context).primaryColor,
                 onPressed: () => null,
-                child: Text('Menu'),
-              ),
-              Container(
-                width: 1,
-                color: Colors.grey[300],
-              ),
-              RawMaterialButton(
-                constraints: BoxConstraints(
-                  minWidth: 70,
-                  minHeight: 40,
+                child: Text(
+                  'Menu',
+                  textAlign: TextAlign.center,
                 ),
-                splashColor: Theme.of(context).accentColor,
-                onPressed: () => null,
-                child: Text('Book'),
               ),
             ],
           ),

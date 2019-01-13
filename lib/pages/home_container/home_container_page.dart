@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:snacc/pages/home.dart';
 import 'package:snacc/pages/settings.dart';
 import 'package:snacc/pages/find_a_restaurant.dart';
+import 'package:snacc/pages/vouchers.dart';
 
 import 'package:snacc/blocs/news.dart';
 import 'package:snacc/blocs/find_a_restaurant.dart';
+import 'package:snacc/blocs/vouchers.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,12 +25,11 @@ class HomeContainerPage extends StatefulWidget {
 
 class _HomeContainerPageState extends State<HomeContainerPage> {
   NewsBloc newsBloc = NewsBloc();
-    FindARestaurantBloc findARestaurantBloc = FindARestaurantBloc();
+  FindARestaurantBloc findARestaurantBloc = FindARestaurantBloc();
+  VouchersBloc vouchersBloc = VouchersBloc();
 
   @override
   Widget build(BuildContext context) {
-    
-    
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -39,8 +40,13 @@ class _HomeContainerPageState extends State<HomeContainerPage> {
               child: HomePage(),
             ),
             BlocProvider(
-                bloc: findARestaurantBloc, child: FindARestaurantPage()),
-            Container(),
+              bloc: findARestaurantBloc,
+              child: FindARestaurantPage(),
+            ),
+            BlocProvider(
+              bloc: vouchersBloc,
+              child: VouchersPage(),
+            ),
             SettingsPage(),
           ],
         ),

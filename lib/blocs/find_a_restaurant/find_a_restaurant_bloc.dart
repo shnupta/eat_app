@@ -54,7 +54,7 @@ class FindARestaurantBloc
                   .toList();
             }
 
-            if (state.orderBy['distance']) {
+            if (results.isNotEmpty && state.orderBy['distance']) {
               // Get user's location
               Location userLocation = new Location();
               Map<String, double> loc = Map();
@@ -84,8 +84,11 @@ class FindARestaurantBloc
         yield state.copyWith(error: e.message);
       }
     } else if (event is InitialiseEvent) {
+      ConfigLoader configLoader = ConfigLoader();
+      await configLoader.loadKeys();
+
       AlgoliaClient client = AlgoliaClient(
-          appID: event.config['algoliaAppId'], searchKey: event.config['algoliaSearchKey']);
+          appID: configLoader['algoliaAppId'], searchKey: configLoader['algoliaSearchKey']);
       AlgoliaIndex index = client.initIndex('restaurants_search');
 
       List<Map<String, dynamic>> cats =
@@ -132,7 +135,6 @@ class FindARestaurantBloc
         availableTo: "0:00",
         availableFilterDays: availableDaysFilters,
         orderBy: orderBy,
-        config: event.config,
       );
       search("");
     } else if (event is ClearResultsEvent) {
@@ -190,6 +192,8 @@ class FindARestaurantBloc
       orderBy[event.type] = true;
       state.copyWith(orderBy: orderBy);
       search(state.query);
+    } else if (event is ErrorShownEvent) {
+      yield state.copyWith(error: '');
     }
   }
 
@@ -199,8 +203,8 @@ class FindARestaurantBloc
   }
 
   /// Dispatch an event to make the bloc initialise itself
-  void initialise(Config config) {
-    dispatch(InitialiseEvent(config: config));
+  void initialise() {
+    dispatch(InitialiseEvent());
   }
 
   /// Dispatch a ClearResultsEvent to wipe the results list
@@ -241,6 +245,10 @@ class FindARestaurantBloc
   /// Dispatch an OrderBySelectedEvent
   void orderBySelected(String type) {
     dispatch(OrderBySelectedEvent(type: type));
+  }
+
+  void errorShown() {
+    dispatch(ErrorShownEvent());
   }
 
   /// Converts degrees to radians

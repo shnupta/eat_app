@@ -10,10 +10,12 @@ class ConfigLoader {
     keys = Map();
   }
 
-  void loadKeys() async {
+  Future<void> loadKeys() async {
     String jsonString = await rootBundle.loadString(fileLocation);
     json.decode(jsonString, reviver: (key, value) {
       keys[key.toString()] = value.toString();
     });
   }
+
+  operator [](String key) => keys[key];
 }
