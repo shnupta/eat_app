@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:snacc/database.dart';
+import 'package:snacc/models.dart';
 
 /// Represents a user of the app.
 ///
@@ -78,4 +79,13 @@ class User {
 
   bool get hasCardDetailsSaved =>
       this.cards != null && this.cards.keys.length > 0;
+
+  Future<List<Voucher>> loadAllVouchers() async {
+    List<Map<String, dynamic>> docs = await Database.readDocumentsAtCollection('users/${this.id}/vouchers');
+    List<Voucher> vouchers = List();
+    for(Map<String, dynamic> doc in docs) {
+      vouchers.add(await Voucher.fromFirebase(doc));
+    }
+    return Future.value(vouchers);
+  }
 }

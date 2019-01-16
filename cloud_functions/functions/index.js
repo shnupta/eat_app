@@ -103,18 +103,21 @@ exports.onRestaurantBookingReceived = functions.firestore.document('restaurants/
     var restaurantRef = db.doc(`restaurants/${context.params.restaurant_id}`);
     return restaurantRef.get().then((value) => {
         var doc = value.data();
-        var availability = doc.availability[document.bookingDay];
-        for(var interval in availability) {
+        var availability = doc.availability;
+        var availabilityOfDay = doc.availability[document.bookingDay];
+        for(var interval in availabilityOfDay) {
             var bt = document.bookingTime.toDate();
 
             var startTime = new Date(bt.getFullYear(), bt.getMonth(), bt.getDate(), parseInt(interval.split('-')[0]));
             var endTime = new Date(bt.getFullYear(), bt.getMonth(), bt.getDate(), parseInt(interval.split('-')[1]));
 
             if(startTime.getTime() <= bt.getTime() && bt.getTime() <= endTime.getTime()) {
-                availability[interval] = availability[inteval] - 1;
+                availabilityOfDay[interval]['booked'] = availabilityOfDay[interval]['booked'] + 1;
                 break;
             }
         }
+
+        availability[document.bookingDay] = availabilityOfDay;
 
         restaurantRef.update({
             availability: availability,
