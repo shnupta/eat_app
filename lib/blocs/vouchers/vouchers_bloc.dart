@@ -28,10 +28,22 @@ class VouchersBloc extends Bloc<VouchersEvent, VouchersState> {
       } else {
         yield state.copyWith(isInitialising: false, noVouchers: true);
       }
+    } else if(event is ViewVoucherEvent) {
+      yield state.copyWith(viewVoucher: true, viewingVoucher: event.voucher);
+    } else if (event is ClearViewingVoucherEvent) {
+      yield state.copyWith(viewVoucher: false, viewingVoucher: null);
     }
   }
 
   void initialise() {
     dispatch(InitialiseEvent());
+  }
+
+  void viewVoucher(Voucher voucher) {
+    dispatch(ViewVoucherEvent(voucher: voucher));
+  }
+
+  void clearViewing() {
+    dispatch(ClearViewingVoucherEvent());
   }
 }

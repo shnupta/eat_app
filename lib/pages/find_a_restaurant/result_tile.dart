@@ -6,6 +6,8 @@ import 'package:snacc/painting.dart';
 
 import 'package:snacc/pages/restaurant_profile.dart';
 
+import 'package:snacc/pages/map_view.dart';
+
 /// A [ResultTile] is a custom list tile made for the find a restaurant page. It can display conditional
 /// content such as the distance from the user.
 class ResultTile extends StatelessWidget {
@@ -104,14 +106,21 @@ class ResultTile extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // TODO: Make these buttons navigate to correct things
+              // TODO: Make menu button navigate to correct thing
               RawMaterialButton(
                 constraints: BoxConstraints(
                   minWidth: 70,
                   minHeight: 40,
                 ),
                 splashColor: Theme.of(context).cursorColor,
-                onPressed: () => null,
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => MapViewPage(
+                      viewRestaurant: true,
+                      viewingRestaurant: result,
+                    ),
+                  ),
+                ),
                 child: Text(
                   'View map',
                   textAlign: TextAlign.center,

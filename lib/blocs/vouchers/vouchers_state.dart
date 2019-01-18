@@ -8,6 +8,8 @@ class VouchersState {
   final List<Voucher> vouchers;
   final List<Voucher> currentVouchers;
   final List<Voucher> expiredVouchers;
+  final Voucher viewingVoucher;
+  final bool viewVoucher;
 
   VouchersState({
     this.isInitialising,
@@ -15,17 +17,21 @@ class VouchersState {
     this.vouchers,
     this.currentVouchers,
     this.expiredVouchers,
-    this.noVouchers
+    this.noVouchers,
+    this.viewingVoucher,
+    this.viewVoucher,
   });
 
   factory VouchersState.initialising() => VouchersState(
     isInitialising: true,
     isLoading: false,
     noVouchers: false,
+    viewVoucher: false,
   );
 
   VouchersState copyWith({bool isInitialising, bool isLoading, List<Voucher> vouchers,
-  List<Voucher> currentVouchers, List<Voucher> expiredVouchers, bool noVouchers}) {
+  List<Voucher> currentVouchers, List<Voucher> expiredVouchers, bool noVouchers,
+  bool viewVoucher, Voucher viewingVoucher}) {
     return VouchersState(
       isInitialising: isInitialising ?? this.isInitialising,
       isLoading: isLoading ?? this.isLoading,
@@ -33,6 +39,8 @@ class VouchersState {
       currentVouchers: currentVouchers ?? this.currentVouchers,
       expiredVouchers: expiredVouchers ?? this.expiredVouchers,
       noVouchers: noVouchers ?? this.noVouchers,
+      viewVoucher: viewVoucher ?? this.viewVoucher,
+      viewingVoucher:  viewingVoucher ?? this.viewingVoucher,
     );
   }
 }
