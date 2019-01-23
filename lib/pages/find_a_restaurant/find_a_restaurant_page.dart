@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:snacc/widgets.dart';
 import 'package:snacc/pages/find_a_restaurant/filter_menu.dart';
 import 'package:snacc/pages/find_a_restaurant/result_tile.dart';
+import 'package:snacc/pages/map_view.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +24,6 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
 
   @override
   Widget build(BuildContext context) {
-
     FindARestaurantBloc findARestaurantBloc =
         BlocProvider.of<FindARestaurantBloc>(context);
 
@@ -67,6 +67,17 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
                             //else
                             //  findARestaurantBloc.clearResults();
                           },
+                          trailing: GestureDetector(
+                            child: Icon(
+                              Icons.map,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => MapViewPage()
+                              ),
+                            ),
+                          ),
                           margin: EdgeInsets.only(top: 10.0, left: 10.0),
                           textEditingController:
                               _searchInputTextEditingController,

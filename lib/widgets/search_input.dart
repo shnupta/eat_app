@@ -12,6 +12,7 @@ class SearchInput extends StatefulWidget {
   final TextCapitalization textCapitalization;
   final EdgeInsets margin;
 	final Function onChanged;
+  final Widget trailing;
 
   SearchInput(
       {
@@ -20,6 +21,7 @@ class SearchInput extends StatefulWidget {
       this.textCapitalization = TextCapitalization.none,
       this.margin = const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
 			this.onChanged,
+      this.trailing,
       });
 
   @override
@@ -69,6 +71,9 @@ class _SearchInputState extends State<SearchInput> {
                   ),
                 ),
               ),
+              widget.trailing != null ? Expanded(
+                child: widget.trailing
+              ) : Container(),
             ],
           ),
         ),

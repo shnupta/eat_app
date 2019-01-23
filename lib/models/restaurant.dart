@@ -49,7 +49,7 @@ class Restaurant {
   /// Constructs a [Restaurant] object from a hit object of an Algolia search response
   factory Restaurant.fromAlgoliaMap(Map<String, dynamic> map) {
     return Restaurant(
-      id: map['objectID'],
+      id: map['id'],
       name: map['name'],
       description: map['description'],
       logoUrl: map['logoUrl'] ??
@@ -66,6 +66,24 @@ class Restaurant {
     );
   }
 
+  factory Restaurant.fromMap(Map<String, dynamic> map) {
+    return Restaurant(
+      id: map['id'],
+        name: map['name'],
+        description: map['description'],
+        logoUrl: map['logoUrl'],
+        availability: map['availability'] != null ? Map<String, dynamic>.from(map['availability']) : Map(),
+        latLong: map['lat_long'] != null
+            ? {
+                "latitude": map['lat_long'].latitude,
+                "longitude": map['lat_long'].longitude,
+              }
+            : Map(),
+        location: map['location'],
+        category: map['category']
+    );
+  }
+
   static Future<Restaurant> fromId(String id) async {
     Map<String, dynamic> data =
         await Database.readDocumentAtCollectionWithId('restaurants', id);
@@ -74,7 +92,7 @@ class Restaurant {
         name: data['name'],
         description: data['description'],
         logoUrl: data['logoUrl'],
-        availability: Map<String, dynamic>.from(data['availability']) ?? Map(),
+        availability: data['availability'] != null ? Map<String, dynamic>.from(data['availability']) : Map(),
         latLong: data['lat_long'] != null
             ? {
                 "latitude": data['lat_long'].latitude,
@@ -176,5 +194,11 @@ class Restaurant {
     }
 
     return ret;
+  }
+
+  static Future<List<Restaurant>> loadAll() async {
+    List<Map<String, dynamic>> restaurants = await Database.readDocumentsAtCollection('restaurants');
+    return Future.value(restaurants.map((doc) => Restaurant.fromMap(doc)).toList());
+
   }
 }
