@@ -8,6 +8,7 @@ class StandardOutlinedButton extends StatelessWidget {
   final Color backgroundColor;
   final Color splashColor;
   final EdgeInsets margin;
+  final double width;
 
   StandardOutlinedButton({
     @required this.text,
@@ -16,12 +17,13 @@ class StandardOutlinedButton extends StatelessWidget {
     this.backgroundColor = Colors.white,
     this.splashColor = const Color(0xFFFF5757),
     this.margin = const EdgeInsets.all(8.0),
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: width ?? MediaQuery.of(context).size.width,
       margin: margin,
       alignment: Alignment.center,
       child: Row(

@@ -181,25 +181,15 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   void _onCardEntryCardNonceRequestSuccess(CardDetails result) async {
     try {
       // take payment with the card nonce details
-      // you can take a charge
-      // await chargeCard(result);
-      cardDetailsEntered(result);
 
       // payment finished successfully
       // you must call this method to close card entry
       InAppPayments.completeCardEntry(
-          onCardEntryComplete: _onCardEntryComplete);
+          onCardEntryComplete: () => cardDetailsEntered(result));
     } catch (ex) {
       // payment failed to complete due to error
       // notify card entry to show processing error
       InAppPayments.showCardNonceProcessingError(ex.message);
     }
-  }
-
-  ///
-  /// Callback when the card entry is closed after call 'completeCardEntry'
-  ///
-  void _onCardEntryComplete() {
-    // Update UI to notify user that the payment flow is finished successfully
   }
 }

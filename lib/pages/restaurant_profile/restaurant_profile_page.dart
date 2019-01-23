@@ -11,6 +11,8 @@ import 'package:snacc/blocs/restaurant_profile.dart';
 
 import 'package:date_utils/date_utils.dart' as du;
 
+import 'package:snacc/pages/map_view.dart';
+
 class RestaurantProfilePage extends StatelessWidget {
   final Restaurant restaurant;
 
@@ -51,12 +53,11 @@ class RestaurantProfilePage extends StatelessWidget {
                     color: Colors.black.withAlpha(170),
                   )));
               items.add(BookingDialog(
-                restaurant: restaurant,
-                date: _findNextDateOfDay(state.selectedDay, _fullDays),
-                day: state.selectedDay,
-                restaurantProfileBloc: restaurantProfileBloc,
-                context: context
-              ));
+                  restaurant: restaurant,
+                  date: _findNextDateOfDay(state.selectedDay, _fullDays),
+                  day: state.selectedDay,
+                  restaurantProfileBloc: restaurantProfileBloc,
+                  context: context));
             }
             return Stack(
               children: items,
@@ -164,6 +165,29 @@ class RestaurantProfilePage extends StatelessWidget {
               );
             },
           ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            StandardOutlinedButton(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              width: (MediaQuery.of(context).size.width / 2) - 30,
+              text: 'View map',
+              onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => MapViewPage(
+                          viewRestaurant: true, viewingRestaurant: restaurant),
+                    ),
+                  ),
+            ),
+            SizedBox(width: 20),
+            StandardOutlinedButton(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              width: (MediaQuery.of(context).size.width / 2) - 30,
+              text: 'View menu',
+              onPressed: () => null,
+            ),
+          ],
         ),
       ],
     );
