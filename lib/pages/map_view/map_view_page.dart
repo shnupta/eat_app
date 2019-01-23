@@ -49,8 +49,13 @@ class _MapViewState extends State<MapViewPage> {
   }
 
   void _onMapCreated(GoogleMapController controller) async {
+    List<Restaurant> rests = await Restaurant.loadAll();
     setState(() {
       mapController = controller;
+      
+      setState(() {
+        allRestaurants = rests;
+      });
     });
 
     mapController.onMarkerTapped.add((marker) => _handleMarkerTap(marker));
@@ -86,11 +91,6 @@ class _MapViewState extends State<MapViewPage> {
       ));
     } else {
       // Show all markers in view
-
-      List<Restaurant> rests = await Restaurant.loadAll();
-      setState(() {
-        allRestaurants = rests;
-      });
 
       allRestaurants.forEach((rest) => mapController.addMarker(MarkerOptions(
             infoWindowText: InfoWindowText(
@@ -129,6 +129,7 @@ class _MapViewState extends State<MapViewPage> {
             (rest.latLong['latitude'] as double).toStringAsPrecision(8) == marker.options.position.latitude.toStringAsPrecision(8) &&
             (rest.latLong['longitude'] as double).toStringAsPrecision(8) == marker.options.position.longitude.toStringAsPrecision(8))
         .toList()[0];
+
     setState(() {
       selectedRestaurant = restaurant;
     });
