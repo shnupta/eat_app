@@ -113,6 +113,11 @@ exports.onRestaurantBookingReceived = functions.firestore.document('restaurants/
 
             if(startTime.getTime() <= bt.getTime() && bt.getTime() <= endTime.getTime()) {
                 availabilityOfDay[interval]['booked'] = availabilityOfDay[interval]['booked'] + 1;
+                // TODO: fix this
+                if(availabilityOfDay[interval].vouchers == null) {
+                    availabilityOfDay[interval].vouchers = {};
+                }
+                availabilityOfDay[interval].vouchers[context.params.voucher_id] = document;
                 break;
             }
         }

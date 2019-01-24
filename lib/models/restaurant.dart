@@ -49,7 +49,7 @@ class Restaurant {
   /// Constructs a [Restaurant] object from a hit object of an Algolia search response
   factory Restaurant.fromAlgoliaMap(Map<String, dynamic> map) {
     return Restaurant(
-      id: map['id'],
+      id: map['objectID'],
       name: map['name'],
       description: map['description'],
       logoUrl: map['logoUrl'] ??
