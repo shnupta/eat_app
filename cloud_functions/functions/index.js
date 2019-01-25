@@ -129,3 +129,22 @@ exports.onRestaurantBookingReceived = functions.firestore.document('restaurants/
         });
     });
 });
+
+exports.daily_job = functions.pubsub
+  .topic('daily-tick')
+  .onPublish((message) => {
+    
+    // Update all restaurant's availabilty
+    // First save the current booking data into {restaurant_id}/past_bookings
+    // Then reset each restaurant's availability back to default
+    console.log('I should update the restaurant availability now!');
+
+    const restaurantsRef = admin.database().ref('restaurants');
+    restaurantsRef.once('value').then((snapshot) => {
+        snapshot.forEach((child) => {
+
+        });
+    });
+
+    return true;
+  });

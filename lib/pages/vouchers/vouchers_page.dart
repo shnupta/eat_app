@@ -69,23 +69,29 @@ class VouchersPage extends StatelessWidget {
                     SizedBox(height: 20),
                     Text(
                       state.viewingVoucher.restaurant.name,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                     ),
                     Text(
-                        '${state.viewingVoucher.bookingDay[0].toUpperCase()}${state.viewingVoucher.bookingDay.substring(1)} ${state.viewingVoucher.bookingTime.day} ${du.Utils.formatMonth(state.viewingVoucher.bookingTime)}'),
+                        '${state.viewingVoucher.bookingDay[0].toUpperCase()}${state.viewingVoucher.bookingDay.substring(1)} ${state.viewingVoucher.bookingTime.day} ${du.Utils.formatMonth(state.viewingVoucher.bookingTime)}',
+                        textAlign: TextAlign.center,
+                    ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
-                        'Table for ${state.viewingVoucher.numberOfPeople} at ${state.viewingVoucher.bookingTime.hour}:${state.viewingVoucher.bookingTime.minute}'),
+                        'Table for ${state.viewingVoucher.numberOfPeople} at ${state.viewingVoucher.bookingTime.hour}:${state.viewingVoucher.bookingTime.minute}',
+                        textAlign: TextAlign.center,
+                    ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
                       'Upon arrival, inform the restaurant\nof your booking through the app\nand make sure they scan the QR code.',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontStyle: FontStyle.italic,
                       ),
