@@ -28,6 +28,8 @@ exports.addAllRestaurantsToAlgolia = functions.https.onRequest((req, res) => {
             var restaurant = doc.data();
             restaurant.objectID = doc.id;
 
+            if(restaurant.availability != null) delete restaurant.availability;
+
             items.push(restaurant);
         });
 
@@ -45,6 +47,8 @@ exports.onRestaurantCreated = functions.firestore.document('restaurants/{restaur
     const document = snapshot.data();
 
     document.objectID = context.params.restaurant_id;
+    
+    if(document.availability != null) delete document.availability;
 
     const index = client.initIndex(ALGOLIA_INDEX_NAME);
     return index.saveObject(document);
@@ -54,6 +58,7 @@ exports.onRestaurantUpdated = functions.firestore.document('restaurants/{restaur
     const document = snapshot.after.data();
 
     document.objectID = context.params.restaurant_id;
+    if(document.availability != null) delete document.availability;
 
     const index = client.initIndex(ALGOLIA_INDEX_NAME);
     return index.saveObject(document);
@@ -113,7 +118,7 @@ exports.onRestaurantBookingReceived = functions.firestore.document('restaurants/
 
             if(startTime.getTime() <= bt.getTime() && bt.getTime() <= endTime.getTime()) {
                 availabilityOfDay[interval]['booked'] = availabilityOfDay[interval]['booked'] + 1;
-                // TODO: fix this
+
                 if(availabilityOfDay[interval].vouchers == null) {
                     availabilityOfDay[interval].vouchers = {};
                 }
@@ -133,17 +138,56 @@ exports.onRestaurantBookingReceived = functions.firestore.document('restaurants/
 exports.daily_job = functions.pubsub
   .topic('daily-tick')
   .onPublish((message) => {
+
+    var daysArr = [
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+        'sunday'
+    ];
     
     // Update all restaurant's availabilty
     // First save the current booking data into {restaurant_id}/past_bookings
     // Then reset each restaurant's availability back to default
-    console.log('I should update the restaurant availability now!');
 
-    const restaurantsRef = admin.database().ref('restaurants');
-    restaurantsRef.once('value').then((snapshot) => {
+    var restaurantsRef = db.collection('restaurants');
+    restaurantsRef.get().then(snapshot => {
+        var batch = db.batch();
         snapshot.forEach((child) => {
+            var restRef = child.ref;
 
+            var doc = child.data();
+
+            if(doc.availability == null) return;
+
+            var docAvailability = doc.availability;
+            var today = new Date();
+            today.setDate(today.getDate() - 1);
+            var day = daysArr[today.getDay() - 1];
+            if(docAvailability[day] == null) return;
+            else {
+                // copy all of this data to pastBookings collection of this restaurant
+                var pastBookingDay = `${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`
+                restRef.collection('pastBookings').doc(pastBookingDay).create(docAvailability[day]);
+            }
+
+            for(interval in docAvailability[day]) {
+                if(interval == 'closed') continue;
+                else {
+                    if(docAvailability[day][interval]['vouchers'] != null) delete docAvailability[day][interval]['vouchers'];
+                    docAvailability[day][interval]['booked'] = 0;
+                }
+            }
+
+            doc.availability = docAvailability;
+
+            batch.set(restRef, doc);
+            
         });
+        batch.commit();
     });
 
     return true;
