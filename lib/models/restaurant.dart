@@ -68,11 +68,13 @@ class Restaurant {
 
   factory Restaurant.fromMap(Map<String, dynamic> map) {
     return Restaurant(
-      id: map['id'],
+        id: map['id'],
         name: map['name'],
         description: map['description'],
         logoUrl: map['logoUrl'],
-        availability: map['availability'] != null ? Map<String, dynamic>.from(map['availability']) : Map(),
+        availability: map['availability'] != null
+            ? Map<String, dynamic>.from(map['availability'])
+            : Map(),
         latLong: map['lat_long'] != null
             ? {
                 "latitude": map['lat_long'].latitude,
@@ -80,8 +82,7 @@ class Restaurant {
               }
             : Map(),
         location: map['location'],
-        category: map['category']
-    );
+        category: map['category']);
   }
 
   static Future<Restaurant> fromId(String id) async {
@@ -92,7 +93,9 @@ class Restaurant {
         name: data['name'],
         description: data['description'],
         logoUrl: data['logoUrl'],
-        availability: data['availability'] != null ? Map<String, dynamic>.from(data['availability']) : Map(),
+        availability: data['availability'] != null
+            ? Map<String, dynamic>.from(data['availability'])
+            : Map(),
         latLong: data['lat_long'] != null
             ? {
                 "latitude": data['lat_long'].latitude,
@@ -140,6 +143,7 @@ class Restaurant {
       if (this.availability[day] == null) continue;
       for (String interval in this.availability[day].keys) {
         if (interval == 'closed') continue;
+        if(interval == 'vouchers') continue;
         // Check it's not fully booked
         if (this.availability[day][interval]['max'] ==
             this.availability[day][interval]['booked']) continue;
@@ -189,6 +193,7 @@ class Restaurant {
     if (this.availability[day] == null) return true;
     for (String interval in this.availability[day].keys) {
       if (interval == 'closed') continue;
+      if (interval == 'vouchers') continue;
       if (this.availability[day][interval]['booked'] <
           this.availability[day][interval]['max']) ret = false;
     }
@@ -197,8 +202,9 @@ class Restaurant {
   }
 
   static Future<List<Restaurant>> loadAll() async {
-    List<Map<String, dynamic>> restaurants = await Database.readDocumentsAtCollection('restaurants');
-    return Future.value(restaurants.map((doc) => Restaurant.fromMap(doc)).toList());
-
+    List<Map<String, dynamic>> restaurants =
+        await Database.readDocumentsAtCollection('restaurants');
+    return Future.value(
+        restaurants.map((doc) => Restaurant.fromMap(doc)).toList());
   }
 }

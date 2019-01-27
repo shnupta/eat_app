@@ -56,7 +56,10 @@ class _BookingDialogState extends State<BookingDialog> {
       Map<int, bool> daysFilter = {
         _days.indexOf(widget.day): true,
       };
-      return widget.restaurant.isInsideAvailability(time, time, daysFilter);
+      DateTime now = DateTime.now();
+      if(now.weekday - 1 == _days.indexOf(widget.day)) 
+        return widget.restaurant.isInsideAvailability(time, time, daysFilter) && ((int.parse(time.split(':')[0]) >= now.hour) && (int.parse(time.split(':')[1]) > now.minute));
+      else return widget.restaurant.isInsideAvailability(time, time, daysFilter);
     }).toList();
 
     List<String> _months = [
@@ -224,6 +227,16 @@ class _BookingDialogState extends State<BookingDialog> {
 
   Widget _buildStandardBody(
       BookingState state, List<String> _months, List<String> _validTimes) {
+    if(_validTimes.length == 0) {
+      return Container(
+        padding: EdgeInsets.all(20),
+        child: Text('No times are left for today.',
+        style: TextStyle(
+          fontSize: 20,
+        ),
+        textAlign: TextAlign.center,),
+      );
+    }
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,

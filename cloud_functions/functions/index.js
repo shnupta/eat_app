@@ -28,8 +28,6 @@ exports.addAllRestaurantsToAlgolia = functions.https.onRequest((req, res) => {
             var restaurant = doc.data();
             restaurant.objectID = doc.id;
 
-            if(restaurant.availability != null) delete restaurant.availability;
-
             items.push(restaurant);
         });
 
@@ -47,8 +45,6 @@ exports.onRestaurantCreated = functions.firestore.document('restaurants/{restaur
     const document = snapshot.data();
 
     document.objectID = context.params.restaurant_id;
-    
-    if(document.availability != null) delete document.availability;
 
     const index = client.initIndex(ALGOLIA_INDEX_NAME);
     return index.saveObject(document);
@@ -58,7 +54,6 @@ exports.onRestaurantUpdated = functions.firestore.document('restaurants/{restaur
     const document = snapshot.after.data();
 
     document.objectID = context.params.restaurant_id;
-    if(document.availability != null) delete document.availability;
 
     const index = client.initIndex(ALGOLIA_INDEX_NAME);
     return index.saveObject(document);
