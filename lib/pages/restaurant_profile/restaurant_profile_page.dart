@@ -230,6 +230,7 @@ class RestaurantProfilePage extends StatelessWidget {
     return ret;
   }
 
+  /// Returns the next date where the day of the week is [day]
   DateTime _findNextDateOfDay(String day, List<String> fullDays) {
     return DateTime.now().add(Duration(days: fullDays.indexOf(day)));
   }

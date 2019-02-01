@@ -4,16 +4,27 @@ import 'package:snacc/database.dart';
 import 'package:flutter/material.dart';
 
 class Voucher {
+  /// Id of the voucher inside firebase
   String id;
+  /// The user who purchased this voucher
   User user;
+  /// The restaurant the voucher is for
   Restaurant restaurant;
+  /// The number of people the voucher is booked for
   int numberOfPeople;
+  /// The time the booking is for
   DateTime bookingTime;
+  /// The time that the voucher was created
   DateTime createdAt;
+  /// The day of the week that the booking is on
   String bookingDay;
+  /// The generated card nonce from the Square SDK
   String cardNonce;
+  /// The status of the transaction
   String status;
+  /// The transaction Id returned from the Square Transactions API in the cloud function
   String transactionId;
+  /// The time that the transaction was processed
   DateTime transactionTime;
 
   static const String STATUS_CREATED = 'created';
@@ -35,6 +46,7 @@ class Voucher {
     this.bookingDay,
   });
 
+  /// Return the voucher as a map ready for writing to firebase
   Map<String, dynamic> toMap() {
     return {
       'userId': user.id,
@@ -48,6 +60,7 @@ class Voucher {
     };
   }
 
+  /// Construct a [Voucher] object from a map of data returned from a firebase snapshot
   static Future<Voucher> fromFirebase(Map<String, dynamic> data) async {
     return Future.value(
       Voucher(
@@ -63,6 +76,9 @@ class Voucher {
     ));
   }
 
+  /// Create a new voucher and write it to the database
+  /// 
+  /// This also triggers the cloud function that will start the payment processing.
   void createAndSaveToFirebase() {
     id = Database.createDocumentAtCollection('vouchers', toMap());
   }

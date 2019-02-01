@@ -61,11 +61,8 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
                       child: Container(
                         child: SearchInput(
                           onChanged: (text) {
-                            //if (!text.isEmpty)
                             findARestaurantBloc
                                 .search(_searchInputTextEditingController.text);
-                            //else
-                            //  findARestaurantBloc.clearResults();
                           },
                           trailing: GestureDetector(
                             child: Icon(

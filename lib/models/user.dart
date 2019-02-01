@@ -80,6 +80,7 @@ class User {
   bool get hasCardDetailsSaved =>
       this.cards != null && this.cards.keys.length > 0;
 
+  /// Loads all vouchers from the database
   Future<List<Voucher>> loadAllVouchers() async {
     List<Map<String, dynamic>> docs = await Database.readDocumentsAtCollection('users/${this.id}/vouchers');
     List<Voucher> vouchers = List();

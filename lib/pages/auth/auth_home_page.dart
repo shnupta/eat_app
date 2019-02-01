@@ -38,14 +38,6 @@ class AuthHomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   child: Text(
-                  //     'app',
-                  //     style: TextStyle(
-                  //       fontSize: 50.0,
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),

@@ -44,6 +44,7 @@ class Restaurant {
       @required this.category,
       this.distanceFromUser});
 
+  /// Sets the distance of this restaurant from the user
   void setDistance(double dist) => distanceFromUser = dist;
 
   /// Constructs a [Restaurant] object from a hit object of an Algolia search response
@@ -66,6 +67,7 @@ class Restaurant {
     );
   }
 
+  /// Construct a [Restaurant] object from a map returned from a Firebase snapshot
   factory Restaurant.fromMap(Map<String, dynamic> map) {
     return Restaurant(
         id: map['id'],
@@ -85,6 +87,7 @@ class Restaurant {
         category: map['category']);
   }
 
+  /// Construct a [Restaurant] object by loading the data of the restaurant with [id] from Firebase
   static Future<Restaurant> fromId(String id) async {
     Map<String, dynamic> data =
         await Database.readDocumentAtCollectionWithId('restaurants', id);
@@ -177,6 +180,7 @@ class Restaurant {
     return first.isBefore(second) || first.isAtSameMomentAs(second);
   }
 
+  /// Determines if a DateTime is after or equal to another
   bool _isAfterOrEqual(DateTime first, DateTime second) {
     return first.isAfter(second) || first.isAtSameMomentAs(second);
   }
@@ -201,6 +205,7 @@ class Restaurant {
     return ret;
   }
 
+  /// Loads all of the restaurants in the database and returns them as a list
   static Future<List<Restaurant>> loadAll() async {
     List<Map<String, dynamic>> restaurants =
         await Database.readDocumentsAtCollection('restaurants');

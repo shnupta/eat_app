@@ -32,19 +32,24 @@ class FindARestaurantBloc
       try {
         String _searchQuery = event.query ?? "";
         AlgoliaResponse response;
-        if (state.facetFilters.length > 0 /*&& event.query.isNotEmpty*/)
+        // If this search has filters add the filters to the search, else search normally
+        if (state.facetFilters.length > 0)
           response = await state.index.search(event.query, state.facetFilters);
-        else //if(event.query.isNotEmpty)
+        else
           response = await state.index.search(_searchQuery);
-        //else
-        //  _results = List();
 
+        // If there was a response from the API request and there isn't an error
         if (response != null && !response.hasError) {
+          // Iterate through all of the restaurants in the response and turn them into restaurant objects
           List<Restaurant> results = response.hits
               .map((hit) => Restaurant.fromAlgoliaMap(hit))
               .toList();
 
+        // If there are actually results do some more stuff
           if (results.isNotEmpty) {
+            // This is pretty neat, filters through the list of restaurants and only returns a List
+            // of ones where there is a time interval overlap with the days and times that the user
+            // has chosemn
             if (state.filterByAvailability) {
               results = results
                   .where((restaurant) => restaurant.isInsideAvailability(
@@ -92,16 +97,16 @@ class FindARestaurantBloc
       AlgoliaIndex index = client.initIndex('restaurants_search');
 
       List<Map<String, dynamic>> cats =
-          await Database.readDocumentsAtCollection('category');
+          await Database.readDocumentsAtCollection('category'); // load all categories from the database
       List<Map<String, dynamic>> locs =
-          await Database.readDocumentsAtCollection('location');
+          await Database.readDocumentsAtCollection('location'); // load location names from database
       Map<String, List<dynamic>> filterOptions = {
         'category': cats.map((c) {
           return {'name': c['name'], 'selected': false};
         }).toList(),
         'location': locs.map((l) {
           return {'name': l['name'], 'selected': false};
-        }).toList()
+        }).toList() // initialse the filter options map with all options unselected
       };
       Map<int, bool> availableDaysFilters = {
         0: false,
@@ -117,7 +122,7 @@ class FindARestaurantBloc
         'relevance': true,
         'popularity': false,
         'distance': false,
-      };
+      }; // order results by relevance by default
 
       Map<String, List<String>> facetFilters = Map();
 
@@ -150,6 +155,8 @@ class FindARestaurantBloc
     } else if (event is FilterItemSelectedEvent) {
       var _filterOptions = state.filterOptions;
       var _facetFilters = state.facetFilters;
+
+      // toggle the value of the filter option in the filter options map
 
       _filterOptions[event.type][event.index]['selected'] =
           !_filterOptions[event.type][event.index]['selected'];

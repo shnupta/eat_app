@@ -33,6 +33,12 @@ class HomePage extends StatelessWidget {
                   .toList(),
             ),
           );
+        } else {
+          return Scaffold(
+            body: Center(
+              child: Text('No articles available'),
+            ),
+          );
         }
       },
     );

@@ -8,11 +8,18 @@ import 'package:snacc/blocs/restaurant_profile.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// [BookingDialog] is the popup widget that expands when a user selects a day that they wish
+/// to book for.
 class BookingDialog extends StatefulWidget {
+  /// The restaurant the booking is being made at
   final Restaurant restaurant;
+  /// The date of the booking
   final DateTime date;
+  /// The day of the week of the booking
   final String day;
+  /// The restaurant profile bloc used for communicating back changes such as exiting the popup
   final RestaurantProfileBloc restaurantProfileBloc;
+  /// The current build content
   final BuildContext context;
 
   BookingDialog(
@@ -52,6 +59,7 @@ class _BookingDialogState extends State<BookingDialog> {
       "sunday"
     ];
 
+    // The list of times that are possible to actually book for this restaurant, on this day
     List<String> _validTimes = _times.where((time) {
       Map<int, bool> daysFilter = {
         _days.indexOf(widget.day): true,
@@ -106,6 +114,7 @@ class _BookingDialogState extends State<BookingDialog> {
           }
 
           if (state.isLoading != null && state.isLoading) {
+            // When loading we don't want the user to be able to accidentally quit
             widget.restaurantProfileBloc.preventPopupClosing();
             return Container(
               height: 100,

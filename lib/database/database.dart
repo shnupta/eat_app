@@ -75,10 +75,12 @@ class Database {
     }, merge: true);
   }
 
+  /// Listens for changes to a document with [documentId] at the [collectionPath] in firebase.
   static Stream<DocumentSnapshot> listenToDocumentAtCollection(String collectionPath, String documentID) {
     return _firestore.collection(collectionPath).document(documentID).snapshots();
   }
 
+  /// Reads a singular document with [documentId] in the collection at [collectionPath] in firebase.
   static Future<Map<String, dynamic>> readDocumentAtCollectionWithId(String collectionPath, String documentID) async {
     DocumentSnapshot doc = await _firestore.collection(collectionPath).document(documentID).get();
     doc.data['id'] = documentID;

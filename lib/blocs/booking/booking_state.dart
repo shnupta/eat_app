@@ -5,22 +5,39 @@ import 'package:square_in_app_payments/models.dart';
 import 'package:flutter/material.dart';
 
 class BookingState {
+  /// The restaurant currently being possibly booked
   final Restaurant restaurant;
+  /// The date of booking
   final DateTime date;
+  /// The day of the week of the booking
   final String day;
+  /// The selected time that the user would like to book
   final String selectedTime;
+  /// Is the bloc initialising
   final bool isInitialising;
+  /// The number of people to book a voucher for
   final int numberOfPeople;
+  /// The string of the current error
   final String error;
+  /// Is the bloc loading
   final bool isLoading;
+  /// The current user logged into the app, making the booking
   final User user;
+  /// If the user needs to enter their card details
   final bool needsToEnterCardDetails;
+  /// Has the booking dialog flow finished
   final bool finished;
+  /// Whether to show the booking confirmation
   final bool showConfirmation;
+  /// The card details entered by the user
   final CardDetails cardDetails;
+  /// Whether to show the voucher purchase receipt
   final bool showReceipt;
+  /// The voucher related to the booking
   final Voucher voucher;
+  /// Whether to show the transaction error
   final bool showTransactionError;
+  /// The transaction error
   final String transactionError;
 
   BookingState({

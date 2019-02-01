@@ -30,7 +30,6 @@ class AuthPage extends StatelessWidget {
           controller: _pageController,
           physics: BouncingScrollPhysics(),
           children: <Widget>[
-            // change these to their own widgets
             LoginPage(),
             AuthHomePage(
                 gotoLoginPage: _gotoLoginPage,
@@ -49,6 +48,7 @@ class AuthPage extends StatelessWidget {
     );
   }
 
+  /// Animates the controller page to goto the login page
   void _gotoLoginPage() {
     _pageController.animateToPage(
       0,
@@ -57,6 +57,7 @@ class AuthPage extends StatelessWidget {
     );
   }
 
+  /// Animates the controller page to goto the signup page
   void _gotoSignupPage() {
     _pageController.animateToPage(
       2,

@@ -8,8 +8,13 @@ import 'package:snacc/pages/restaurant_profile.dart';
 
 import 'package:location/location.dart';
 
+/// The [MapViewPage] displays a google map that the user interacts with to see the locations 
+/// of restaurants.
 class MapViewPage extends StatefulWidget {
+  /// If only one restaurant is to be viewed then it will be passed in the constructor
+  /// and will be the only marker on the map.
   final bool viewRestaurant;
+  /// The restaurant to view if it is the only one.
   final Restaurant viewingRestaurant;
 
   MapViewPage({this.viewRestaurant = false, this.viewingRestaurant});
@@ -22,8 +27,8 @@ class MapViewPage extends StatefulWidget {
 
 class _MapViewState extends State<MapViewPage> {
   GoogleMapController mapController;
-  List<Restaurant> restaurantsInView;
   List<Restaurant> allRestaurants;
+  // Set when the user clicks on a marker
   Restaurant selectedRestaurant;
 
   @override
@@ -67,6 +72,7 @@ class _MapViewState extends State<MapViewPage> {
                   ),
             )));
 
+    // If we only want to view one specific restaurant, then zoom into that at the beginning
     if (widget.viewRestaurant) {
       double lat = widget.viewingRestaurant.latLong['latitude'];
       double long = widget.viewingRestaurant.latLong['longitude'];
@@ -123,6 +129,8 @@ class _MapViewState extends State<MapViewPage> {
     }
   }
 
+  /// When a marker is tapped, set the selected restaurant. This enables us to choose 
+  /// which restaurant's profile page is opened when the info window is tapped.
   void _handleMarkerTap(Marker marker) {
     Restaurant restaurant = allRestaurants
         .where((rest) =>

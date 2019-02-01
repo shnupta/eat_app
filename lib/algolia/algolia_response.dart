@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-
+/// This is my custom class for the response received from a HTTP request to an Algolia index
 class AlgoliaResponse {
 	final Map<String, dynamic> body;
 	List<dynamic> hits;
@@ -9,6 +9,7 @@ class AlgoliaResponse {
 
 	AlgoliaResponse({this.body = const {}, this.hits = const [], this.hasError = false, this.error = ''});
 
+  /// Constructs an AlgoliaResponse from a raw HTTP response
 	factory AlgoliaResponse.fromResponse(response) {
 			if(response.statusCode == 200) {
 				Map<String, dynamic> _body = json.decode(response.body);

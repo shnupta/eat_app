@@ -10,6 +10,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import 'package:date_utils/date_utils.dart' as du;
 
+/// The [VouchersPage] is the page that shows the user all of their upcoming and expired vouchers.
 class VouchersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

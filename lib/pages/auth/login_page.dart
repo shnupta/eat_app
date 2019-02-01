@@ -37,13 +37,16 @@ class _LoginPageState extends State<LoginPage> {
     return BlocBuilder(
       bloc: authBloc,
       builder: (BuildContext context, AuthenticationState authState) {
+        // If there is an error show it
         if (authState.error != '' && !errorShown) {
+          // After the page has finished building, show a snackbar at the bottom indicating the error
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Scaffold.of(context).showSnackBar(errorSnackBar(authState.error));
             errorShown = true;
           });
         }
 
+        // same as with the error
         if (authState.info != '' && !infoShown) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Scaffold.of(context).showSnackBar(errorSnackBar(authState.info));

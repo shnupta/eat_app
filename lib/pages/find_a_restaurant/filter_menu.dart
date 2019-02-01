@@ -6,6 +6,8 @@ import 'package:snacc/blocs/find_a_restaurant.dart';
 
 import 'package:snacc/pages/find_a_restaurant/filter_tag.dart';
 
+/// The [FilterMenu] is the expandable widget next to the search bar that contains 
+/// all of the possible filter and sorting options available.
 class FilterMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> _times = List.generate(

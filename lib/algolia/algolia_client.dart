@@ -12,7 +12,7 @@ class AlgoliaClient {
 	/// [searchKey] is the search key of that application
 	AlgoliaClient({@required this.appID, @required this.searchKey}); 
 
-
+  /// Initialise the index with the name [indexName]
 	AlgoliaIndex initIndex(String indexName) {
 		return AlgoliaIndex(indexName: indexName, appID: this.appID, searchKey: this.searchKey);
 	}

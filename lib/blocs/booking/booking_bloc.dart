@@ -12,6 +12,8 @@ import 'package:snacc/config.dart';
 import 'package:square_in_app_payments/models.dart';
 import 'package:square_in_app_payments/in_app_payments.dart';
 
+/// This bloc handles all creation of vouchers and objects in the database which cause vouchers
+/// and spaces to be booked
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
 
   BookingState get initialState => BookingState.initialising();
@@ -21,10 +23,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       BookingState state, BookingEvent event) async* {
     if (event is InitialiseEvent) {
       ConfigLoader configLoader = ConfigLoader();
-      await configLoader.loadKeys();
+      await configLoader.loadKeys(); // Get the API keys
       
       _initSquarePayment(configLoader);
 
+      // We need the user info if they make a booking
       User user =
           User.fromFirebaseUser(await FirebaseAuth.instance.currentUser());
 
@@ -51,7 +54,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         if (state.user.hasCardDetailsSaved) {
           // use existing card details to charge payment...
         } else {
-          _onStartCardEntryFlow();
+          _onStartCardEntryFlow(); // Start the Square SDK card input
         }
       } catch (e) {
         yield state.copyWith(error: e.message);
@@ -75,11 +78,13 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           showReceipt: true,
           showConfirmation: false,
           voucher: event.voucher);
-    } else if (event is OrderConfirmedEvent) {
+    } else if (event is OrderConfirmedEvent) { // When the user confirms they wish to book a voucher
       yield state.copyWith(isLoading: true);
       int selectedHour = int.parse(state.selectedTime.split(':')[0]);
       int selectedMin = int.parse(state.selectedTime.split(':')[1]);
 
+      // Create the voucher object based on the data stored in the current state from previous
+      // actions such as entering their card details and selecting the booking time etc.
       Voucher voucher = Voucher(
         restaurant: state.restaurant,
         numberOfPeople: state.numberOfPeople,
@@ -92,6 +97,9 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         bookingDay: state.day,
       );
       voucher.createAndSaveToFirebase();
+
+      // Listen to the location that the voucher was written to until a change occurs.
+      // This change will be the result of the transaction attempt to charge their card
       Database.listenToDocumentAtCollection('vouchers', voucher.id)
           .listen((change) {
         if (change != null && change.data['status'] != null) {
@@ -112,51 +120,63 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     }
   }
 
+  /// Dispatches an [InitialiseEvent]
   void initialise(Restaurant restaurant, DateTime date, String day) {
     dispatch(InitialiseEvent(restaurant: restaurant, date: date, day: day));
   }
 
+  /// Dispatches a [NumberOfPeopleSelectedEvent]
   void numberOfPeopleSelected(int numberOfPeople) {
     dispatch(NumberOfPeopleSelectedEvent(numberOfPeople: numberOfPeople));
   }
 
+  /// Dispatches a [TimeSelectedEvent]
   void timeSelected(String selectedTime) {
     dispatch(TimeSelectedEvent(selectedTime: selectedTime));
   }
 
+  /// Dispatches a [BookNowPressedEvent]
   void bookNowPressed() {
     dispatch(BookNowPressedEvent());
   }
 
+  /// Dispatches an [ErrorShownEvent]
   void errorShown() {
     dispatch(ErrorShownEvent());
   }
 
+  /// Dispatches a [CardDetailsFlowStartedEvent]
   void cardDetailsFlowStarted() {
     dispatch(CardDetailsFlowStartedEvent());
   }
 
+  /// Dispatches a [StopLoadingEvent]
   void stopLoading() {
     dispatch(StopLoadingEvent());
   }
 
+  /// Dispatches a [CardDetailsEnteredEvent]
   void cardDetailsEntered(CardDetails cardDetails) {
     dispatch(CardDetailsEnteredEvent(cardDetails: cardDetails));
   }
 
+  /// Dispatches a [TransactionCompleteEvent]
   void transactionComplete(Voucher voucher) {
     dispatch(TransactionCompleteEvent(voucher: voucher));
   }
 
+  /// Dispatches a [TransactionFailedEvent]
   void transactionFailed(String error) {
     dispatch(TransactionFailedEvent(error: error));
   }
 
+  /// Dispatches an [OrderConfirmedEvent]
   void orderConfirmed() {
     dispatch(OrderConfirmedEvent());
   }
 
   Future<void> _initSquarePayment(ConfigLoader configLoader) async {
+    // Use the square app id from the config loader to initilise the square SDK
     await InAppPayments.setSquareApplicationId(configLoader['squareAppId']);
   }
 
