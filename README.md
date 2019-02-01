@@ -4,6 +4,8 @@ snacc is an app that allows you to purchase vouchers for amazing restaurants nea
 
 ## For Andy:
 
+Please see the `documentation/` directory for things like my analysis and design (not yet started).
+
 **Directories or files which contain code I've written:**
 
 - `app_engine/app.js`
