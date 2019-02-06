@@ -65,9 +65,11 @@ class _BookingDialogState extends State<BookingDialog> {
         _days.indexOf(widget.day): true,
       };
       DateTime now = DateTime.now();
-      if(now.weekday - 1 == _days.indexOf(widget.day)) 
-        return widget.restaurant.isInsideAvailability(time, time, daysFilter) && ((int.parse(time.split(':')[0]) >= now.hour) && (int.parse(time.split(':')[1]) > now.minute));
-      else return widget.restaurant.isInsideAvailability(time, time, daysFilter);
+      if(now.weekday - 1 == _days.indexOf(widget.day)) {
+        int hour = int.parse(time.split(':')[0]);
+        int minute = int.parse(time.split(':')[1]);
+        return widget.restaurant.isInsideAvailability(time, time, daysFilter) && isTimeInFuture(hour, minute, now.hour, now.minute);
+      } else return widget.restaurant.isInsideAvailability(time, time, daysFilter);
     }).toList();
 
     List<String> _months = [
@@ -140,6 +142,12 @@ class _BookingDialogState extends State<BookingDialog> {
         },
       ),
     );
+  }
+
+  bool isTimeInFuture(int timeHour, int timeMinute, int nowHour, int nowMinute) {
+    if(timeHour < nowHour) return false;
+    else if(timeHour == nowHour) return (timeMinute > nowMinute);
+    else return true;
   }
 
   Widget _buildReceiptBody(BookingState state, List<String> _months) {
@@ -218,7 +226,7 @@ class _BookingDialogState extends State<BookingDialog> {
           Container(
             alignment: Alignment.center,
             child: Text(
-              'Number of people: ${state.numberOfPeople}\nTime: ${state.selectedTime}\nDate: ${state.day.replaceFirst(state.day[0], state.day[0].toUpperCase())} ${state.date.day} ${_months[state.date.month]}\nPrice: £${state.numberOfPeople}.00',
+              'Number of people: ${state.numberOfPeople}\nTime: ${state.selectedTime}\nDate: ${state.day.replaceFirst(state.day[0], state.day[0].toUpperCase())} ${state.date.day} ${_months[state.date.month]}\nPrice: £${state.numberOfPeople}.00\nDiscount: ${state.restaurant.discount}%',
               style: TextStyle(
                 fontSize: 18,
               ),

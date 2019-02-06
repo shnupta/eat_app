@@ -111,6 +111,16 @@ class RestaurantProfilePage extends StatelessWidget {
                           ],
                         ),
                       ),
+                      Container(
+                        padding: EdgeInsets.only(top: 2),
+                        child: Text(
+                          '${restaurant.discount}% off!',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

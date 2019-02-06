@@ -95,6 +95,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         status: Voucher.STATUS_CREATED,
         createdAt: DateTime.now(),
         bookingDay: state.day,
+        discount: state.restaurant.discount,
       );
       voucher.createAndSaveToFirebase();
 

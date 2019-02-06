@@ -26,6 +26,8 @@ class Voucher {
   String transactionId;
   /// The time that the transaction was processed
   DateTime transactionTime;
+  /// The discount this voucher provides
+  int discount;
 
   static const String STATUS_CREATED = 'created';
   static const String STATUS_TRANSACTION_COMPLETE = 'transaction_complete';
@@ -44,6 +46,7 @@ class Voucher {
     this.transactionTime,
     this.transactionId,
     this.bookingDay,
+    @required this.discount,
   });
 
   /// Return the voucher as a map ready for writing to firebase
@@ -57,6 +60,7 @@ class Voucher {
       'status': status,
       'createdAt': createdAt,
       'bookingDay': bookingDay,
+      'discount': discount,
     };
   }
 
@@ -73,6 +77,7 @@ class Voucher {
       transactionId: data['transactionId'],
       id: data['id'],
       bookingDay: data['bookingDay'],
+      discount: data['discount'],
     ));
   }
 

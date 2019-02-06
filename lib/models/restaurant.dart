@@ -33,6 +33,9 @@ class Restaurant {
   /// The distance in miles from the user, can be set later
   double distanceFromUser;
 
+  /// The percentage discount that this restaurant offers (ie. 30% = 30)
+  final int discount;
+
   Restaurant(
       {@required this.id,
       @required this.name,
@@ -42,6 +45,7 @@ class Restaurant {
       @required this.latLong,
       @required this.location,
       @required this.category,
+      @required this.discount,
       this.distanceFromUser});
 
   /// Sets the distance of this restaurant from the user
@@ -64,34 +68,38 @@ class Restaurant {
           : Map(),
       location: map['location'],
       category: map['category'],
+      discount: map['discount'],
     );
   }
 
   /// Construct a [Restaurant] object from a map returned from a Firebase snapshot
   factory Restaurant.fromMap(Map<String, dynamic> map) {
     return Restaurant(
-        id: map['id'],
-        name: map['name'],
-        description: map['description'],
-        logoUrl: map['logoUrl'],
-        availability: map['availability'] != null
-            ? Map<String, dynamic>.from(map['availability'])
-            : Map(),
-        latLong: map['lat_long'] != null
-            ? {
-                "latitude": map['lat_long'].latitude,
-                "longitude": map['lat_long'].longitude,
-              }
-            : Map(),
-        location: map['location'],
-        category: map['category']);
+      id: map['id'],
+      name: map['name'],
+      description: map['description'],
+      logoUrl: map['logoUrl'],
+      availability: map['availability'] != null
+          ? Map<String, dynamic>.from(map['availability'])
+          : Map(),
+      latLong: map['lat_long'] != null
+          ? {
+              "latitude": map['lat_long'].latitude,
+              "longitude": map['lat_long'].longitude,
+            }
+          : Map(),
+      location: map['location'],
+      category: map['category'],
+      discount: map['discount'],
+    );
   }
 
   /// Construct a [Restaurant] object by loading the data of the restaurant with [id] from Firebase
   static Future<Restaurant> fromId(String id) async {
     Map<String, dynamic> data =
         await Database.readDocumentAtCollectionWithId('restaurants', id);
-    return Future.value(Restaurant(
+    return Future.value(
+      Restaurant(
         id: data['id'],
         name: data['name'],
         description: data['description'],
@@ -106,7 +114,10 @@ class Restaurant {
               }
             : Map(),
         location: data['location'],
-        category: data['category']));
+        category: data['category'],
+        discount: data['discount'],
+      ),
+    );
   }
 
   /// Determines whether the filter by availability settings from [availableFrom], [availableTo]
@@ -146,7 +157,7 @@ class Restaurant {
       if (this.availability[day] == null) continue;
       for (String interval in this.availability[day].keys) {
         if (interval == 'closed') continue;
-        if(interval == 'vouchers') continue;
+        if (interval == 'vouchers') continue;
         // Check it's not fully booked
         if (this.availability[day][interval]['max'] ==
             this.availability[day][interval]['booked']) continue;

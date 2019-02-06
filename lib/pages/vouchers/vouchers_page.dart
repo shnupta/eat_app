@@ -91,6 +91,13 @@ class VouchersPage extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
+                        'Discount: ${state.viewingVoucher.discount}%',
+                        textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
                       'Upon arrival, inform the restaurant\nof your booking through the app\nand make sure they scan the QR code.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
