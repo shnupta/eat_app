@@ -77,22 +77,22 @@ class VouchersPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                        '${state.viewingVoucher.bookingDay[0].toUpperCase()}${state.viewingVoucher.bookingDay.substring(1)} ${state.viewingVoucher.bookingTime.day} ${du.Utils.formatMonth(state.viewingVoucher.bookingTime)}',
-                        textAlign: TextAlign.center,
+                      '${state.viewingVoucher.bookingDay[0].toUpperCase()}${state.viewingVoucher.bookingDay.substring(1)} ${state.viewingVoucher.bookingTime.day} ${du.Utils.formatMonth(state.viewingVoucher.bookingTime)}',
+                      textAlign: TextAlign.center,
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
-                        'Table for ${state.viewingVoucher.numberOfPeople} at ${state.viewingVoucher.bookingTime.hour}:${state.viewingVoucher.bookingTime.minute}',
-                        textAlign: TextAlign.center,
+                      'Table for ${state.viewingVoucher.numberOfPeople} at ${state.viewingVoucher.bookingTime.hour}:${state.viewingVoucher.bookingTime.minute}',
+                      textAlign: TextAlign.center,
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
-                        'Discount: ${state.viewingVoucher.discount}%',
-                        textAlign: TextAlign.center,
+                      'Discount: ${state.viewingVoucher.discount}%',
+                      textAlign: TextAlign.center,
                     ),
                     SizedBox(
                       height: 10,
@@ -131,15 +131,20 @@ class VouchersPage extends StatelessWidget {
     if (state.currentVouchers.isEmpty) {
       return Center(child: Text('You have no current vouchers'));
     } else {
+      List<GestureDetector> tiles = state.currentVouchers
+          .map((voucher) => GestureDetector(
+                onTap: () => vouchersBloc.viewVoucher(voucher),
+                child: VoucherTile(
+                  voucher: voucher,
+                ),
+              ))
+          .toList();
+      tiles.sort((one, two) => (one.child as VoucherTile)
+          .voucher
+          .bookingTime
+          .compareTo((two.child as VoucherTile).voucher.bookingTime));
       return ListView(
-        children: state.currentVouchers
-            .map((voucher) => GestureDetector(
-                  onTap: () => vouchersBloc.viewVoucher(voucher),
-                  child: VoucherTile(
-                    voucher: voucher,
-                  ),
-                ))
-            .toList(),
+        children: tiles,
       );
     }
   }
@@ -150,15 +155,20 @@ class VouchersPage extends StatelessWidget {
         child: Text('You have no expired vouchers'),
       );
     } else {
+      List<GestureDetector> tiles = state.expiredVouchers
+          .map((voucher) => GestureDetector(
+                onTap: () => vouchersBloc.viewVoucher(voucher),
+                child: VoucherTile(
+                  voucher: voucher,
+                ),
+              ))
+          .toList();
+      tiles.sort((one, two) => (one.child as VoucherTile)
+          .voucher
+          .bookingTime
+          .compareTo((two.child as VoucherTile).voucher.bookingTime));
       return ListView(
-        children: state.expiredVouchers
-            .map((voucher) => GestureDetector(
-                  onTap: () => vouchersBloc.viewVoucher(voucher),
-                  child: VoucherTile(
-                    voucher: voucher,
-                  ),
-                ))
-            .toList(),
+        children: tiles,
       );
     }
   }
