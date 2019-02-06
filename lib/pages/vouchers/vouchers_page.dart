@@ -139,6 +139,7 @@ class VouchersPage extends StatelessWidget {
                 ),
               ))
           .toList();
+      // Order the vouchers so the ones closest are at the top
       tiles.sort((one, two) => (one.child as VoucherTile)
           .voucher
           .bookingTime

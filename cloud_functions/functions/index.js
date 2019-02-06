@@ -165,14 +165,15 @@ exports.daily_job = functions.pubsub
   .topic('daily-tick')
   .onPublish((message) => {
 
+    // has to be in this order as Sunday is 0 when calling javascript .getDay()q
     var daysArr = [
+        'sunday',
         'monday',
         'tuesday',
         'wednesday',
         'thursday',
         'friday',
         'saturday',
-        'sunday'
     ];
     
     // Update all restaurant's availabilty
@@ -193,7 +194,7 @@ exports.daily_job = functions.pubsub
             var docAvailability = doc.availability;
             var today = new Date();
             today.setDate(today.getDate() - 1);
-            var day = daysArr[today.getDay() - 1];
+            var day = daysArr[today.getDay()];
             if(docAvailability[day] == null) return;
             else {
                 // copy all of this data to pastBookings collection of this restaurant
