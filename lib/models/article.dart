@@ -10,6 +10,8 @@ class Article {
   final String body;
   /// Timestamp of the time that the article was published.
   final DateTime timestamp;
+  /// URL of the image for this article
+  final String imageUrl;
 
-  Article({@required this.title, @required this.body, @required this.timestamp, @required this.id});
+  Article({@required this.title, @required this.body, @required this.timestamp, @required this.id, this.imageUrl});
 }

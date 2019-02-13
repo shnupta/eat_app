@@ -10,23 +10,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   String _newsCollectionPath = 'news';
   /// Stores the currently displayed documents
-  List<NewsArticle> _articles;
+
 
   // The initial state is dependent on whether the bloc has already loaded some articles as we don't
   // want to reload every time the user navigates to the home page. Only if new data is present or if
   // nothing has been loaded yet.
-  NewsState get initialState {
-    if(_articles != null) {
-      return NewsState(
-        articles: _articles,
-        isInitialising: false,
-        isLoading: false,
-        error: '',
-      );
-    } else {
-      return NewsState.initialising();
-    }
-  }
+  NewsState get initialState => NewsState.initialising();
 
   @override Stream<NewsState> mapEventToState(NewsState state, NewsEvent event) async* {
     if(event is LoadNewsEvent) {
@@ -34,7 +23,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
       try {
         List<Map<String, dynamic>> documents = await Database.readDocumentsAtCollectionWithLimitByTimestampDescending(_newsCollectionPath, 10);
-        _articles = documents.map((map) => NewsArticle.fromMap(map)).toList();
+        List<Article> _articles = documents.map((map) => NewsArticle.fromMap(map)).toList();
         yield NewsState.normal(_articles);
       } catch(error) {
         yield NewsState.failure(error.message);

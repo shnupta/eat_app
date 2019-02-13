@@ -10,8 +10,8 @@ class NewsArticle extends Article {
   /// Name of the author of the article.
   final String author;
 
-  NewsArticle({@required title, @required body, @required timestamp, @required this.author, @required id})
-  : super(title: title, body: body, timestamp: timestamp, id: id,);
+  NewsArticle({@required title, @required body, @required timestamp, @required this.author, @required id, imageUrl})
+  : super(title: title, body: body, timestamp: timestamp, id: id, imageUrl: imageUrl);
 
 
   /// Constructs a [NewsArticle] from [map].
@@ -24,6 +24,7 @@ class NewsArticle extends Article {
       body: map['body'],
       timestamp: map['timestamp'],
       author: map['author'],
+      imageUrl: map['imageUrl'] ?? null,
     );
   }
 
