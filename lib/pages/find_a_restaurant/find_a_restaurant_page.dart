@@ -6,6 +6,7 @@ import 'package:snacc/widgets.dart';
 import 'package:snacc/pages/find_a_restaurant/filter_menu.dart';
 import 'package:snacc/pages/find_a_restaurant/result_tile.dart';
 import 'package:snacc/pages/map_view.dart';
+import 'package:snacc/pages/find_a_restaurant/favourite_restaurants_page.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -67,13 +68,13 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
                           trailing: GestureDetector(
                             child: Icon(
                               Icons.map,
-                              color: Theme.of(context).primaryColor,
+                              color: Colors.green[700],
                             ),
                             onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => MapViewPage()
-                              ),
-                            ),
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MapViewPage()),
+                                ),
                           ),
                           margin: EdgeInsets.only(top: 10.0, left: 10.0),
                           textEditingController:
@@ -85,10 +86,9 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
                     Expanded(
                       flex: 1,
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
+                        padding: const EdgeInsets.only(top: 8.0),
                         child: IconButton(
                           splashColor: Theme.of(context).accentColor,
-                          padding: EdgeInsets.all(0.0),
                           icon: Icon(
                             Icons.filter_list,
                           ),
@@ -96,7 +96,23 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
                               findARestaurantBloc.toggleFilterMenu(),
                         ),
                       ),
-                    )
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.star,
+                            color: Colors.yellow[800],
+                          ),
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => FavouriteRestaurantsPage(),
+                            )
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 Container(

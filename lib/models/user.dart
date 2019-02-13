@@ -90,14 +90,14 @@ class User {
     return Future.value(vouchers);
   }
 
-  Future<List<Restaurant>> getFavouriteRestaurants() async {
+  Future<List<String>> getFavouriteRestaurants() async {
     List<Map<String, dynamic>> docs = await Database.readDocumentsAtCollection('users/${this.id}/favouriteRestaurants');
-    return Future.value(docs.map((map) => Restaurant.fromMap(map)).toList());
+    return Future.value(docs.map((doc) => doc['id'].toString()).toList());
   }
 
   void toggleFavouriteRestaurant(Restaurant restaurant) async {
-    List<Restaurant> current = await getFavouriteRestaurants();
-    if(current.contains(restaurant)) {
+    List<String> current = await getFavouriteRestaurants();
+    if(current.contains(restaurant.id)) {
       // delete from collection
       Database.deleteDocumentWithIdFromCollection(restaurant.id, 'users/${this.id}/favouriteRestaurants');
     } else {

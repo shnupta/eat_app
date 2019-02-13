@@ -41,6 +41,10 @@ class RestaurantProfilePage extends StatelessWidget {
       body: BlocBuilder(
           bloc: restaurantProfileBloc,
           builder: (BuildContext context, RestaurantProfileState state) {
+            if(state.isInitialising) {
+              restaurantProfileBloc.initialise(restaurant);
+            }
+
             List<Widget> items = [];
             items.add(_buildMainPage(
                 context, _days, _fullDays, now, restaurantProfileBloc, state));
@@ -197,7 +201,7 @@ class RestaurantProfilePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(48)
               ),
               child: IconButton(
-                icon: state.isRestaurantUserFavourite ? Icon(Icons.star) : Icon(Icons.star_border),
+                icon: state.isRestaurantUserFavourite ? Icon(Icons.star, color: Colors.yellow[800],) : Icon(Icons.star_border),
                 onPressed: () => restaurantProfileBloc.toggleFavourite(),
                 splashColor: Theme.of(context).accentColor,
               ),

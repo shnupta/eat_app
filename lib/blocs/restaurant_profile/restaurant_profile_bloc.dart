@@ -17,11 +17,11 @@ class RestaurantProfileBloc
     if (event is InitialiseEvent) {
       User user =
           User.fromFirebaseUser(await FirebaseAuth.instance.currentUser());
-      List<Restaurant> favourites = await user.getFavouriteRestaurants();
+      List<String> favourites = await user.getFavouriteRestaurants();
       yield RestaurantProfileState(
           restaurant: event.restaurant,
           isInitialising: false,
-          isRestaurantUserFavourite: favourites.contains(event.restaurant));
+          isRestaurantUserFavourite: favourites.contains(event.restaurant.id));
     } else if (event is DaySelectedEvent) {
       yield state.copyWith(showDayBookingPopup: true, selectedDay: event.day);
     } else if (event is ClosePopupEvent) {
