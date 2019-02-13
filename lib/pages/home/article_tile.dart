@@ -33,7 +33,7 @@ class ArticleTile extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.only(left: 10.0),
-                  color: Colors.transparent,
+                  color: Colors.black.withAlpha(70),
                   child: Text(
                     article.title,
                     style: TextStyle(

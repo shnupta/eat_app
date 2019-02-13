@@ -43,7 +43,7 @@ class RestaurantProfilePage extends StatelessWidget {
       body: BlocBuilder(
           bloc: restaurantProfileBloc,
           builder: (BuildContext context, RestaurantProfileState state) {
-            if(state.isInitialising) {
+            if (state.isInitialising) {
               restaurantProfileBloc.initialise(restaurant);
             }
 
@@ -77,7 +77,8 @@ class RestaurantProfilePage extends StatelessWidget {
       List<String> _days,
       List<String> _fullDays,
       DateTime now,
-      RestaurantProfileBloc restaurantProfileBloc, RestaurantProfileState state) {
+      RestaurantProfileBloc restaurantProfileBloc,
+      RestaurantProfileState state) {
     return Column(
       children: <Widget>[
         Container(
@@ -199,11 +200,15 @@ class RestaurantProfilePage extends StatelessWidget {
             SizedBox(width: 10),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]),
-                borderRadius: BorderRadius.circular(48)
-              ),
+                  border: Border.all(color: Colors.grey[300]),
+                  borderRadius: BorderRadius.circular(48)),
               child: IconButton(
-                icon: state.isRestaurantUserFavourite ? Icon(Icons.star, color: Colors.yellow[800],) : Icon(Icons.star_border),
+                icon: state.isRestaurantUserFavourite
+                    ? Icon(
+                        Icons.star,
+                        color: Colors.yellow[800],
+                      )
+                    : Icon(Icons.star_border),
                 onPressed: () => restaurantProfileBloc.toggleFavourite(),
                 splashColor: Theme.of(context).accentColor,
               ),
@@ -220,7 +225,8 @@ class RestaurantProfilePage extends StatelessWidget {
         Container(
           alignment: Alignment.centerLeft,
           margin: EdgeInsets.only(left: 20, top: 20),
-          child: Text('Description',
+          child: Text(
+            'Description',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
@@ -229,6 +235,7 @@ class RestaurantProfilePage extends StatelessWidget {
         ),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+          alignment: Alignment.centerLeft,
           child: Text(
             restaurant.description,
             style: TextStyle(
@@ -236,8 +243,46 @@ class RestaurantProfilePage extends StatelessWidget {
             ),
           ),
         ),
+        _buildGallery(restaurant),
       ],
     );
+  }
+
+  Widget _buildGallery(Restaurant restaurant) {
+    if (restaurant.galleryImages != null) {
+      return Column(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: EdgeInsets.only(left: 20, top: 20),
+            child: Text(
+              'Gallery',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ),
+          Container(
+            height: 300,
+            margin: EdgeInsets.only(left: 20, right: 20, top: 4, bottom: 20),
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: restaurant.galleryImages
+                  .map((url) => Container(
+                        margin: EdgeInsets.symmetric(horizontal: 5),
+                        child: Image(
+                          image: NetworkImage(url),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Container();
+    }
   }
 
   Widget _buildMainPage(
@@ -245,7 +290,8 @@ class RestaurantProfilePage extends StatelessWidget {
       List<String> _days,
       List<String> _fullDays,
       DateTime now,
-      RestaurantProfileBloc restaurantProfileBloc, RestaurantProfileState state) {
+      RestaurantProfileBloc restaurantProfileBloc,
+      RestaurantProfileState state) {
     return CustomScrollView(
       slivers: <Widget>[
         SliverAppBar(
@@ -255,10 +301,11 @@ class RestaurantProfilePage extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        SliverFillRemaining(
-          child:
-              _buildBody(context, _days, _fullDays, now, restaurantProfileBloc, state),
-        ),
+        SliverToBoxAdapter(
+            child: _buildBody(
+                context, _days, _fullDays, now, restaurantProfileBloc, state),
+          ),
+        
       ],
     );
   }

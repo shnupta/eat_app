@@ -39,6 +39,9 @@ class Restaurant {
   /// The url to this restaurant's website
   final String websiteUrl;
 
+  /// A list of images to display on the restaurant profile page
+  final List<String> galleryImages;
+
   Restaurant(
       {@required this.id,
       @required this.name,
@@ -50,6 +53,7 @@ class Restaurant {
       @required this.category,
       @required this.discount,
       @required this.websiteUrl,
+      this.galleryImages,
       this.distanceFromUser});
 
   /// Sets the distance of this restaurant from the user
@@ -74,6 +78,7 @@ class Restaurant {
       category: map['category'],
       discount: map['discount'],
       websiteUrl: map['websiteUrl'] ?? "https://www.google.co.uk",
+      galleryImages: (map['galleryImages'] != null) ? List<String>.from(map['galleryImages']) : null,
     );
   }
 
@@ -97,6 +102,7 @@ class Restaurant {
       category: map['category'],
       discount: map['discount'],
       websiteUrl: map['websiteUrl'] ?? "https://www.google.co.uk",
+      galleryImages: (map['galleryImages'] != null) ? List<String>.from(map['galleryImages']) : null,
     );
   }
 
@@ -123,6 +129,7 @@ class Restaurant {
         category: data['category'],
         discount: data['discount'],
         websiteUrl: data['websiteUrl'] ?? "https://www.google.co.uk",
+        galleryImages: (data['galleryImages'] != null) ?  List<String>.from(data['galleryImages']) : null,
       ),
     );
   }
@@ -139,6 +146,7 @@ class Restaurant {
       'category': category,
       'discount': discount,
       'websiteUrl': websiteUrl,
+      'galleryImages': galleryImages,
     };
   }
 

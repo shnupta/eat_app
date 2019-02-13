@@ -31,6 +31,7 @@ class ArticlePage extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     article.title,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 28,
