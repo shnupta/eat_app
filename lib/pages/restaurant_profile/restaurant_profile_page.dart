@@ -43,7 +43,7 @@ class RestaurantProfilePage extends StatelessWidget {
           builder: (BuildContext context, RestaurantProfileState state) {
             List<Widget> items = [];
             items.add(_buildMainPage(
-                context, _days, _fullDays, now, restaurantProfileBloc));
+                context, _days, _fullDays, now, restaurantProfileBloc, state));
 
             if (state.showDayBookingPopup != null &&
                 state.showDayBookingPopup) {
@@ -71,7 +71,7 @@ class RestaurantProfilePage extends StatelessWidget {
       List<String> _days,
       List<String> _fullDays,
       DateTime now,
-      RestaurantProfileBloc restaurantProfileBloc) {
+      RestaurantProfileBloc restaurantProfileBloc, RestaurantProfileState state) {
     return Column(
       children: <Widget>[
         Container(
@@ -181,7 +181,7 @@ class RestaurantProfilePage extends StatelessWidget {
           children: <Widget>[
             StandardOutlinedButton(
               margin: EdgeInsets.symmetric(horizontal: 10),
-              width: (MediaQuery.of(context).size.width / 2) - 30,
+              width: (MediaQuery.of(context).size.width / 2) - 60,
               text: 'View map',
               onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
@@ -190,10 +190,22 @@ class RestaurantProfilePage extends StatelessWidget {
                     ),
                   ),
             ),
-            SizedBox(width: 20),
+            SizedBox(width: 10),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[300]),
+                borderRadius: BorderRadius.circular(48)
+              ),
+              child: IconButton(
+                icon: state.isRestaurantUserFavourite ? Icon(Icons.star) : Icon(Icons.star_border),
+                onPressed: () => restaurantProfileBloc.toggleFavourite(),
+                splashColor: Theme.of(context).accentColor,
+              ),
+            ),
+            SizedBox(width: 10),
             StandardOutlinedButton(
               margin: EdgeInsets.symmetric(horizontal: 10),
-              width: (MediaQuery.of(context).size.width / 2) - 30,
+              width: (MediaQuery.of(context).size.width / 2) - 60,
               text: 'View menu',
               onPressed: () => null,
             ),
@@ -208,7 +220,7 @@ class RestaurantProfilePage extends StatelessWidget {
       List<String> _days,
       List<String> _fullDays,
       DateTime now,
-      RestaurantProfileBloc restaurantProfileBloc) {
+      RestaurantProfileBloc restaurantProfileBloc, RestaurantProfileState state) {
     return CustomScrollView(
       slivers: <Widget>[
         SliverAppBar(
@@ -220,7 +232,7 @@ class RestaurantProfilePage extends StatelessWidget {
         ),
         SliverFillRemaining(
           child:
-              _buildBody(context, _days, _fullDays, now, restaurantProfileBloc),
+              _buildBody(context, _days, _fullDays, now, restaurantProfileBloc, state),
         ),
       ],
     );

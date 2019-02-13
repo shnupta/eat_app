@@ -76,7 +76,7 @@ class ResultTile extends StatelessWidget {
                   result.logoUrl,
                 ),
               ),
-              trailing: Icon(Icons.star), // TODO: put rating here
+              trailing: SizedBox(width: 60,), // aligns the title to be centred with the bottom menu
             ),
           ),
         ),

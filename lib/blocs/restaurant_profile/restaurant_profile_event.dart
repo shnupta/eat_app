@@ -21,3 +21,5 @@ class ClosePopupEvent extends RestaurantProfileEvent {}
 class PreventPopupClosingEvent extends RestaurantProfileEvent {}
 
 class AllowPopupClosingEvent extends RestaurantProfileEvent {}
+
+class ToggleRestaurantFavouriteEvent extends RestaurantProfileEvent {}

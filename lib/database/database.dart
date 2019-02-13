@@ -86,4 +86,8 @@ class Database {
     doc.data['id'] = documentID;
     return Future.value(doc.data);
   }
+
+  static void deleteDocumentWithIdFromCollection(String documentId, String collectionPath) {
+    _firestore.collection(collectionPath).document(documentId).delete();
+  }
 }

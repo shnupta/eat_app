@@ -120,6 +120,20 @@ class Restaurant {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'logoUrl': logoUrl,
+      'availability': availability,
+      'latLong': latLong,
+      'location': location,
+      'category': category,
+      'discount': discount,
+    };
+  }
+
   /// Determines whether the filter by availability settings from [availableFrom], [availableTo]
   /// and [availableDaysFilter] overlap with any restaurants' availability settings.
   bool isInsideAvailability(String availableFrom, String availableTo,

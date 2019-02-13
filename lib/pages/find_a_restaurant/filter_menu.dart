@@ -297,16 +297,16 @@ class FilterMenu extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => findARestaurantBloc.orderBySelected('popularity'),
-                          child: FilterTag(
-                            selected: state.orderBy['popularity'],
-                            selectedColor: Theme.of(context).cursorColor,
-                            title: 'Popularity',
-                          ),
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: GestureDetector(
+                      //     onTap: () => findARestaurantBloc.orderBySelected('popularity'),
+                      //     child: FilterTag(
+                      //       selected: state.orderBy['popularity'],
+                      //       selectedColor: Theme.of(context).cursorColor,
+                      //       title: 'Popularity',
+                      //     ),
+                      //   ),
+                      // ),
                       Expanded(
                         child: GestureDetector(
                           onTap: () => findARestaurantBloc.orderBySelected('distance'),
