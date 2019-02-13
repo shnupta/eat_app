@@ -13,6 +13,8 @@ import 'package:date_utils/date_utils.dart' as du;
 
 import 'package:snacc/pages/map_view.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 class RestaurantProfilePage extends StatelessWidget {
   final Restaurant restaurant;
 
@@ -210,10 +212,29 @@ class RestaurantProfilePage extends StatelessWidget {
             StandardOutlinedButton(
               margin: EdgeInsets.symmetric(horizontal: 10),
               width: (MediaQuery.of(context).size.width / 2) - 60,
-              text: 'View menu',
-              onPressed: () => null,
+              text: 'Website',
+              onPressed: () => launch(state.restaurant.websiteUrl),
             ),
           ],
+        ),
+        Container(
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.only(left: 20, top: 20),
+          child: Text('Description',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+          child: Text(
+            restaurant.description,
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
         ),
       ],
     );

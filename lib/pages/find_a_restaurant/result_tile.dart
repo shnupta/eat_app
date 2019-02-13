@@ -8,6 +8,8 @@ import 'package:snacc/pages/restaurant_profile.dart';
 
 import 'package:snacc/pages/map_view.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 /// A [ResultTile] is a custom list tile made for the find a restaurant page. It can display conditional
 /// content such as the distance from the user.
 class ResultTile extends StatelessWidget {
@@ -136,9 +138,9 @@ class ResultTile extends StatelessWidget {
                   minHeight: 40,
                 ),
                 splashColor: Theme.of(context).primaryColor,
-                onPressed: () => null,
+                onPressed: () => launch(result.websiteUrl),
                 child: Text(
-                  'Menu',
+                  'Website',
                   textAlign: TextAlign.center,
                 ),
               ),

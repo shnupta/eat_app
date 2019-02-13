@@ -36,6 +36,9 @@ class Restaurant {
   /// The percentage discount that this restaurant offers (ie. 30% = 30)
   final int discount;
 
+  /// The url to this restaurant's website
+  final String websiteUrl;
+
   Restaurant(
       {@required this.id,
       @required this.name,
@@ -46,6 +49,7 @@ class Restaurant {
       @required this.location,
       @required this.category,
       @required this.discount,
+      @required this.websiteUrl,
       this.distanceFromUser});
 
   /// Sets the distance of this restaurant from the user
@@ -69,6 +73,7 @@ class Restaurant {
       location: map['location'],
       category: map['category'],
       discount: map['discount'],
+      websiteUrl: map['websiteUrl'] ?? "https://www.google.co.uk",
     );
   }
 
@@ -91,6 +96,7 @@ class Restaurant {
       location: map['location'],
       category: map['category'],
       discount: map['discount'],
+      websiteUrl: map['websiteUrl'] ?? "https://www.google.co.uk",
     );
   }
 
@@ -116,6 +122,7 @@ class Restaurant {
         location: data['location'],
         category: data['category'],
         discount: data['discount'],
+        websiteUrl: data['websiteUrl'] ?? "https://www.google.co.uk",
       ),
     );
   }
@@ -131,6 +138,7 @@ class Restaurant {
       'location': location,
       'category': category,
       'discount': discount,
+      'websiteUrl': websiteUrl,
     };
   }
 
