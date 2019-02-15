@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:snacc/models.dart';
 
+/// A cool little tile that displays and article, used on the home page
 class ArticleTile extends StatelessWidget {
   final Article article;
   final int index;
