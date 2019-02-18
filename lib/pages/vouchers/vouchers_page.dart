@@ -84,7 +84,7 @@ class VouchersPage extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      'Table for ${state.viewingVoucher.numberOfPeople} at ${state.viewingVoucher.bookingTime.hour}:${state.viewingVoucher.bookingTime.minute}',
+                      'Table for ${state.viewingVoucher.numberOfPeople} at ${state.viewingVoucher.bookingTime.hour}:${state.viewingVoucher.bookingTime.minute.toString().padLeft(2, '0')}',
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(

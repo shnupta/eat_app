@@ -14,7 +14,7 @@ class VoucherTile extends StatelessWidget {
     return ListTile(
       title: Text(voucher.restaurant.name),
       subtitle: Text(
-          '${voucher.bookingDay[0].toUpperCase()}${voucher.bookingDay.substring(1)} ${voucher.bookingTime.day} ${du.Utils.formatMonth(voucher.bookingTime)} at ${voucher.bookingTime.hour}:${voucher.bookingTime.minute} for ${voucher.numberOfPeople} people.'),
+          '${voucher.bookingDay[0].toUpperCase()}${voucher.bookingDay.substring(1)} ${voucher.bookingTime.day} ${du.Utils.formatMonth(voucher.bookingTime)} at ${voucher.bookingTime.hour}:${voucher.bookingTime.minute.toString().padLeft(2, '0')} for ${voucher.numberOfPeople} people.'),
     );
   }
 }
