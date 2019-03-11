@@ -108,7 +108,6 @@ class ResultTile extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // TODO: Make menu button navigate to correct thing
               RawMaterialButton(
                 constraints: BoxConstraints(
                   minWidth: 70,
