@@ -12,10 +12,11 @@ import 'package:snacc/config.dart';
 import 'package:square_in_app_payments/models.dart';
 import 'package:square_in_app_payments/in_app_payments.dart';
 
+import 'package:connectivity/connectivity.dart';
+
 /// This bloc handles all creation of vouchers and objects in the database which cause vouchers
 /// and spaces to be booked
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
-
   BookingState get initialState => BookingState.initialising();
 
   @override
@@ -24,7 +25,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     if (event is InitialiseEvent) {
       ConfigLoader configLoader = ConfigLoader();
       await configLoader.loadKeys(); // Get the API keys
-      
+
       _initSquarePayment(configLoader);
 
       // We need the user info if they make a booking
@@ -78,7 +79,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           showReceipt: true,
           showConfirmation: false,
           voucher: event.voucher);
-    } else if (event is OrderConfirmedEvent) { // When the user confirms they wish to book a voucher
+    } else if (event is OrderConfirmedEvent) {
+      // When the user confirms they wish to book a voucher
       yield state.copyWith(isLoading: true);
       int selectedHour = int.parse(state.selectedTime.split(':')[0]);
       int selectedMin = int.parse(state.selectedTime.split(':')[1]);
@@ -97,6 +99,13 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         bookingDay: state.day,
         discount: state.restaurant.discount,
       );
+
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.none) {
+        transactionFailed('No internet connection, please retry later.');
+        return;
+      }
+
       voucher.createAndSaveToFirebase();
 
       // Listen to the location that the voucher was written to until a change occurs.
@@ -117,7 +126,12 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         }
       });
     } else if (event is TransactionFailedEvent) {
-      yield state.copyWith(isLoading: false, showReceipt: false, showConfirmation: false, showTransactionError: true, transactionError: event.error);
+      yield state.copyWith(
+          isLoading: false,
+          showReceipt: false,
+          showConfirmation: false,
+          showTransactionError: true,
+          transactionError: event.error);
     }
   }
 

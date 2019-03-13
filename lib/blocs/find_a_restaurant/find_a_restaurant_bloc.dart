@@ -66,7 +66,8 @@ class FindARestaurantBloc
               try {
                 loc = await userLocation.getLocation();
               } catch (e) {
-                print('error');
+                dispatch(OrderBySelectedEvent(type: 'relevance'));
+                throw Exception('Your location is not available!');
               }
 
               List<Tuple2> distances = List();

@@ -74,6 +74,13 @@ exports.onRestaurantUpdated = functions.firestore.document('restaurants/{restaur
     return index.saveObject(document);
 });
 
+
+// If a restaurant is deleted, remove it from algolia so it doesn't appear in any search results
+exports.onRestaurantDeleted = functions.firestore.document('restaurants/{restaurant_id}').onDelete((snapshot, context) => {
+    const index = client.initIndex(ALGOLIA_INDEX_NAME);
+    return index.deleteObject(context.params.restaurant_id);
+})
+
 // This is triggered whenever a voucher is created in the database. This only ever occurs in the vouchers
 // collection when someone has confirmed they wish to buy a voucher and so this indicate we should 
 // attempt to charge their card and book their place

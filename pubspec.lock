@@ -7,7 +7,7 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.5"
+    version: "2.0.8"
   args:
     dependency: transitive
     description:
@@ -49,7 +49,7 @@ packages:
       name: built_value
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.2.0"
+    version: "6.3.2"
   charcode:
     dependency: transitive
     description:
@@ -63,7 +63,7 @@ packages:
       name: cloud_firestore
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.2+3"
+    version: "0.9.5+2"
   collection:
     dependency: transitive
     description:
@@ -71,6 +71,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.14.11"
+  connectivity:
+    dependency: "direct main"
+    description:
+      name: connectivity
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.2"
   convert:
     dependency: transitive
     description:
@@ -90,7 +97,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: e26916e095244a7e5ea61315b030d298d127ed26
+      resolved-ref: a7ed88a4793e094a4d5d5c2d88a89e55510accde
       url: "https://github.com/MarkOSullivan94/dart_config.git"
     source: git
     version: "0.5.0"
@@ -107,14 +114,14 @@ packages:
       name: firebase_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.6"
+    version: "0.8.1+4"
   firebase_core:
     dependency: transitive
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.5+1"
+    version: "0.3.1+1"
   fixnum:
     dependency: transitive
     description:
@@ -159,7 +166,7 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.3+3"
+    version: "0.4.0"
   http:
     dependency: "direct main"
     description:
@@ -180,7 +187,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.5"
+    version: "2.0.7"
   intl:
     dependency: transitive
     description:
@@ -216,13 +223,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.2"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.0"
   petitparser:
     dependency: transitive
     description:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   qr:
     dependency: transitive
     description:
@@ -236,7 +250,7 @@ packages:
       name: qr_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.6"
+    version: "2.0.0+51"
   quiver:
     dependency: transitive
     description:
@@ -250,7 +264,7 @@ packages:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.20.0"
+    version: "0.21.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -262,16 +276,14 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.1"
+    version: "1.5.4"
   square_in_app_payments:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: c0dc30ec1b1ee35456052db396577abfc2ec7f5e
-      url: "https://github.com/square/in-app-payments-flutter-plugin.git"
-    source: git
-    version: "1.0.1"
+      name: square_in_app_payments
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   stack_trace:
     dependency: transitive
     description:
@@ -299,14 +311,14 @@ packages:
       name: term_glyph
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.1.0"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1"
+    version: "0.2.2"
   tuple:
     dependency: "direct main"
     description:
@@ -327,7 +339,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.1"
+    version: "5.0.2"
   vector_math:
     dependency: "direct main"
     description:
@@ -341,7 +353,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.5"
+    version: "3.3.1"
   yaml:
     dependency: transitive
     description:
@@ -350,5 +362,5 @@ packages:
     source: hosted
     version: "2.1.15"
 sdks:
-  dart: ">=2.0.0 <3.0.0"
-  flutter: ">=0.11.9 <2.0.0"
+  dart: ">=2.1.0 <3.0.0"
+  flutter: ">=1.2.0 <2.0.0"

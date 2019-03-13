@@ -41,8 +41,8 @@ class _FindARestaurantPageState extends State<FindARestaurantPage>
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return Dialog(
-                  child: Text(state.error),
+                return AlertDialog(
+                  content: Text(state.error),
                 );
               },
             );
