@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:snacc/models.dart';
 
-import 'dart:ui';
-
 class ArticlePage extends StatelessWidget {
   final Article article;
 
@@ -15,22 +13,6 @@ class ArticlePage extends StatelessWidget {
         body: CustomScrollView(
       slivers: <Widget>[
         SliverAppBar(
-          expandedHeight: article.imageUrl != null ? 200 : 0,
-          flexibleSpace: FlexibleSpaceBar(
-            background: article.imageUrl != null
-                ? Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(article.imageUrl),
-                      fit: BoxFit.cover,
-                    )
-                  ),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
-                  )
-                )
-                : Container(),
-          ),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => Navigator.of(context).pop(),

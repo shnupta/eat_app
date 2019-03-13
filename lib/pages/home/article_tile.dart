@@ -17,7 +17,7 @@ class ArticleTile extends StatelessWidget {
     [Color(0x304352), Color(0xFFd7d2cc)],
     [Color(0xFF525252), Color(0xFF3d72b4)],
     [Color(0xFFF1F2B5), Color(0xFF135058)],
-    [Color(0xFFFC354C), Color(0xFF0ABFBC)],
+    [Color(0xFFD1913C), Color(0xFFD1913C)],
     [Color(0xFFFEAC5E), Color(0xFFC779D0), Color(0xFF4BC0C8)],
     [Color(0xFF43cea2), Color(0xFF185a9d)],
   ];

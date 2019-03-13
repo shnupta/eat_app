@@ -112,6 +112,9 @@ class RestaurantProfilePage extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            Container(
+                              child: Icon(Icons.star),
+                            ),
                           ],
                         ),
                       ),
