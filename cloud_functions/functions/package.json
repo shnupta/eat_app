@@ -12,7 +12,8 @@
     "firebase-admin": "~6.0.0",
     "firebase-functions": "^2.1.0",
     "algoliasearch": "^3.24.0",
-    "square-connect": "^2.20181212.0"
+    "square-connect": "^2.20181212.0",
+    "@sendgrid/mail": "^6.3.1"
   },
   "private": true
 }

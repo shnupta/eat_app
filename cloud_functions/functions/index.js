@@ -16,12 +16,19 @@ const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
 
 admin.initializeApp(functions.config().firestore);
 const db = admin.firestore();
+const settings = { timestampsInSnapshots: true };
+db.settings(settings);
 
 var square_oauth2 = squareClient.authentications['oauth2'];
 square_oauth2.accessToken = functions.config().square.access_token;
 
 var TransactionsAPI = new squareConnect.TransactionsApi();
 var squareLocationID = functions.config().square.location_id;
+
+const SENDGRID_API_KEY = functions.config().sendgrid.key;
+
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(SENDGRID_API_KEY);
 
 // On a HTTP request to the URL created by firebase, iterate through all of the restaurants
 // in the database and add them to my Algolia search index using the Algolia API
@@ -94,6 +101,16 @@ exports.onVoucherCreated = functions.firestore.document('vouchers/{voucher_id}')
     var userRef = db.collection(`users/${document.userId}/vouchers`).doc(context.params.voucher_id);
     var voucherRef = snapshot.ref;
 
+    var restaurantObj = db.doc(`restaurants/${document.restaurantId}`);
+
+    const createdAt = snapshot.get('createdAt');
+    if (((createdAt - Date.now()) / 1000) > 60) {
+        return snapshot.ref.set({
+            status: 'transaction_failed',
+            error: 'Timed out',
+        }, { merge: true });
+    }
+
     // To make a Transaction with the Square API it requires a charge body.
     var chargeBody = new squareConnect.ChargeRequest();
 
@@ -111,12 +128,30 @@ exports.onVoucherCreated = functions.firestore.document('vouchers/{voucher_id}')
         newVoucher['transactionId'] = value.transaction.id;
         newVoucher.status = 'transaction_complete';
 
-        // Add the updated vouchers to the batch ready to be saved to their own locations in the database
-        batch.set(voucherRef, newVoucher, { merge: true });
-        batch.set(userRef, newVoucher);
-        batch.set(restaurantRef, newVoucher);
+        restaurantObj.get().then(function (doc) {
+            console.log(newVoucher['numberOfPeople']);
+            const restMsg = {
+                to: doc.get('email'),
+                from: 'williamshoops96@gmail.com',
+                templateId: 'd-f35834c6e087410b824f02a8e4d7e1e0',
+                dynamic_template_data: {
+                    numberOfPeople: newVoucher['numberOfPeople'],
+                    time: `${newVoucher['bookingTime'].getHours()}:${newVoucher['bookingTime'].getMinutes()}`,
+                    date: newVoucher['bookingTime'].toLocaleDateString(),
+                    discount: `${newVoucher['discount']}%`,
+                    voucherId: context.params.voucher_id
+                }
+            }
+            sgMail.send(restMsg).then().catch(err => console.log(err));
 
-        batch.commit(); // save them to the database
+            // Add the updated vouchers to the batch ready to be saved to their own locations in the database
+            batch.set(voucherRef, newVoucher, { merge: true });
+            batch.set(userRef, newVoucher);
+            batch.set(restaurantRef, newVoucher);
+
+            batch.commit(); // save them to the database
+        });
+
 
     }, (error) => {
         snapshot.ref.set({
@@ -138,19 +173,19 @@ exports.onRestaurantBookingReceived = functions.firestore.document('restaurants/
         var availabilityOfDay = doc.availability[document.bookingDay]; // Get the availability for the day of booking
 
         // Iterate through all of the time intervals for the day
-        for(var interval in availabilityOfDay) {
-            var bt = document.bookingTime.toDate(); // Booking time of the voucher
+        for (var interval in availabilityOfDay) {
+            var bt = document.bookingTime; // Booking time of the voucher
 
             // Interval start and end times
             var startTime = new Date(bt.getFullYear(), bt.getMonth(), bt.getDate(), parseInt(interval.split('-')[0]));
             var endTime = new Date(bt.getFullYear(), bt.getMonth(), bt.getDate(), parseInt(interval.split('-')[1]));
 
             // Find the correct interval that the voucher booking time is inside
-            if(startTime.getTime() <= bt.getTime() && bt.getTime() <= endTime.getTime()) {
+            if (startTime.getTime() <= bt.getTime() && bt.getTime() <= endTime.getTime()) {
                 // update the number of booked spaces
                 availabilityOfDay[interval]['booked'] = availabilityOfDay[interval]['booked'] + 1;
 
-                if(availabilityOfDay[interval].vouchers == null) {
+                if (availabilityOfDay[interval].vouchers == null) {
                     availabilityOfDay[interval].vouchers = {};
                 }
                 availabilityOfDay[interval].vouchers[context.params.voucher_id] = document;
@@ -169,62 +204,62 @@ exports.onRestaurantBookingReceived = functions.firestore.document('restaurants/
 
 // This function is triggered when a message is received by pubsub on the topic of 'daily-tick'
 exports.daily_job = functions.pubsub
-  .topic('daily-tick')
-  .onPublish((message) => {
+    .topic('daily-tick')
+    .onPublish((message) => {
 
-    // has to be in this order as Sunday is 0 when calling javascript .getDay()q
-    var daysArr = [
-        'sunday',
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'friday',
-        'saturday',
-    ];
-    
-    // Update all restaurant's availabilty
-    // First save the current booking data into {restaurant_id}/past_bookings
-    // Then reset each restaurant's availability back to default
+        // has to be in this order as Sunday is 0 when calling javascript .getDay()q
+        var daysArr = [
+            'sunday',
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+            'saturday',
+        ];
 
-    var restaurantsRef = db.collection('restaurants');
-    restaurantsRef.get().then(snapshot => {
-        var batch = db.batch();
-        // Iterate through every restaurant in the database
-        snapshot.forEach((child) => {
-            var restRef = child.ref;
+        // Update all restaurant's availabilty
+        // First save the current booking data into {restaurant_id}/past_bookings
+        // Then reset each restaurant's availability back to default
 
-            var doc = child.data();
+        var restaurantsRef = db.collection('restaurants');
+        restaurantsRef.get().then(snapshot => {
+            var batch = db.batch();
+            // Iterate through every restaurant in the database
+            snapshot.forEach((child) => {
+                var restRef = child.ref;
 
-            if(doc.availability == null) return;
+                var doc = child.data();
 
-            var docAvailability = doc.availability;
-            var today = new Date();
-            today.setDate(today.getDate() - 1);
-            var day = daysArr[today.getDay()];
-            if(docAvailability[day] == null) return;
-            else {
-                // copy all of this data to pastBookings collection of this restaurant
-                var pastBookingDay = `${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`
-                restRef.collection('pastBookings').doc(pastBookingDay).create(docAvailability[day]);
-            }
+                if (doc.availability == null) return;
 
-            // Reset every interval back to 0 bookings and wipe the vouchers
-            for(interval in docAvailability[day]) {
-                if(interval == 'closed') continue;
+                var docAvailability = doc.availability;
+                var today = new Date();
+                today.setDate(today.getDate() - 1);
+                var day = daysArr[today.getDay()];
+                if (docAvailability[day] == null) return;
                 else {
-                    if(docAvailability[day][interval]['vouchers'] != null) delete docAvailability[day][interval]['vouchers'];
-                    docAvailability[day][interval]['booked'] = 0;
+                    // copy all of this data to pastBookings collection of this restaurant
+                    var pastBookingDay = `${today.getFullYear()}_${today.getMonth() + 1}_${today.getDate()}`
+                    restRef.collection('pastBookings').doc(pastBookingDay).create(docAvailability[day]);
                 }
-            }
 
-            doc.availability = docAvailability;
+                // Reset every interval back to 0 bookings and wipe the vouchers
+                for (interval in docAvailability[day]) {
+                    if (interval == 'closed') continue;
+                    else {
+                        if (docAvailability[day][interval]['vouchers'] != null) delete docAvailability[day][interval]['vouchers'];
+                        docAvailability[day][interval]['booked'] = 0;
+                    }
+                }
 
-            batch.set(restRef, doc);
-            
+                doc.availability = docAvailability;
+
+                batch.set(restRef, doc);
+
+            });
+            batch.commit();
         });
-        batch.commit();
-    });
 
-    return true;
-  });
+        return true;
+    });
