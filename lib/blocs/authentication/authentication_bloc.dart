@@ -116,7 +116,7 @@ class AuthenticationBloc
       yield AuthenticationState.loading();
 
       try {
-        await _sendPasswordResetEmail(event.email);
+        await _sendPasswordResetEmail(event.email.trim());
 
         yield AuthenticationState.information(
             'Reset your password with the link in the email sent to you');
@@ -204,6 +204,9 @@ class AuthenticationBloc
 
   /// When a user has forgotten their email, this is called and Firebase will send a link to reset their password.
   Future<void> _sendPasswordResetEmail(String email) {
+    if(email.isEmpty) {
+      throw Exception('Email cannot be empty');
+    }
     return _auth.sendPasswordResetEmail(email: email);
   }
 }
