@@ -41,7 +41,7 @@ class ArticleTile extends StatelessWidget {
         ),
         alignment: Alignment.centerLeft,
         child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
+            filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0), // blur values
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
