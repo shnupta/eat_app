@@ -10,6 +10,8 @@ class VouchersState {
   final List<Voucher> expiredVouchers;
   final Voucher viewingVoucher;
   final bool viewVoucher;
+  final Stream<List<Voucher>> vouchersStream;
+  final bool streamEnded;
 
   VouchersState({
     this.isInitialising,
@@ -20,6 +22,8 @@ class VouchersState {
     this.noVouchers,
     this.viewingVoucher,
     this.viewVoucher,
+    this.vouchersStream,
+    this.streamEnded
   });
 
   factory VouchersState.initialising() => VouchersState(
@@ -27,11 +31,13 @@ class VouchersState {
     isLoading: false,
     noVouchers: false,
     viewVoucher: false,
+    streamEnded: false,
   );
 
   VouchersState copyWith({bool isInitialising, bool isLoading, List<Voucher> vouchers,
   List<Voucher> currentVouchers, List<Voucher> expiredVouchers, bool noVouchers,
-  bool viewVoucher, Voucher viewingVoucher}) {
+  bool viewVoucher, Voucher viewingVoucher, Stream<List<Voucher>> vouchersStream,
+  bool streamEnded}) {
     return VouchersState(
       isInitialising: isInitialising ?? this.isInitialising,
       isLoading: isLoading ?? this.isLoading,
@@ -41,6 +47,8 @@ class VouchersState {
       noVouchers: noVouchers ?? this.noVouchers,
       viewVoucher: viewVoucher ?? this.viewVoucher,
       viewingVoucher:  viewingVoucher ?? this.viewingVoucher,
+      vouchersStream: vouchersStream ?? this.vouchersStream,
+      streamEnded: streamEnded ?? this.streamEnded
     );
   }
 }

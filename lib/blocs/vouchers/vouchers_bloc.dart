@@ -15,8 +15,10 @@ class VouchersBloc extends Bloc<VouchersEvent, VouchersState> {
       // Load this user's voucher info, initialise the variables in the state
       FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
       User user = User.fromFirebaseUser(firebaseUser);
-      List<Voucher> vouchers = await user.loadAllVouchers();
+      
+      yield state.copyWith(vouchersStream: user.loadAllVouchersStream().asBroadcastStream(), isInitialising: false);
 
+      List<Voucher> vouchers = await user.loadAllVouchers();
       if (vouchers.isNotEmpty) {
         // Now split into two lists of current and expired vouchers
         List<Voucher> current = vouchers
@@ -24,9 +26,9 @@ class VouchersBloc extends Bloc<VouchersEvent, VouchersState> {
         List<Voucher> expired = vouchers
             .where((voucher) => voucher.bookingTime.isBefore(DateTime.now())).toList();
 
-        yield state.copyWith(currentVouchers: current, expiredVouchers: expired, isInitialising: false);
+        yield state.copyWith(currentVouchers: current, expiredVouchers: expired, isInitialising: false, streamEnded: true);
       } else {
-        yield state.copyWith(isInitialising: false, noVouchers: true);
+        yield state.copyWith(isInitialising: false, noVouchers: true, streamEnded: true);
       }
     } else if(event is ViewVoucherEvent) {
       yield state.copyWith(viewVoucher: true, viewingVoucher: event.voucher);

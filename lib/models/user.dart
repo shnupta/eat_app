@@ -90,6 +90,21 @@ class User {
     return Future.value(vouchers);
   }
 
+
+  /// Loads all vouchers from the database
+  Stream<List<Voucher>> loadAllVouchersStream() async* {
+    List<Map<String, dynamic>> docs = await Database.readDocumentsAtCollection('users/${this.id}/vouchers');
+    List<Voucher> vouchers = List();
+    for(Map<String, dynamic> doc in docs) {
+      //print("getting doc");
+      vouchers.add(await Voucher.fromFirebase(doc));
+      //Voucher vouch = await Voucher.fromFirebase(doc);
+      yield vouchers;
+      //print("got voucher");
+    }
+    //yield vouchers;
+  }
+
   Future<List<String>> getFavouriteRestaurants() async {
     List<Map<String, dynamic>> docs = await Database.readDocumentsAtCollection('users/${this.id}/favouriteRestaurants');
     return Future.value(docs.map((doc) => doc['id'].toString()).toList());
