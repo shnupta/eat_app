@@ -146,8 +146,6 @@ class RestaurantProfilePage extends StatelessWidget {
             itemCount: _days.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (BuildContext context, int index) {
-              print(DateTime(now.year, now.month + 1, 0));
-              //print(now.add(Duration(days: 1)));
               return InkWell(
                 splashColor: (restaurant.isClosed(_fullDays[index]) ||
                         restaurant.isFullyBooked(_fullDays[index]))
