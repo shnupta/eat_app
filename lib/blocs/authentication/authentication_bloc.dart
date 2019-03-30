@@ -40,7 +40,8 @@ class AuthenticationBloc
       yield AuthenticationState.loading();
 
       try {
-        final FirebaseUser _user = await _login(event.email.trim(), event.password.trim());
+        final FirebaseUser _user =
+            await _login(event.email.trim(), event.password.trim());
 
         // check that the login succeeded
         if (_user != null) {
@@ -63,15 +64,19 @@ class AuthenticationBloc
       yield AuthenticationState.loading();
 
       try {
-        final FirebaseUser _user = await _signup(event.fullName.trim(), event.email.trim(),
-            event.password.trim(), event.passwordRepeated.trim());
-        _user
-            .sendEmailVerification(); // the user needs to verify their email before they can login
+        final FirebaseUser _user = await _signup(
+            event.fullName.trim(),
+            event.email.trim(),
+            event.password.trim(),
+            event.passwordRepeated.trim());
 
         // we need to update this firebase user's name
         UserUpdateInfo updateInfo = UserUpdateInfo();
         updateInfo.displayName = event.fullName.trim();
-        _user.updateProfile(updateInfo);
+        await _user.updateProfile(updateInfo);
+
+        _user
+            .sendEmailVerification(); // the user needs to verify their email before they can login
 
         // create my own user as this is what the database class uses to save to firebase
         User saveUser = User.fromFirebaseUser(_user);
@@ -204,7 +209,7 @@ class AuthenticationBloc
 
   /// When a user has forgotten their email, this is called and Firebase will send a link to reset their password.
   Future<void> _sendPasswordResetEmail(String email) {
-    if(email.isEmpty) {
+    if (email.isEmpty) {
       throw Exception('Email cannot be empty');
     }
     return _auth.sendPasswordResetEmail(email: email);

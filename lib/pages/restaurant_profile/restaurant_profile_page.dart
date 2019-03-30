@@ -146,6 +146,8 @@ class RestaurantProfilePage extends StatelessWidget {
             itemCount: _days.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (BuildContext context, int index) {
+              print(DateTime(now.year, now.month + 1, 0));
+              //print(now.add(Duration(days: 1)));
               return InkWell(
                 splashColor: (restaurant.isClosed(_fullDays[index]) ||
                         restaurant.isFullyBooked(_fullDays[index]))
@@ -166,11 +168,9 @@ class RestaurantProfilePage extends StatelessWidget {
                   closed: restaurant.isClosed(_fullDays[index]),
                   fullyBooked: restaurant.isFullyBooked(_fullDays[index]),
                   day: '${_days[index]}',
-                  date:
-                      du.Utils.isLastDayOfMonth(now.add(Duration(days: index)))
-                          ? du.Utils.lastDayOfMonth(now).day
-                          : (now.day + index) %
-                              du.Utils.lastDayOfMonth(now).day,
+                  date: now.month == now.add(Duration(days: index)).month ?
+                        now.day + index : 
+                        (now.day + index) % DateTime(now.year, now.month + 1, 0).day,
                   margin: EdgeInsets.symmetric(
                       vertical: 9.0,
                       horizontal:
