@@ -9,8 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:snacc/blocs/restaurant_profile.dart';
 
-import 'package:date_utils/date_utils.dart' as du;
-
 import 'package:snacc/pages/map_view.dart';
 
 import 'package:url_launcher/url_launcher.dart';

@@ -129,14 +129,13 @@ exports.onVoucherCreated = functions.firestore.document('vouchers/{voucher_id}')
         newVoucher.status = 'transaction_complete';
 
         restaurantObj.get().then(function (doc) {
-            console.log(newVoucher['numberOfPeople']);
             const restMsg = {
                 to: doc.get('email'),
                 from: 'williamshoops96@gmail.com',
                 templateId: 'd-f35834c6e087410b824f02a8e4d7e1e0',
                 dynamic_template_data: {
                     numberOfPeople: newVoucher['numberOfPeople'],
-                    time: `${newVoucher['bookingTime'].getHours()}:${newVoucher['bookingTime'].getMinutes()}`,
+                    time: `${newVoucher['bookingTime'].getHours()}:${newVoucher['bookingTime'].getMinutes() == 0 ? '00' : newVoucher['bookingTime'].getMinutes()}`,
                     date: newVoucher['bookingTime'].toLocaleDateString(),
                     discount: `${newVoucher['discount']}%`,
                     voucherId: context.params.voucher_id

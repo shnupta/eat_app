@@ -90,7 +90,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       Voucher voucher = Voucher(
         restaurant: state.restaurant,
         numberOfPeople: state.numberOfPeople,
-        bookingTime: DateTime.utc(state.date.year, state.date.month,
+        bookingTime: DateTime(state.date.year, state.date.month,
             state.date.day, selectedHour, selectedMin),
         user: state.user,
         cardNonce: state.cardDetails.nonce,

@@ -210,7 +210,7 @@ class AuthenticationBloc
   /// When a user has forgotten their email, this is called and Firebase will send a link to reset their password.
   Future<void> _sendPasswordResetEmail(String email) {
     if (email.isEmpty) {
-      throw Exception('Email cannot be empty');
+      throw 'Email cannot be empty';
     }
     return _auth.sendPasswordResetEmail(email: email);
   }
