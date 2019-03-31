@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:flutter/services.dart';
+
 import 'package:snacc/blocs/authentication/authentication_state.dart';
 import 'package:snacc/blocs/authentication/authentication_event.dart';
 
@@ -126,7 +128,11 @@ class AuthenticationBloc
         yield AuthenticationState.information(
             'Reset your password with the link in the email sent to you');
       } catch (error) {
-        yield AuthenticationState.failure(error);
+        if(error is PlatformException) {
+          yield AuthenticationState.failure(error.message);
+        } else {
+          yield AuthenticationState.failure(error);
+        }
       }
     }
   }

@@ -182,7 +182,7 @@ class VouchersPage extends StatelessWidget {
                 ))
             .toList();
         if (tiles.isEmpty) {
-          return Center(child: Text('You have no current vouchers'));
+          return Center(child: Text('Loading...'));
         }
         // Order the vouchers so the ones closest are at the top
         tiles.sort((one, two) => (one.child as VoucherTile)
@@ -220,7 +220,7 @@ class VouchersPage extends StatelessWidget {
             .toList();
 
         if (tiles.isEmpty) {
-          return Center(child: Text('You have no expired vouchers'));
+          return Center(child: Text('Loading...'));
         }
         // Order the vouchers so the ones closest are at the top
         tiles.sort((one, two) => (one.child as VoucherTile)
