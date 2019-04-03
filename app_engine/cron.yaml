@@ -2,3 +2,4 @@ cron:
 - description: Push a "tick" onto pubsub every day
   url: /publish/daily-tick
   schedule: every day 00:00
+  timezone: Europe/London
